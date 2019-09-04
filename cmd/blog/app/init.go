@@ -1,4 +1,4 @@
-package customd
+package blog
 
 import (
 	"context"
@@ -99,7 +99,7 @@ func GenerateApp(options *server.Options) (abci.Application, error) {
 	}
 
 	stack := Stack(nil, options.MinFee)
-	application, err := Application("customd", stack, TxDecoder, dbPath, options.Debug)
+	application, err := Application("blog", stack, TxDecoder, dbPath, options.Debug)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func InlineApp(kv weave.CommitKVStore, logger log.Logger, debug bool) abci.Appli
 	minFee := coin.Coin{}
 	stack := Stack(nil, minFee)
 	ctx := context.Background()
-	store := app.NewStoreApp("customd", kv, QueryRouter(), ctx)
+	store := app.NewStoreApp("blog", kv, QueryRouter(), ctx)
 	base := app.NewBaseApp(store, TxDecoder, stack, nil, debug)
 	return DecorateApp(base, logger)
 }

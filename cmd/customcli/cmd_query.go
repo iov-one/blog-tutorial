@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/iov-one/weave"
-	"github.com/iov-one/blog-tutorial/cmd/customd/client"
+	"github.com/iov-one/blog-tutorial/cmd/blog/client"
 	"github.com/iov-one/blog-tutorial/x/custom"
 	"github.com/iov-one/weave/orm"
 	"github.com/iov-one/weave/x/cash"

@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/x/multisig"
 )
 
@@ -37,11 +37,11 @@ participants must be done by another command.
 		flagDie("admin threshold cannot be zero")
 	}
 
-	var tx customd.Tx
+	var tx blog.Tx
 
 	if len(*updateFl) != 0 {
-		tx = customd.Tx{
-			Sum: &customd.Tx_MultisigUpdateMsg{
+		tx = blog.Tx{
+			Sum: &blog.Tx_MultisigUpdateMsg{
 				MultisigUpdateMsg: &multisig.UpdateMsg{
 					Metadata:            &weave.Metadata{Schema: 1},
 					ContractID:          *updateFl,
@@ -51,8 +51,8 @@ participants must be done by another command.
 			},
 		}
 	} else {
-		tx = customd.Tx{
-			Sum: &customd.Tx_MultisigCreateMsg{
+		tx = blog.Tx{
+			Sum: &blog.Tx_MultisigCreateMsg{
 				MultisigCreateMsg: &multisig.CreateMsg{
 					Metadata:            &weave.Metadata{Schema: 1},
 					ActivationThreshold: multisig.Weight(*activationThresholdFl),

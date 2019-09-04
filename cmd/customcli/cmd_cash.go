@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/gconf"
 	"github.com/iov-one/weave/x/cash"
@@ -29,8 +29,8 @@ destination account.
 	)
 	fl.Parse(args)
 
-	tx := &customd.Tx{
-		Sum: &customd.Tx_CashSendMsg{
+	tx := &blog.Tx{
+		Sum: &blog.Tx_CashSendMsg{
 			CashSendMsg: &cash.SendMsg{
 				Metadata:    &weave.Metadata{Schema: 1},
 				Source:      *srcFl,

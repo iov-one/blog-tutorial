@@ -8,7 +8,7 @@ import (
 	"io"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/x/validators"
 )
 
@@ -55,8 +55,8 @@ func cmdSetValidators(input io.Reader, output io.Writer, args []string) error {
 		},
 		Power: int64(*powerFl),
 	})
-	var tx = customd.Tx{
-		Sum: &customd.Tx_ValidatorsApplyDiffMsg{
+	var tx = blog.Tx{
+		Sum: &blog.Tx_ValidatorsApplyDiffMsg{
 			ValidatorsApplyDiffMsg: &validators.ApplyDiffMsg{
 				Metadata:         &weave.Metadata{Schema: 1},
 				ValidatorUpdates: set,

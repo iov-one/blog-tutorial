@@ -1,4 +1,4 @@
-package customd
+package blog
 
 import (
 	"github.com/iov-one/weave"

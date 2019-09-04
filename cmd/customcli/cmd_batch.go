@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/x/cash"
 	"github.com/iov-one/weave/x/multisig"
 )
@@ -23,7 +23,7 @@ original transactions (ie signatures) are being dropped.
 	}
 	fl.Parse(args)
 
-	var batch customd.ExecuteBatchMsg
+	var batch blog.ExecuteBatchMsg
 	for {
 		tx, _, err := readTx(input)
 		if err != nil {
@@ -39,7 +39,7 @@ original transactions (ie signatures) are being dropped.
 		}
 
 		// List of all supported batch types can be found in the
-		// cmd/customd/app/codec.proto file.
+		// cmd/blog/app/codec.proto file.
 		//
 		// Instead of manually managing this list, use the script from
 		// the bottom comment to generate all the cases. Remember to
@@ -49,20 +49,20 @@ original transactions (ie signatures) are being dropped.
 		switch msg := msg.(type) {
 
 		case *cash.SendMsg:
-			batch.Messages = append(batch.Messages, customd.ExecuteBatchMsg_Union{
-				Sum: &customd.ExecuteBatchMsg_Union_CashSendMsg{
+			batch.Messages = append(batch.Messages, blog.ExecuteBatchMsg_Union{
+				Sum: &blog.ExecuteBatchMsg_Union_CashSendMsg{
 					CashSendMsg: msg,
 				},
 			})
 		case *multisig.CreateMsg:
-			batch.Messages = append(batch.Messages, customd.ExecuteBatchMsg_Union{
-				Sum: &customd.ExecuteBatchMsg_Union_MultisigCreateMsg{
+			batch.Messages = append(batch.Messages, blog.ExecuteBatchMsg_Union{
+				Sum: &blog.ExecuteBatchMsg_Union_MultisigCreateMsg{
 					MultisigCreateMsg: msg,
 				},
 			})
 		case *multisig.UpdateMsg:
-			batch.Messages = append(batch.Messages, customd.ExecuteBatchMsg_Union{
-				Sum: &customd.ExecuteBatchMsg_Union_MultisigUpdateMsg{
+			batch.Messages = append(batch.Messages, blog.ExecuteBatchMsg_Union{
+				Sum: &blog.ExecuteBatchMsg_Union_MultisigUpdateMsg{
 					MultisigUpdateMsg: msg,
 				},
 			})
@@ -73,8 +73,8 @@ original transactions (ie signatures) are being dropped.
 		}
 	}
 
-	batchTx := &customd.Tx{
-		Sum: &customd.Tx_ExecuteBatchMsg{ExecuteBatchMsg: &batch},
+	batchTx := &blog.Tx{
+		Sum: &blog.Tx_ExecuteBatchMsg{ExecuteBatchMsg: &batch},
 	}
 	_, err := writeTx(output, batchTx)
 	return err
@@ -87,7 +87,7 @@ declaration.
 
 #!/bin/bash
 
-# Copy this directly from the ExecuteBatchMsg defined in cmd/customd/app/codec.proto
+# Copy this directly from the ExecuteBatchMsg defined in cmd/blog/app/codec.proto
 protobuf="
 cash.SendMsg cash_send_msg = 51;
 multisig.CreateMsg multisig_create_msg = 56;
@@ -105,8 +105,8 @@ while read -r m; do
 	name=`echo $m | cut -d ' ' -f2 | sed -r 's/(^|_)([a-z])/\U\2/g'`
 
 	echo "	case *$tp:"
-	echo "		batch.Messages = append(batch.Messages, customd.ExecuteBatchMsg_Union{"
-	echo "			Sum: &customd.ExecuteBatchMsg_Union_$name{"
+	echo "		batch.Messages = append(batch.Messages, blog.ExecuteBatchMsg_Union{"
+	echo "			Sum: &blog.ExecuteBatchMsg_Union_$name{"
 	echo "					$name: msg,"
 	echo "				},"
 	echo "		})"

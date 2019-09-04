@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	weaveClient "github.com/iov-one/weave/client"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/commands/server"
@@ -66,14 +66,14 @@ func initApp(config *cfg.Config, addr weave.Address) (abci.Application, error) {
 		Logger: logger,
 		Debug:  false,
 	}
-	customd, err := customd.GenerateApp(opts)
+	blog, err := blog.GenerateApp(opts)
 	if err != nil {
 		return nil, err
 	}
 
 	// generate genesis file...
 	err = initGenesis(config.GenesisFile(), addr)
-	return customd, err
+	return blog, err
 }
 
 func initGenesis(filename string, addr weave.Address) error {

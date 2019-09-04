@@ -5,13 +5,13 @@ import (
 	"testing"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/x/cash"
 )
 
 func TestCmdTransactionView(t *testing.T) {
-	tx := &customd.Tx{
-		Sum: &customd.Tx_CashSendMsg{
+	tx := &blog.Tx{
+		Sum: &blog.Tx_CashSendMsg{
 			CashSendMsg: &cash.SendMsg{
 				Metadata: &weave.Metadata{Schema: 1},
 				Memo:     "a memo",
