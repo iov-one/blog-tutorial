@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+customcli send-tokens \
+		-src "seq:test/custom/1" \
+		-dst "seq:test/custom/2" \
+		-amount "4 CSTM" \
+		-memo "customcli test" | customcli view 
+

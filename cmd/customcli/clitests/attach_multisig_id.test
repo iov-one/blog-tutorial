@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+customcli multisig -activation 4 -admin 8 \
+	| customcli with-multisig 1 2 \
+	| customcli with-multisig 3 \
+	| customcli view
