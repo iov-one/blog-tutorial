@@ -29,7 +29,7 @@ func TestAll(t *testing.T) {
 		t.Run(tf, func(t *testing.T) {
 			cmd := exec.Command("/bin/bash", tf)
 
-			// we don't support any remote servers in shell tests (those are in customcli unit tests)
+			// we don't support any remote servers in shell tests (those are in blogcli unit tests)
 			// CUSTOMCLI_TM_ADDR must be unset
 			cmd.Env = append(os.Environ(), "CUSTOMCLI_TM_ADDR=")
 
@@ -73,13 +73,13 @@ func TestAll(t *testing.T) {
 func ensureCustomcliBinary(t testing.TB) {
 	t.Helper()
 
-	if cmd := exec.Command("customcli", "version"); cmd.Run() != nil {
-		t.Skipf(`customcli binary is not available
+	if cmd := exec.Command("blogcli", "version"); cmd.Run() != nil {
+		t.Skipf(`blogcli binary is not available
 
-You can install customcli binary by running "make install" in
+You can install blogcli binary by running "make install" in
 weave main directory or by directly using Go install command:
 
-  $ go install github.com/iov-one/blog-tutorial/cmd/customcli
+  $ go install github.com/iov-one/blog-tutorial/cmd/blogcli
 `)
 	}
 }

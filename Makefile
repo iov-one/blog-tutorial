@@ -3,7 +3,7 @@
 # make sure we turn on go modules
 export GO111MODULE := on
 
-TOOLS := cmd/blog cmd/customcli
+TOOLS := cmd/blog cmd/blogcli
 
 # MODE=count records heat map in test coverage
 # MODE=set just records which lines were hit by one test
@@ -87,7 +87,7 @@ import-spec:
 	@chmod -R +w spec
 
 inittm:
-	tendermint init --home ~/.custom
+	tendermint init --home ~/.blog
 
 runtm:
-	tendermint node --home ~/.custom > ~/.custom/tendermint.log &
+	tendermint node --home ~/.blog > ~/.blog/tendermint.log &

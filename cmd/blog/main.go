@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	defaultHome := filepath.Join(os.ExpandEnv("$HOME"), ".custom")
+	defaultHome := filepath.Join(os.ExpandEnv("$HOME"), ".blog")
 	varHome = flag.String(flagHome, defaultHome, "directory to store files under")
 
 	flag.CommandLine.Usage = helpMessage
@@ -38,7 +38,7 @@ func helpMessage() {
 	fmt.Println("version   Print the app version")
 	fmt.Println(`
   -home string
-        directory to store files under (default "$HOME/.custom")`)
+        directory to store files under (default "$HOME/.blog")`)
 }
 
 func main() {

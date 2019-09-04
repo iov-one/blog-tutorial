@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+blogcli from-sequence 0000000000000001
+blogcli from-sequence 0000000000000033
+blogcli from-sequence 0000000000000065
+blogcli from-sequence 0000000000000097
+blogcli from-sequence 00000000000000c9
+blogcli from-sequence 00000000000000fb
+blogcli from-sequence 000000000000012d
+blogcli from-sequence 000000000000015f
+blogcli from-sequence 0000000000000191
+blogcli from-sequence 00000000000001c3
+blogcli from-sequence 00000000000001f5
+blogcli from-sequence 0000000000000227
+blogcli from-sequence 0000000000000259
+blogcli from-sequence 000000000000028b
+blogcli from-sequence 00000000000002bd
+blogcli from-sequence 00000000000002ef
+blogcli from-sequence 0000000000000321
+
+# Multiple sequences input is allowed as well.
+blogcli from-sequence 0000000000000353 0000000000000385 00000000000003b7

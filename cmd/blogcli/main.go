@@ -29,9 +29,9 @@ import (
 // transaction, signing and submitting. They can be combined into a single
 // pipeline line:
 //
-//   $ customcli create-custom-state --inner-state 1 --address cstm1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
-//       | customcli sign \
-//       | customcli submit
+//   $ blogcli create-custom-state --inner-state 1 --address cstm1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
+//       | blogcli sign \
+//       | blogcli submit
 //
 var commands = map[string]func(input io.Reader, output io.Writer, args []string) error{
 	"as-batch":                  cmdAsBatch,
