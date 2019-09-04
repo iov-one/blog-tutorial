@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package customd;
+package blog;
 
 import "github.com/iov-one/weave/migration/codec.proto";
 import "github.com/iov-one/weave/x/cash/codec.proto";

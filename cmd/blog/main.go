@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	. "github.com/iov-one/blog-tutorial"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/commands"
 	"github.com/iov-one/weave/commands/server"
 	"github.com/tendermint/tendermint/libs/log"
@@ -26,7 +26,7 @@ func init() {
 }
 
 func helpMessage() {
-	fmt.Println("customd")
+	fmt.Println("blog")
 	fmt.Println("          Custom Blockchain Service node")
 	fmt.Println("")
 	fmt.Println("help      Print this message")
@@ -60,15 +60,15 @@ func main() {
 	case "help":
 		helpMessage()
 	case "init":
-		err = server.InitCmd(customd.GenInitOptions, logger, *varHome, rest)
+		err = server.InitCmd(blog.GenInitOptions, logger, *varHome, rest)
 	case "start":
-		err = server.StartCmd(customd.GenerateApp, logger, *varHome, rest)
+		err = server.StartCmd(blog.GenerateApp, logger, *varHome, rest)
 	case "getblock":
 		err = server.GetBlockCmd(rest)
 	case "retry":
-		err = server.RetryCmd(customd.InlineApp, logger, *varHome, rest)
+		err = server.RetryCmd(blog.InlineApp, logger, *varHome, rest)
 	case "testgen":
-		err = commands.TestGenCmd(customd.Examples(), rest)
+		err = commands.TestGenCmd(blog.Examples(), rest)
 	case "version":
 		fmt.Println(Version)
 	default:

@@ -3,8 +3,8 @@
 BUILD_VERSION ?= $(shell git describe --tags)
 BUILD_FLAGS := -mod=readonly -ldflags "-X github.com/iov-one/blog-tutorial/blog.Version=${BUILD_VERSION}"
 DOCKER_BUILD_FLAGS := -a -installsuffix cgo
-BUILDOUT ?= customd
-IMAGE_NAME = "iov1/customd:${BUILD_VERSION}"
+BUILDOUT ?= blog
+IMAGE_NAME = "iov1/blog:${BUILD_VERSION}"
 
 all: dist
 

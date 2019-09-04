@@ -9,8 +9,8 @@ directories.
 This directory largely serves as self-documenting examples of how to create
 transactions. These can be seen below:
 
-* [Create Multisig](./attach_multisig_id.test)
-* [Create batch of send tx](./batch.test)
+- [Create Multisig](./attach_multisig_id.test)
+- [Create batch of send tx](./batch.test)
 
 ## Submitting the transaction
 
@@ -31,7 +31,7 @@ cat unsigned_tx.bin \
 `with-fee` will query the proper fee for the given transaction (anti-spam fee plus product fee),
 unless you specify a manual amount as override.
 
-`sign` will sign with a private key located in `$HOME/.customd.priv.key` unless you specify a different
+`sign` will sign with a private key located in `$HOME/.blog.priv.key` unless you specify a different
 location. It will calculate the address of that key and query the given chain for the proper nonce
 before signing.
 
@@ -43,7 +43,7 @@ account, or else you will have issues with out-of-order nonces.
 ### Running tests
 
 To run the tests you need Go. We are using Go's
-[testing](https://golang.org/pkg/testing/) package as the test runner.  Enter
+[testing](https://golang.org/pkg/testing/) package as the test runner. Enter
 `clitest` directory and run:
 
 ```go
@@ -54,7 +54,7 @@ go test .
 
 To add a new test, create a file `<test_name>.test` in this directory. It
 should be a [Bourne shell](https://en.wikipedia.org/wiki/Bourne_shell) (not
-[bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell))) script. Its stdout
+[bash](<https://en.wikipedia.org/wiki/Bash_(Unix_shell)>)) script. Its stdout
 will be captured by the test runner and compared with `<test_name>.test.gold`
 file content.
 

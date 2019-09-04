@@ -3,7 +3,7 @@
 # make sure we turn on go modules
 export GO111MODULE := on
 
-TOOLS := cmd/customd cmd/customcli
+TOOLS := cmd/blog cmd/customcli
 
 # MODE=count records heat map in test coverage
 # MODE=set just records which lines were hit by one test
@@ -22,13 +22,13 @@ WEAVEDIR=$(shell go list -m -f '{{.Dir}}' github.com/iov-one/weave)
 all: import-spec test lint install
 
 dist:
-	cd cmd/customd && $(MAKE) dist
+	cd cmd/blog && $(MAKE) dist
 
 install:
 	for ex in $(TOOLS); do cd $$ex && make install && cd -; done
 
 test:
-	@# customd binary is required by some tests. In order to not skip them, ensure customd binary is provided and in the latest version.
+	@# blog binary is required by some tests. In order to not skip them, ensure blog binary is provided and in the latest version.
 	go vet -mod=readonly ./...
 	go test -mod=readonly -race ./...
 
@@ -48,22 +48,22 @@ test-verbose:
 mod:
 	go mod tidy
 
-# TODO write github.com/iov-one/blog-tutorial/cmd/customd/client and scenarios, here when implemented \
+# TODO write github.com/iov-one/blog-tutorial/cmd/blog/client and scenarios, here when implemented \
 	go test -mod=readonly -covermode=$(MODE) \
-		-coverpkg=github.com/iov-one/weave/cmd/customd/app,\
+		-coverpkg=github.com/iov-one/weave/cmd/blog/app,\
 		-coverprofile=coverage/custonmd_scenarios.out \
 		github.com/iov-one/blog-tutorial/cmd/bnsd/scenarios
 cover:
 	@# TODO write github.com/iov-one/blog-tutorial/cmd/bnsd/client when implemented
 	@go test -mod=readonly -covermode=$(MODE) \
-		-coverpkg=github.com/iov-one/blog-tutorial/cmd/customd/app, \
+		-coverpkg=github.com/iov-one/blog-tutorial/cmd/blog/app, \
 		-coverprofile=coverage/customd_app.out \
-		github.com/iov-one/blog-tutorial/cmd/customd/app
+		github.com/iov-one/blog-tutorial/cmd/blog/app
 		cat coverage/*.out > coverage/coverage.txt
 	@go test -mod=readonly -covermode=$(MODE) \
-		-coverpkg=github.com/iov-one/blog-tutorial/cmd/customd/app,github.com/iov-one/blog-tutorial/cmd/customd/client \
+		-coverpkg=github.com/iov-one/blog-tutorial/cmd/blog/app,github.com/iov-one/blog-tutorial/cmd/blog/client \
 		-coverprofile=coverage/customd_client.out \
-		github.com/iov-one/blog-tutorial/cmd/customd/client
+		github.com/iov-one/blog-tutorial/cmd/blog/client
 
 novendor:
 	@rm -rf ./vendor
