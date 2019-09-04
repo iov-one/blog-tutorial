@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+blogcli multisig -activation 4 -admin 8 |
+	blogcli with-multisig 1 2 |
+	blogcli with-multisig 3 |
+	blogcli view

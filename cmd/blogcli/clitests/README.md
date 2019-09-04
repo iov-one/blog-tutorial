@@ -1,7 +1,7 @@
-# `customcli` tool tests
+# `blogcli` tool tests
 
 This is a set of tests executing shell scripts and ensuring the output is as
-expected. Tests expect `customcli` binary to be present in one of the `$PATH`
+expected. Tests expect `blogcli` binary to be present in one of the `$PATH`
 directories.
 
 ## Examples
@@ -23,9 +23,9 @@ and then ignore repeating the flag on all these commands.
 
 ```sh
 cat unsigned_tx.bin \
-    | customcli with-fee [-amount="0.1 CSTM"] \
-    | customcli sign [-key $keyfile] \
-    | customcli submit
+    | blogcli with-fee [-amount="0.1 CSTM"] \
+    | blogcli sign [-key $keyfile] \
+    | blogcli submit
 ```
 
 `with-fee` will query the proper fee for the given transaction (anti-spam fee plus product fee),

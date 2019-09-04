@@ -2,7 +2,7 @@ run:
   skip-dirs:
     - vendor/*
     - x/*
-    - cmd/customcli/*
+    - cmd/blogcli/*
     - cmd/blog/*
   deadline: 10m
 linters-settings:

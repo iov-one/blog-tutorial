@@ -5,7 +5,7 @@ build:
 
 
 clean:
-	-rm customcli
+	-rm blogcli
 
 
 install:

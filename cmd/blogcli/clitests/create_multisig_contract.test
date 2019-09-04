@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+blogcli multisig -activation 4 -admin 8 |
+	blogcli with-multisig-participant -weight 2 -sig "seq:foo/bar/1" |
+	blogcli with-multisig-participant -weight 3 -sig "seq:foo/bar/2" |
+	blogcli with-multisig-participant -weight 5 -sig "seq:foo/bar/3" |
+	blogcli with-multisig-participant -weight 6 -sig "seq:foo/bar/4" |
+	blogcli view

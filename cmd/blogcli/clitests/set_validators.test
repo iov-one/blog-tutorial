@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+# set-validators can be used to create a new transaction with a single set
+# operation.
+blogcli set-validators -pubkey j4JRVstX -power 1 | blogcli view
+
+echo
+
+# set-validators can be used to modify a transaction and combine validator set
+# operations into a single transaction.
+blogcli set-validators -pubkey j4JRVstX -power 1 |
+	blogcli set-validators -pubkey j4JRVstX -power 2 |
+	blogcli set-validators -pubkey j4JRVstX -power 3 |
+	blogcli view
