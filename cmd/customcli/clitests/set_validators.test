@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+
+
+# set-validators can be used to create a new transaction with a single set
+# operation.
+customcli set-validators -pubkey j4JRVstX -power 1 | customcli view
+
+echo
+
+# set-validators can be used to modify a transaction and combine validator set
+# operations into a single transaction.
+customcli set-validators -pubkey j4JRVstX -power 1 \
+	| customcli set-validators -pubkey j4JRVstX -power 2 \
+	| customcli set-validators -pubkey j4JRVstX -power 3 \
+	| customcli view

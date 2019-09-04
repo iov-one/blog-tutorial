@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+msgs=`mktemp`
+
+# Combine all messages in a single file to build a batch transaction.
+customcli send-tokens -src 'seq:foo/src/1' -dst "seq:foo/dst/1" -amount "2 CSTM" -memo "sending 2 CSTM" >> $msgs
+customcli send-tokens -src 'seq:foo/src/2' -dst "seq:foo/dst/2" -amount "9 CSTM" -memo "sending 9 CSTM" >> $msgs
+customcli send-tokens -src 'seq:foo/src/3' -dst "seq:foo/dst/3" -amount "7 CSTM" -memo "sending 7 CSTM" >> $msgs
+
+customcli as-batch < $msgs | customcli view
+
+rm $msgs

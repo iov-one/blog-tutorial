@@ -1,0 +1,16 @@
+{
+	"Sum": {
+		"CashSendMsg": {
+			"metadata": {
+				"schema": 1
+			},
+			"source": "4AFCAC832998CFE1EB89970C7330593D8CFCC8A2",
+			"destination": "0792118D318D358B21F2A2B8DE6606AF001C60FB",
+			"amount": {
+				"whole": 4,
+				"ticker": "CSTM"
+			},
+			"memo": "customcli test"
+		}
+	}
+}
