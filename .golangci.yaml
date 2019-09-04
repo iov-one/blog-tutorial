@@ -3,7 +3,7 @@ run:
     - vendor/*
     - x/*
     - cmd/customcli/*
-    - cmd/customd/*
+    - cmd/blog/*
   deadline: 10m
 linters-settings:
   govet:
@@ -25,4 +25,3 @@ issues:
     - linters:
         - staticcheck
       text: "SA1012:"
-

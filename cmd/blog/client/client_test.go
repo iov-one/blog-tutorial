@@ -40,22 +40,22 @@ func TestMainSetup(t *testing.T) {
 
 func TestWalletQuery(t *testing.T) {
 	conn := NewLocalConnection(node)
-	customd := NewClient(conn)
+	blog := NewClient(conn)
 	client.WaitForHeight(conn, 5, fastWaiter)
 
 	// bad address returns error
-	_, err := customd.GetWallet([]byte{1, 2, 3, 4})
+	_, err := blog.GetWallet([]byte{1, 2, 3, 4})
 	assert.Equal(t, true, err != nil)
 
 	// missing account returns nothing
 	missing := GenPrivateKey().PublicKey().Address()
-	wallet, err := customd.GetWallet(missing)
+	wallet, err := blog.GetWallet(missing)
 	assert.IsErr(t, errors.ErrNotFound, err)
 	assert.Nil(t, wallet)
 
 	// genesis account returns something
 	address := faucet.PublicKey().Address()
-	wallet, err = customd.GetWallet(address)
+	wallet, err = blog.GetWallet(address)
 	assert.Nil(t, err)
 	assert.Equal(t, true, wallet != nil)
 	// make sure we get some reasonable height
@@ -73,38 +73,38 @@ func TestNonce(t *testing.T) {
 	src := faucet.PublicKey().Address()
 	rcpt := GenPrivateKey().PublicKey().Address()
 	conn := NewLocalConnection(node)
-	customd := NewClient(conn)
+	blog := NewClient(conn)
 	chainID := getChainID()
 
-	n, err := customd.NextNonce(src)
+	n, err := blog.NextNonce(src)
 	assert.Nil(t, err)
 	assert.Equal(t, int64(0), n)
 
 	// address unused should return 0
-	n, err = customd.NextNonce(src)
+	n, err = blog.NextNonce(src)
 	assert.Nil(t, err)
 	assert.Equal(t, int64(0), n)
 
 	// prepare the tx
 	amount := coin.Coin{Whole: 1000, Ticker: initBalance.Ticker}
 	tx := BuildSendTx(src, rcpt, amount, "Send 1")
-	n, err = customd.NextNonce(src)
+	n, err = blog.NextNonce(src)
 	assert.Nil(t, err)
 	SignTx(tx, faucet, chainID, n)
 
 	// now post it
-	res := customd.BroadcastTxSync(tx, time.Minute)
+	res := blog.BroadcastTxSync(tx, time.Minute)
 	assert.Nil(t, res.IsError())
 
 	// verify nonce incremented on chain
-	n1, err := customd.NextNonce(src)
+	n1, err := blog.NextNonce(src)
 	assert.Nil(t, err)
 	assert.Equal(t, n+1, n1)
 }
 
 func TestSendMoney(t *testing.T) {
 	conn := NewLocalConnection(node)
-	customd := NewClient(conn)
+	blog := NewClient(conn)
 
 	rcpt := GenPrivateKey().PublicKey().Address()
 	src := faucet.PublicKey().Address()
@@ -114,21 +114,21 @@ func TestSendMoney(t *testing.T) {
 	// build the tx
 	amount := coin.Coin{Whole: 1000, Ticker: initBalance.Ticker}
 	tx := BuildSendTx(src, rcpt, amount, "Send 1")
-	n, err := customd.NextNonce(src)
+	n, err := blog.NextNonce(src)
 	assert.Nil(t, err)
 	SignTx(tx, faucet, chainID, n)
 
 	// now post it
-	res := customd.BroadcastTxSync(tx, time.Minute)
+	res := blog.BroadcastTxSync(tx, time.Minute)
 	assert.Nil(t, res.IsError())
 
 	// verify nonce incremented on chain
-	n2, err := customd.NextNonce(src)
+	n2, err := blog.NextNonce(src)
 	assert.Nil(t, err)
 	assert.Equal(t, n+1, n2)
 
 	// verify wallet has cash
-	wallet, err := customd.GetWallet(rcpt)
+	wallet, err := blog.GetWallet(rcpt)
 	assert.Nil(t, err)
 	assert.Equal(t, true, wallet != nil)
 	// check the wallet
@@ -140,10 +140,10 @@ func TestSendMoney(t *testing.T) {
 
 func TestSubscribeHeaders(t *testing.T) {
 	conn := NewLocalConnection(node)
-	customd := NewClient(conn)
+	blog := NewClient(conn)
 
 	headers := make(chan *tmtypes.Header, 4)
-	cancel, err := customd.SubscribeHeaders(headers)
+	cancel, err := blog.SubscribeHeaders(headers)
 	assert.Nil(t, err)
 
 	// get two headers and cancel
@@ -170,19 +170,19 @@ func TestSubscribeHeaders(t *testing.T) {
 
 func TestSendMultipleTx(t *testing.T) {
 	conn := NewLocalConnection(node)
-	customd := NewClient(conn)
+	blog := NewClient(conn)
 
 	friend := GenPrivateKey()
 	rcpt := friend.PublicKey().Address()
 	src := faucet.PublicKey().Address()
 
-	chainID, err := customd.ChainID()
+	chainID, err := blog.ChainID()
 	amount := coin.Coin{Whole: 1000, Ticker: initBalance.Ticker}
 	assert.Nil(t, err)
 
 	// a prep transaction, so the recipient has something to send
 	prep := BuildSendTx(src, rcpt, amount, "Send 1")
-	n, err := customd.NextNonce(src)
+	n, err := blog.NextNonce(src)
 	assert.Nil(t, err)
 	SignTx(prep, faucet, chainID, n)
 
@@ -197,12 +197,12 @@ func TestSendMultipleTx(t *testing.T) {
 	SignTx(tx2, friend, chainID, 0)
 
 	// first, we send the one transaction so the next two will succeed
-	prepResp := customd.BroadcastTxSync(prep, time.Minute)
+	prepResp := blog.BroadcastTxSync(prep, time.Minute)
 	assert.Nil(t, prepResp.IsError())
 	prepH := prepResp.Response.Height
 
 	txResp := make(chan BroadcastTxResponse, 2)
-	headers, cancel, err := customd.Subscribe(QueryNewBlockHeader)
+	headers, cancel, err := blog.Subscribe(QueryNewBlockHeader)
 	assert.Nil(t, err)
 
 	// to avoid race conditions, wait for a new header
@@ -214,12 +214,12 @@ func TestSendMultipleTx(t *testing.T) {
 	go func() {
 		ready.Done()
 		start.Wait()
-		customd.BroadcastTxAsync(tx, txResp)
+		blog.BroadcastTxAsync(tx, txResp)
 	}()
 	go func() {
 		ready.Done()
 		start.Wait()
-		customd.BroadcastTxAsync(tx2, txResp)
+		blog.BroadcastTxAsync(tx2, txResp)
 	}()
 
 	ready.Wait()

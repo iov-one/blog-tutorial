@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/app"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/migration"
@@ -57,8 +57,8 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 		Amount:      coin.NewCoinp(5, 0, "CSTM"),
 		Memo:        "a memo",
 	}
-	sendTx := &customd.Tx{
-		Sum: &customd.Tx_CashSendMsg{
+	sendTx := &blog.Tx{
+		Sum: &blog.Tx_CashSendMsg{
 			CashSendMsg: sendMsg,
 		},
 	}
@@ -99,8 +99,8 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 		Amount:      coin.NewCoinp(5, 0, "CSTM"),
 		Memo:        "a memo",
 	}
-	sendTx := &customd.Tx{
-		Sum: &customd.Tx_CashSendMsg{
+	sendTx := &blog.Tx{
+		Sum: &blog.Tx_CashSendMsg{
 			CashSendMsg: sendMsg,
 		},
 	}

@@ -30,7 +30,7 @@ created. This command fails if the private key file already exists.
 		fl.PrintDefaults()
 	}
 	var (
-		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.customd.priv.key"),
+		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.blog.priv.key"),
 			"Path to the private key file that transaction should be signed with. You can use CUSTOMCLI_PRIV_KEY environment variable to set it.")
 		pathFl = fl.String("path", "m/44'/988'/0'", "Derivation path as described in BIP-44.")
 	)
@@ -124,7 +124,7 @@ Print out a hex-address associated with your private key.
 		fl.PrintDefaults()
 	}
 	var (
-		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.customd.priv.key"),
+		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.blog.priv.key"),
 			"Path to the private key file that transaction should be signed with. You can use CUSTOMCLI_PRIV_KEY environment variable to set it.")
 		bechPrefixFl = fl.String("bp", "custm", "Bech32 prefix.")
 	)

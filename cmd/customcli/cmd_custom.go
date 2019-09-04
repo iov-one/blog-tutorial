@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/blog-tutorial/x/custom"
 )
 
@@ -41,8 +41,8 @@ Create a transaction for creating a custom state.
 		return fmt.Errorf("given data produce an invalid invalid message: %s", err)
 	}
 
-	tx := &customd.Tx{
-		Sum: &customd.Tx_CustomCreateStateMsg{
+	tx := &blog.Tx{
+		Sum: &blog.Tx_CustomCreateStateMsg{
 			CustomCreateStateMsg: &msg,
 		},
 	}
@@ -92,8 +92,8 @@ Create a transaction for creating a timed custom state.
 		return fmt.Errorf("given data produce an invalid invalid message: %s", err)
 	}
 
-	tx := &customd.Tx{
-		Sum: &customd.Tx_CustomCreateTimedStateMsg{
+	tx := &blog.Tx{
+		Sum: &blog.Tx_CustomCreateTimedStateMsg{
 			CustomCreateTimedStateMsg: &msg,
 		},
 	}

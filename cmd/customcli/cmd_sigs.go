@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/iov-one/blog-tutorial/cmd/customd/client"
+	"github.com/iov-one/blog-tutorial/cmd/blog/client"
 	"github.com/iov-one/weave/crypto"
 	"github.com/iov-one/weave/x/sigs"
 )
@@ -33,7 +33,7 @@ content.
 	var (
 		tmAddrFl = fl.String("tm", env("CUSTOMCLI_TM_ADDR", "https://CUSTOM.NETWORK.iov.one:443"),
 			"Tendermint node address. Use proper NETWORK name. You can use CUSTOMCLI_TM_ADDR environment variable to set it.")
-		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.customd.priv.key"),
+		keyPathFl = fl.String("key", env("CUSTOMCLI_PRIV_KEY", os.Getenv("HOME")+"/.blog.priv.key"),
 			"Path to the private key file that transaction should be signed with. You can use CUSTOMCLI_PRIV_KEY environment variable to set it.")
 	)
 	fl.Parse(args)

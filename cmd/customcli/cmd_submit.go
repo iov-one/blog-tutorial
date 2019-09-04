@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/iov-one/weave"
-	"github.com/iov-one/blog-tutorial/cmd/customd/client"
+	"github.com/iov-one/blog-tutorial/cmd/blog/client"
 	"github.com/iov-one/weave/x/batch"
 )
 

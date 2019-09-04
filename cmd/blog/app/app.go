@@ -1,4 +1,4 @@
-package customd
+package blog
 
 import (
 	"context"

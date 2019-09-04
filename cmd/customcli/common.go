@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/iov-one/weave"
-	customd "github.com/iov-one/blog-tutorial/cmd/customd/app"
+	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave/app"
 	abci "github.com/tendermint/tendermint/abci/types"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -102,7 +102,7 @@ const sequenceBinarySize = 8
 // written contain the information how much space the transaction takes.
 // Size information is required to be able to stream the messages:
 // https://developers.google.com/protocol-buffers/docs/techniques#streaming
-func writeTx(w io.Writer, tx *customd.Tx) (int, error) {
+func writeTx(w io.Writer, tx *blog.Tx) (int, error) {
 	b, err := tx.Marshal()
 	if err != nil {
 		return 0, err
@@ -126,7 +126,7 @@ func writeTx(w io.Writer, tx *customd.Tx) (int, error) {
 //
 // This function can be used to read from os.Stdin when nothing is being
 // written to the stdin. In such case, io.EOF is returned.
-func readTx(r io.Reader) (*customd.Tx, int, error) {
+func readTx(r io.Reader) (*blog.Tx, int, error) {
 	// If the given reader is providing a stat information (ie os.Stdin)
 	// then check if the data is being piped. That should prevent us from
 	// waiting for a data on a reader that no one ever writes to.
@@ -151,7 +151,7 @@ func readTx(r io.Reader) (*customd.Tx, int, error) {
 		return nil, n + txHeaderSize, err
 	}
 
-	var tx customd.Tx
+	var tx blog.Tx
 	if err := tx.Unmarshal(raw); err != nil {
 		return nil, int(msgSize + txHeaderSize), err
 	}
