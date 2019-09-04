@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+customcli from-sequence 0000000000000001
+customcli from-sequence 0000000000000033
+customcli from-sequence 0000000000000065
+customcli from-sequence 0000000000000097
+customcli from-sequence 00000000000000c9
+customcli from-sequence 00000000000000fb
+customcli from-sequence 000000000000012d
+customcli from-sequence 000000000000015f
+customcli from-sequence 0000000000000191
+customcli from-sequence 00000000000001c3
+customcli from-sequence 00000000000001f5
+customcli from-sequence 0000000000000227
+customcli from-sequence 0000000000000259
+customcli from-sequence 000000000000028b
+customcli from-sequence 00000000000002bd
+customcli from-sequence 00000000000002ef
+customcli from-sequence 0000000000000321
+
+# Multiple sequences input is allowed as well.
+customcli from-sequence 0000000000000353 0000000000000385 00000000000003b7

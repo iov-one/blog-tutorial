@@ -1,0 +1,24 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Binaries for programs and plugins
+*.out
+
+vendor
+coverage
+.vagrant
+*.log
+*.db
+
+# IDES
+.idea
+.vscode
+
+# Builder
+.gitian-builder-cache/
+ 
+# App
+/customd
