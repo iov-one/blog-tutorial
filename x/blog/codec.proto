@@ -43,6 +43,13 @@ message Comment {
   string content = 5;
 }
 
+message Like {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
+  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+}
+
 // ---------- MESSAGES -----------
 
 message CreateUser {
@@ -72,4 +79,9 @@ message CreateComment {
   weave.Metadata metadata = 1;
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
   string content = 3;
+}
+
+message CreateLike {
+  weave.Metadata metadata = 1;
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
 }
