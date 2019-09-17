@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package blog;
+
+import "codec.proto";
+import "gogoproto/gogo.proto";
+
+// ---------- STATE -----------
+
+message User {
+  weave.Metadata metadata = 1;
+  // ID is users identifier
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // Username is user's alias
+  string username = 3;
+  // Bio is user information
+  string bio = 4;
+}
+
+message Blog {
+  weave.Metadata metadata = 1;
+  // ID is blog's identifier
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // Owner is the owner address if the blog
+  bytes owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // Title is title of the blog
+  string title = 4;
+  // Description is description section of the blog
+  string description = 5;
+  // CreatedAt defines creation time of the blog
+  int64 created_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
+message Article {
+  weave.Metadata metadata = 1;
+  // ID is article's identifier
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // BlogID identifies blog that article is posted to
+  bytes blog_id = 3 [(gogoproto.customname) = "BlogID"];
+  // Title is title of the article
+  string title = 4;
+  // Content is content of the blog
+  string content = 5;
+  // CommentCount is total number of comments posted under article
+  int64 comment_count = 6 [(gogoproto.customname) = "CommentCount"];
+  // LikeCount is total number of likes posted under article
+  int64 like_count = 7 [(gogoproto.customname) = "LikeCount"];
+  // CreatedAt defines creation time of the article
+  int64 created_at = 8 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+  // DeleteAt defines deletion time of the article.
+  // Could be nil if there is not a time of deletion
+  int64 delete_at = 9 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
+message Comment {
+  weave.Metadata metadata = 1;
+  // ID is comment's identifier
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // ArticleID identifies article that comment is posted to
+  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
+  // Owner is the owner address of the comment
+  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // Content is content of the comment
+  string content = 5;
+}
+
+message Like {
+  weave.Metadata metadata = 1;
+  // ID is like's identifier
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // ArticleID identifies article that like is posted to
+  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
+  // Owner is the owner address of the like
+  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+}
+
+// ---------- MESSAGES -----------
+
+message CreateUser {
+  weave.Metadata metadata = 1;
+  // Username is user's alias
+  string username = 2;
+  // Bio is user information
+  string bio = 3;
+}
+
+message CreateBlog {
+  weave.Metadata metadata = 1;
+  // Title is title of the blog
+  string title = 2;
+  // Description is description section of the blog
+  string description = 3;
+}
+
+message CreateArticle {
+  weave.Metadata metadata = 1;
+  // BlogID identifies blog that article is posted to
+  bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
+  // Title is title of the article
+  string title = 3;
+  // Content is content of the blog
+  string content = 4;
+  // DeleteAt defines deletion time of the article.
+  // Could be nil if there is not a time of deletion, or in future
+  int64 delete_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
+// DeleteArticle message deletes the the article instantly
+message DeleteArticle {
+  weave.Metadata metadata = 1;
+  // ArticleID is the identifier of the article that is desired to be deleted
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+}
+
+message CreateComment {
+  weave.Metadata metadata = 1;
+  // ArticleID is the identifier of the article that is desired to be commented
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+  // Content is the comment's content
+  string content = 3;
+}
+
+message CreateLike {
+  weave.Metadata metadata = 1;
+  // ArticleID is the identifier of the article that is desired to be liked
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+}
