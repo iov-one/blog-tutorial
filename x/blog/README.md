@@ -68,6 +68,11 @@ This module defines the required components for blog.
   - Content
   - DeleteAt
 
+- #### Delete Article
+
+  - ArticleID
+  - DeleteAt
+
 - #### Create Comment
   
   - ArticleID
