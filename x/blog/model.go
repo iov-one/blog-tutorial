@@ -95,6 +95,70 @@ func (m *Blog) Validate() error {
 	return errs
 }
 
+var _ morm.Model = (*Blog)(nil)
+
+// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+func (m *Article) SetID(id []byte) error {
+	m.ID = id
+	return nil
+}
+
+// Copy produces a new copy to fulfill the Model interface
+// TODO remove after weave 0.22.0 is released
+func (m *Article) Copy() orm.CloneableData {
+	return &Article{
+		Metadata:     m.Metadata.Copy(),
+		ID:           copyBytes(m.ID),
+		BlogID:       copyBytes(m.BlogID),
+		Title:        m.Title,
+		Content:      m.Content,
+		CommentCount: m.CommentCount,
+		LikeCount:    m.LikeCount,
+		CreatedAt:    m.CreatedAt,
+		DeleteAt:     m.DeleteAt,
+	}
+}
+
+var validArticleTitle = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,32}$`).MatchString
+var validArticleContent = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,2000}$`).MatchString
+
+// Validate validates article's fields
+func (m *Article) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ID", isGenID(m.ID, false))
+	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+
+	if !validBlogTitle(m.Title) {
+		errs = errors.AppendField(errs, "Title", errors.ErrModel)
+	}
+	if !validBlogDescription(m.Content) {
+		errs = errors.AppendField(errs, "Content", errors.ErrModel)
+	}
+
+	if m.CommentCount < 0 {
+		errs = errors.AppendField(errs, "CommentCount", errors.ErrModel)
+	}
+	if m.LikeCount < 0 {
+		errs = errors.AppendField(errs, "LikeCount", errors.ErrModel)
+	}
+
+	if err := m.CreatedAt.Validate(); err != nil {
+		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+	} else if m.CreatedAt == 0 {
+		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
+	}
+
+	if err := m.DeleteAt.Validate(); err != nil {
+		errs = errors.AppendField(errs, "DeleteAt", m.CreatedAt.Validate())
+	} else if m.DeleteAt == 0 {
+		errs = errors.AppendField(errs, "DeleteAt", errors.ErrEmpty)
+	}
+
+	return errs
+}
+
 func copyBytes(in []byte) []byte {
 	if in == nil {
 		return nil
