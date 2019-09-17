@@ -29,7 +29,7 @@ func (m *User) Copy() orm.CloneableData {
 }
 
 var validUsername = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,16}$`).MatchString
-var validBio = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,200}$`).MatchString
+var validBio = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,200}$`).MatchString
 
 // Validate validates user's fields
 func (m *User) Validate() error {
@@ -51,7 +51,7 @@ func (m *User) Validate() error {
 	} else if m.RegisteredAt == 0 {
 		errs = errors.AppendField(errs, "RegisteredAt", errors.ErrEmpty)
 	}
-	
+
 	return errs
 }
 
@@ -126,8 +126,8 @@ func (m *Article) Copy() orm.CloneableData {
 	}
 }
 
-var validArticleTitle = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,32}$`).MatchString
-var validArticleContent = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,2000}$`).MatchString
+var validArticleTitle = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,32}$`).MatchString
+var validArticleContent = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,1000}$`).MatchString
 
 // Validate validates article's fields
 func (m *Article) Validate() error {
@@ -187,7 +187,7 @@ func (m *Comment) Copy() orm.CloneableData {
 	}
 }
 
-var validCommentContent = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,1000}$`).MatchString
+var validCommentContent = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,1000}$`).MatchString
 
 // Validate validates comment's fields
 func (m *Comment) Validate() error {
