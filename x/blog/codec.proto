@@ -14,10 +14,25 @@ message User {
   string bio = 4;
 }
 
+message Blog {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  bytes owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  string title = 4;
+  string description = 5;
+  int64 created_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
 // ---------- MESSAGES -----------
 
 message CreateUser {
   weave.Metadata metadata = 1;
   string username = 2;
   string bio = 3;
+}
+
+message CreateBlog {
+  weave.Metadata metadata = 1;
+  string title = 2;
+  string description = 3;
 }
