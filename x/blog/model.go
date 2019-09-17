@@ -20,10 +20,11 @@ func (m *User) SetID(id []byte) error {
 // Copy produces a new copy to fulfill the Model interface
 func (m *User) Copy() orm.CloneableData {
 	return &User{
-		Metadata: m.Metadata.Copy(),
-		ID:       copyBytes(m.ID),
-		Username: m.Username,
-		Bio:      m.Bio,
+		Metadata:     m.Metadata.Copy(),
+		ID:           copyBytes(m.ID),
+		Username:     m.Username,
+		Bio:          m.Bio,
+		RegisteredAt: m.RegisteredAt,
 	}
 }
 
@@ -45,6 +46,12 @@ func (m *User) Validate() error {
 		errs = errors.AppendField(errs, "Bio", errors.ErrModel)
 	}
 
+	if err := m.RegisteredAt.Validate(); err != nil {
+		errs = errors.AppendField(errs, "RegisteredAt", m.RegisteredAt.Validate())
+	} else if m.RegisteredAt == 0 {
+		errs = errors.AppendField(errs, "RegisteredAt", errors.ErrEmpty)
+	}
+	
 	return errs
 }
 
