@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package blog;
+
+import "codec.proto";
+import "gogoproto/gogo.proto";
+
+// ---------- STATE -----------
+
+message User {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  string username = 3;
+  string bio = 4;
+}
+
+// ---------- MESSAGES -----------
+
+message CreateUser {
+  weave.Metadata metadata = 1;
+  string username = 2;
+  string bio = 3;
+}
