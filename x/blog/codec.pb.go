@@ -176,6 +176,114 @@ func (m *Blog) GetCreatedAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
+type Article struct {
+	Metadata     *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	ID           []byte                            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	BlogID       []byte                            `protobuf:"bytes,3,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
+	Title        string                            `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Content      string                            `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	CommentCount int64                             `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`
+	LikeCount    int64                             `protobuf:"varint,7,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
+	CreatedAt    github_com_iov_one_weave.UnixTime `protobuf:"varint,8,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
+	DeleteAt     github_com_iov_one_weave.UnixTime `protobuf:"varint,9,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+}
+
+func (m *Article) Reset()         { *m = Article{} }
+func (m *Article) String() string { return proto.CompactTextString(m) }
+func (*Article) ProtoMessage()    {}
+func (*Article) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{2}
+}
+func (m *Article) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Article) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Article.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Article) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Article.Merge(m, src)
+}
+func (m *Article) XXX_Size() int {
+	return m.Size()
+}
+func (m *Article) XXX_DiscardUnknown() {
+	xxx_messageInfo_Article.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Article proto.InternalMessageInfo
+
+func (m *Article) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *Article) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
+}
+
+func (m *Article) GetBlogID() []byte {
+	if m != nil {
+		return m.BlogID
+	}
+	return nil
+}
+
+func (m *Article) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *Article) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+func (m *Article) GetCommentCount() int64 {
+	if m != nil {
+		return m.CommentCount
+	}
+	return 0
+}
+
+func (m *Article) GetLikeCount() int64 {
+	if m != nil {
+		return m.LikeCount
+	}
+	return 0
+}
+
+func (m *Article) GetCreatedAt() github_com_iov_one_weave.UnixTime {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+func (m *Article) GetDeleteAt() github_com_iov_one_weave.UnixTime {
+	if m != nil {
+		return m.DeleteAt
+	}
+	return 0
+}
+
 type CreateUser struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Username string          `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
@@ -186,7 +294,7 @@ func (m *CreateUser) Reset()         { *m = CreateUser{} }
 func (m *CreateUser) String() string { return proto.CompactTextString(m) }
 func (*CreateUser) ProtoMessage()    {}
 func (*CreateUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{2}
+	return fileDescriptor_87ea59410c2fea68, []int{3}
 }
 func (m *CreateUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -246,7 +354,7 @@ func (m *CreateBlog) Reset()         { *m = CreateBlog{} }
 func (m *CreateBlog) String() string { return proto.CompactTextString(m) }
 func (*CreateBlog) ProtoMessage()    {}
 func (*CreateBlog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{3}
+	return fileDescriptor_87ea59410c2fea68, []int{4}
 }
 func (m *CreateBlog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -296,40 +404,151 @@ func (m *CreateBlog) GetDescription() string {
 	return ""
 }
 
+type CreateArticle struct {
+	Metadata     *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	BlogID       []byte                            `protobuf:"bytes,2,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
+	Title        string                            `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Content      string                            `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	CommentCount int64                             `protobuf:"varint,5,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`
+	LikeCount    int64                             `protobuf:"varint,6,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
+	CreatedAt    github_com_iov_one_weave.UnixTime `protobuf:"varint,7,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
+	DeleteAt     github_com_iov_one_weave.UnixTime `protobuf:"varint,8,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+}
+
+func (m *CreateArticle) Reset()         { *m = CreateArticle{} }
+func (m *CreateArticle) String() string { return proto.CompactTextString(m) }
+func (*CreateArticle) ProtoMessage()    {}
+func (*CreateArticle) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{5}
+}
+func (m *CreateArticle) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateArticle.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateArticle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateArticle.Merge(m, src)
+}
+func (m *CreateArticle) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateArticle) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateArticle.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateArticle proto.InternalMessageInfo
+
+func (m *CreateArticle) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *CreateArticle) GetBlogID() []byte {
+	if m != nil {
+		return m.BlogID
+	}
+	return nil
+}
+
+func (m *CreateArticle) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *CreateArticle) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+func (m *CreateArticle) GetCommentCount() int64 {
+	if m != nil {
+		return m.CommentCount
+	}
+	return 0
+}
+
+func (m *CreateArticle) GetLikeCount() int64 {
+	if m != nil {
+		return m.LikeCount
+	}
+	return 0
+}
+
+func (m *CreateArticle) GetCreatedAt() github_com_iov_one_weave.UnixTime {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+func (m *CreateArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
+	if m != nil {
+		return m.DeleteAt
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*User)(nil), "blog.User")
 	proto.RegisterType((*Blog)(nil), "blog.Blog")
+	proto.RegisterType((*Article)(nil), "blog.Article")
 	proto.RegisterType((*CreateUser)(nil), "blog.CreateUser")
 	proto.RegisterType((*CreateBlog)(nil), "blog.CreateBlog")
+	proto.RegisterType((*CreateArticle)(nil), "blog.CreateArticle")
 }
 
 func init() { proto.RegisterFile("x/blog/codec.proto", fileDescriptor_87ea59410c2fea68) }
 
 var fileDescriptor_87ea59410c2fea68 = []byte{
-	// 360 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0xcd, 0x6a, 0xea, 0x40,
-	0x14, 0xc7, 0x9d, 0x24, 0x8a, 0x1e, 0x85, 0x7b, 0x19, 0xe4, 0x12, 0x5c, 0xc4, 0x5c, 0x69, 0x21,
-	0x50, 0x9a, 0x40, 0xbb, 0xeb, 0xce, 0xd4, 0x4d, 0x17, 0xdd, 0x84, 0xba, 0x2e, 0x49, 0xe6, 0x90,
-	0x0e, 0x98, 0x8c, 0x4d, 0xc6, 0x8f, 0x3e, 0x40, 0xf7, 0x7d, 0xac, 0x2e, 0x5d, 0x76, 0x25, 0x25,
-	0xbe, 0x85, 0xab, 0x62, 0x62, 0xad, 0xd0, 0x0f, 0x10, 0xba, 0x3b, 0xe7, 0x37, 0x73, 0xe6, 0x3f,
-	0xfc, 0x66, 0x80, 0xce, 0x9d, 0x60, 0x24, 0x22, 0x27, 0x14, 0x0c, 0x43, 0x7b, 0x9c, 0x0a, 0x29,
-	0xa8, 0xb6, 0x21, 0x9d, 0xe6, 0x1e, 0xea, 0xb4, 0x23, 0x11, 0x89, 0xa2, 0x74, 0x36, 0x55, 0x49,
-	0x7b, 0x0f, 0xa0, 0x0d, 0x33, 0x4c, 0xe9, 0x09, 0xd4, 0x63, 0x94, 0x3e, 0xf3, 0xa5, 0xaf, 0x13,
-	0x93, 0x58, 0xcd, 0xb3, 0x3f, 0xf6, 0x0c, 0xfd, 0x29, 0xda, 0xd7, 0x5b, 0xec, 0xed, 0x36, 0xd0,
-	0x7f, 0xa0, 0x70, 0xa6, 0x2b, 0x26, 0xb1, 0x5a, 0x6e, 0x2d, 0x5f, 0x76, 0x95, 0xab, 0x81, 0xa7,
-	0x70, 0x46, 0x3b, 0x50, 0x9f, 0x64, 0x98, 0x26, 0x7e, 0x8c, 0xba, 0x6a, 0x12, 0xab, 0xe1, 0xed,
-	0x7a, 0xfa, 0x17, 0xd4, 0x80, 0x0b, 0x5d, 0x2b, 0xf0, 0xa6, 0xec, 0x3d, 0x2a, 0xa0, 0xb9, 0x23,
-	0x11, 0xfd, 0x4e, 0xf6, 0x05, 0x54, 0xc5, 0x2c, 0xc1, 0xb4, 0x08, 0x6e, 0xb9, 0x47, 0xeb, 0x65,
-	0xd7, 0x8c, 0xb8, 0xbc, 0x9b, 0x04, 0x76, 0x28, 0x62, 0x87, 0x8b, 0xe9, 0xa9, 0x48, 0xd0, 0x29,
-	0xcf, 0xed, 0x33, 0x96, 0x62, 0x96, 0x79, 0xe5, 0x08, 0x6d, 0x43, 0x55, 0x72, 0x39, 0xc2, 0xed,
-	0xed, 0xca, 0x86, 0x9a, 0xd0, 0x64, 0x98, 0x85, 0x29, 0x1f, 0x4b, 0x2e, 0x12, 0xbd, 0x5a, 0xac,
-	0xed, 0x23, 0x3a, 0x00, 0x08, 0x53, 0xf4, 0x25, 0xb2, 0x5b, 0x5f, 0xea, 0x35, 0x93, 0x58, 0xaa,
-	0x7b, 0xbc, 0x5e, 0x76, 0xff, 0x7f, 0x1b, 0x3c, 0x4c, 0xf8, 0xfc, 0x86, 0xc7, 0xe8, 0x35, 0xb6,
-	0x83, 0x7d, 0xd9, 0x8b, 0x00, 0x2e, 0x8b, 0xe6, 0xf0, 0x87, 0xd8, 0x17, 0xae, 0x7c, 0x2d, 0x5c,
-	0xfd, 0x10, 0x7e, 0xff, 0x1e, 0x74, 0xb8, 0xf5, 0x9d, 0x21, 0xe5, 0x07, 0x43, 0xea, 0x27, 0x43,
-	0xae, 0xfe, 0x9c, 0x1b, 0x64, 0x91, 0x1b, 0xe4, 0x35, 0x37, 0xc8, 0xd3, 0xca, 0xa8, 0x2c, 0x56,
-	0x46, 0xe5, 0x65, 0x65, 0x54, 0x82, 0x5a, 0xf1, 0xff, 0xce, 0xdf, 0x02, 0x00, 0x00, 0xff, 0xff,
-	0x8a, 0x28, 0x89, 0x98, 0xbe, 0x02, 0x00, 0x00,
+	// 503 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xbd, 0x8e, 0xd3, 0x40,
+	0x10, 0xc7, 0xe3, 0x75, 0xe2, 0xc4, 0x93, 0x9c, 0x40, 0xab, 0x13, 0xb2, 0x22, 0xe1, 0x18, 0x1f,
+	0x48, 0x91, 0x10, 0xb1, 0x04, 0x1d, 0x5d, 0x7c, 0x69, 0x52, 0xd0, 0x58, 0x5c, 0x1d, 0x39, 0xde,
+	0x91, 0x59, 0x61, 0x7b, 0x0f, 0x7b, 0x73, 0x77, 0x3c, 0x00, 0x3d, 0x8f, 0x45, 0x79, 0x25, 0x55,
+	0x40, 0xce, 0x13, 0xd0, 0x5e, 0x85, 0xfc, 0x71, 0x21, 0x08, 0x72, 0x51, 0xa2, 0x74, 0x33, 0xff,
+	0xf9, 0xf2, 0xcc, 0xfe, 0x64, 0xa0, 0x37, 0xce, 0x3c, 0x12, 0xa1, 0x13, 0x08, 0x86, 0xc1, 0xe8,
+	0x32, 0x15, 0x52, 0xd0, 0x66, 0xa1, 0xf4, 0xbb, 0x1b, 0x52, 0xff, 0x34, 0x14, 0xa1, 0x28, 0x4d,
+	0xa7, 0xb0, 0x2a, 0xd5, 0xfe, 0x0c, 0xcd, 0x8b, 0x0c, 0x53, 0xfa, 0x12, 0x3a, 0x31, 0x4a, 0x9f,
+	0xf9, 0xd2, 0x37, 0x14, 0x4b, 0x19, 0x76, 0x5f, 0x3f, 0x1a, 0x5d, 0xa3, 0x7f, 0x85, 0xa3, 0x77,
+	0xb5, 0xec, 0xad, 0x13, 0xe8, 0x13, 0x20, 0x9c, 0x19, 0xc4, 0x52, 0x86, 0x3d, 0x57, 0xcb, 0x97,
+	0x03, 0x32, 0x9d, 0x78, 0x84, 0x33, 0xda, 0x87, 0xce, 0x22, 0xc3, 0x34, 0xf1, 0x63, 0x34, 0x54,
+	0x4b, 0x19, 0xea, 0xde, 0xda, 0xa7, 0x8f, 0x41, 0x9d, 0x73, 0x61, 0x34, 0x4b, 0xb9, 0x30, 0xed,
+	0x2f, 0x04, 0x9a, 0x6e, 0x24, 0xc2, 0xe3, 0xcc, 0x7e, 0x0b, 0x2d, 0x71, 0x9d, 0x60, 0x5a, 0x0e,
+	0xee, 0xb9, 0xcf, 0xef, 0x96, 0x03, 0x2b, 0xe4, 0xf2, 0xc3, 0x62, 0x3e, 0x0a, 0x44, 0xec, 0x70,
+	0x71, 0xf5, 0x4a, 0x24, 0xe8, 0x54, 0x7d, 0xc7, 0x8c, 0xa5, 0x98, 0x65, 0x5e, 0x55, 0x42, 0x4f,
+	0xa1, 0x25, 0xb9, 0x8c, 0xb0, 0xfe, 0xba, 0xca, 0xa1, 0x16, 0x74, 0x19, 0x66, 0x41, 0xca, 0x2f,
+	0x25, 0x17, 0x89, 0xd1, 0x2a, 0x63, 0x9b, 0x12, 0x9d, 0x00, 0x04, 0x29, 0xfa, 0x12, 0xd9, 0xcc,
+	0x97, 0x86, 0x66, 0x29, 0x43, 0xd5, 0x7d, 0x71, 0xb7, 0x1c, 0x3c, 0xdb, 0x3a, 0xf8, 0x22, 0xe1,
+	0x37, 0xef, 0x79, 0x8c, 0x9e, 0x5e, 0x17, 0x8e, 0xa5, 0xfd, 0x8b, 0x40, 0x7b, 0x9c, 0x4a, 0x1e,
+	0x44, 0x78, 0x9c, 0x53, 0x9c, 0x41, 0xbb, 0x78, 0xfe, 0x19, 0x67, 0xf5, 0x31, 0x20, 0x5f, 0x0e,
+	0xb4, 0xe2, 0xd4, 0xd3, 0x89, 0xa7, 0x15, 0xa1, 0x29, 0xdb, 0xb2, 0xb3, 0x01, 0xed, 0x40, 0x24,
+	0x12, 0x13, 0x59, 0xef, 0x7b, 0xef, 0xd2, 0x33, 0x38, 0x09, 0x44, 0x1c, 0x63, 0x22, 0x67, 0x81,
+	0x58, 0x24, 0xf5, 0xba, 0x5e, 0xaf, 0x16, 0xcf, 0x0b, 0x8d, 0x3e, 0x05, 0x88, 0xf8, 0x47, 0xac,
+	0x33, 0xda, 0x65, 0x86, 0x5e, 0x28, 0x55, 0xf8, 0xef, 0x7b, 0x75, 0x0e, 0xbb, 0x17, 0x75, 0x41,
+	0x67, 0x18, 0xa1, 0xc4, 0xa2, 0x89, 0xbe, 0x4f, 0x93, 0x4e, 0x55, 0x37, 0x96, 0x76, 0x08, 0x70,
+	0x5e, 0x36, 0xdc, 0x1f, 0xfe, 0x4d, 0xc8, 0xc9, 0xff, 0x21, 0x57, 0xff, 0x40, 0xfe, 0xe9, 0x7e,
+	0xd0, 0xfe, 0xa4, 0xaf, 0x5f, 0x88, 0x3c, 0x40, 0xa5, 0xfa, 0x0f, 0x95, 0xf6, 0x0f, 0x02, 0x27,
+	0xd5, 0xcc, 0x83, 0xa8, 0xda, 0xa0, 0x87, 0xec, 0xa6, 0x47, 0xdd, 0x42, 0x4f, 0x73, 0x07, 0x3d,
+	0xad, 0x9d, 0xf4, 0x68, 0x0f, 0xd3, 0xd3, 0x3e, 0x06, 0x3d, 0x9d, 0x83, 0xe8, 0x71, 0x8d, 0x6f,
+	0xb9, 0xa9, 0xdc, 0xe6, 0xa6, 0xf2, 0x33, 0x37, 0x95, 0xaf, 0x2b, 0xb3, 0x71, 0xbb, 0x32, 0x1b,
+	0xdf, 0x57, 0x66, 0x63, 0xae, 0x95, 0x7f, 0xd5, 0x37, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xb0,
+	0x34, 0x6a, 0x73, 0x94, 0x05, 0x00, 0x00,
 }
 
 func (m *User) Marshal() (dAtA []byte, err error) {
@@ -435,6 +654,78 @@ func (m *Blog) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *Article) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Article) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n3, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n3
+	}
+	if len(m.ID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if len(m.BlogID) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.BlogID)))
+		i += copy(dAtA[i:], m.BlogID)
+	}
+	if len(m.Title) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
+	}
+	if len(m.Content) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Content)))
+		i += copy(dAtA[i:], m.Content)
+	}
+	if m.CommentCount != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.CommentCount))
+	}
+	if m.LikeCount != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.LikeCount))
+	}
+	if m.CreatedAt != 0 {
+		dAtA[i] = 0x40
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.CreatedAt))
+	}
+	if m.DeleteAt != 0 {
+		dAtA[i] = 0x48
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.DeleteAt))
+	}
+	return i, nil
+}
+
 func (m *CreateUser) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -454,11 +745,11 @@ func (m *CreateUser) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n3, err := m.Metadata.MarshalTo(dAtA[i:])
+		n4, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n3
+		i += n4
 	}
 	if len(m.Username) > 0 {
 		dAtA[i] = 0x12
@@ -494,11 +785,11 @@ func (m *CreateBlog) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n4, err := m.Metadata.MarshalTo(dAtA[i:])
+		n5, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n4
+		i += n5
 	}
 	if len(m.Title) > 0 {
 		dAtA[i] = 0x12
@@ -511,6 +802,72 @@ func (m *CreateBlog) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(len(m.Description)))
 		i += copy(dAtA[i:], m.Description)
+	}
+	return i, nil
+}
+
+func (m *CreateArticle) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n6, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n6
+	}
+	if len(m.BlogID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.BlogID)))
+		i += copy(dAtA[i:], m.BlogID)
+	}
+	if len(m.Title) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
+	}
+	if len(m.Content) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Content)))
+		i += copy(dAtA[i:], m.Content)
+	}
+	if m.CommentCount != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.CommentCount))
+	}
+	if m.LikeCount != 0 {
+		dAtA[i] = 0x30
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.LikeCount))
+	}
+	if m.CreatedAt != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.CreatedAt))
+	}
+	if m.DeleteAt != 0 {
+		dAtA[i] = 0x40
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.DeleteAt))
 	}
 	return i, nil
 }
@@ -581,6 +938,47 @@ func (m *Blog) Size() (n int) {
 	return n
 }
 
+func (m *Article) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.BlogID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	if m.CommentCount != 0 {
+		n += 1 + sovCodec(uint64(m.CommentCount))
+	}
+	if m.LikeCount != 0 {
+		n += 1 + sovCodec(uint64(m.LikeCount))
+	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovCodec(uint64(m.CreatedAt))
+	}
+	if m.DeleteAt != 0 {
+		n += 1 + sovCodec(uint64(m.DeleteAt))
+	}
+	return n
+}
+
 func (m *CreateUser) Size() (n int) {
 	if m == nil {
 		return 0
@@ -619,6 +1017,43 @@ func (m *CreateBlog) Size() (n int) {
 	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+
+func (m *CreateArticle) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.BlogID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	if m.CommentCount != 0 {
+		n += 1 + sovCodec(uint64(m.CommentCount))
+	}
+	if m.LikeCount != 0 {
+		n += 1 + sovCodec(uint64(m.LikeCount))
+	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovCodec(uint64(m.CreatedAt))
+	}
+	if m.DeleteAt != 0 {
+		n += 1 + sovCodec(uint64(m.DeleteAt))
 	}
 	return n
 }
@@ -1063,6 +1498,303 @@ func (m *Blog) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *Article) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Article: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Article: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = append(m.ID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ID == nil {
+				m.ID = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BlogID = append(m.BlogID[:0], dAtA[iNdEx:postIndex]...)
+			if m.BlogID == nil {
+				m.BlogID = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommentCount", wireType)
+			}
+			m.CommentCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CommentCount |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LikeCount", wireType)
+			}
+			m.LikeCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LikeCount |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeleteAt", wireType)
+			}
+			m.DeleteAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DeleteAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *CreateUser) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1345,6 +2077,269 @@ func (m *CreateBlog) Unmarshal(dAtA []byte) error {
 			}
 			m.Description = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateArticle) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateArticle: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateArticle: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BlogID = append(m.BlogID[:0], dAtA[iNdEx:postIndex]...)
+			if m.BlogID == nil {
+				m.BlogID = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommentCount", wireType)
+			}
+			m.CommentCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CommentCount |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LikeCount", wireType)
+			}
+			m.LikeCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LikeCount |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeleteAt", wireType)
+			}
+			m.DeleteAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DeleteAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCodec(dAtA[iNdEx:])

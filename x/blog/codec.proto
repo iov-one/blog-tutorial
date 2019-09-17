@@ -23,6 +23,18 @@ message Blog {
   int64 created_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
+message Article {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  bytes blog_id = 3 [(gogoproto.customname) = "BlogID"];
+  string title = 4;
+  string content = 5;
+  int64 comment_count = 6;
+  int64 like_count = 7;
+  int64 created_at = 8 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+  int64 delete_at = 9 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
 // ---------- MESSAGES -----------
 
 message CreateUser {
@@ -35,4 +47,15 @@ message CreateBlog {
   weave.Metadata metadata = 1;
   string title = 2;
   string description = 3;
+}
+
+message CreateArticle {
+  weave.Metadata metadata = 1;
+  bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
+  string title = 3;
+  string content = 4;
+  int64 comment_count = 5;
+  int64 like_count = 6;
+  int64 created_at = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+  int64 delete_at = 8 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
