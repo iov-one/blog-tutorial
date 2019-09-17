@@ -75,6 +75,12 @@ message CreateArticle {
   int64 delete_at = 8 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
+message DeleteArticle {
+  weave.Metadata metadata = 1;
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+  int64 delete_at = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
 message CreateComment {
   weave.Metadata metadata = 1;
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
