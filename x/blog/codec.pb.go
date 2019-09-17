@@ -26,9 +26,12 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 type User struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ID       []byte          `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Username string          `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
-	Bio      string          `protobuf:"bytes,4,opt,name=bio,proto3" json:"bio,omitempty"`
+	// ID is users identifier
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// Username is user's alias
+	Username string `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	// Bio is user information
+	Bio string `protobuf:"bytes,4,opt,name=bio,proto3" json:"bio,omitempty"`
 }
 
 func (m *User) Reset()         { *m = User{} }
@@ -93,12 +96,17 @@ func (m *User) GetBio() string {
 }
 
 type Blog struct {
-	Metadata    *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ID          []byte                            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Owner       github_com_iov_one_weave.Address  `protobuf:"bytes,3,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
-	Title       string                            `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
-	Description string                            `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	CreatedAt   github_com_iov_one_weave.UnixTime `protobuf:"varint,6,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ID is blog's identifier
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// Owner is the owner address if the blog
+	Owner github_com_iov_one_weave.Address `protobuf:"bytes,3,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
+	// Title is title of the blog
+	Title string `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	// Description is description section of the blog
+	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	// CreatedAt defines creation time of the blog
+	CreatedAt github_com_iov_one_weave.UnixTime `protobuf:"varint,6,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
 }
 
 func (m *Blog) Reset()         { *m = Blog{} }
@@ -177,15 +185,24 @@ func (m *Blog) GetCreatedAt() github_com_iov_one_weave.UnixTime {
 }
 
 type Article struct {
-	Metadata     *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ID           []byte                            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	BlogID       []byte                            `protobuf:"bytes,3,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
-	Title        string                            `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
-	Content      string                            `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
-	CommentCount int64                             `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`
-	LikeCount    int64                             `protobuf:"varint,7,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
-	CreatedAt    github_com_iov_one_weave.UnixTime `protobuf:"varint,8,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
-	DeleteAt     github_com_iov_one_weave.UnixTime `protobuf:"varint,9,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ID is article's identifier
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// BlogID identifies blog that article is posted to
+	BlogID []byte `protobuf:"bytes,3,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
+	// Title is title of the article
+	Title string `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	// Content is content of the blog
+	Content string `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	// CommentCount is total number of comments posted under article
+	CommentCount int64 `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`
+	// LikeCount is total number of likes posted under article
+	LikeCount int64 `protobuf:"varint,7,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
+	// CreatedAt defines creation time of the article
+	CreatedAt github_com_iov_one_weave.UnixTime `protobuf:"varint,8,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
+	// DeleteAt defines deletion time of the article.
+	// Could be nil if there is not a time of deletion
+	DeleteAt github_com_iov_one_weave.UnixTime `protobuf:"varint,9,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
 }
 
 func (m *Article) Reset()         { *m = Article{} }
@@ -285,11 +302,15 @@ func (m *Article) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 }
 
 type Comment struct {
-	Metadata  *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ID        []byte                           `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	ArticleID []byte                           `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
-	Owner     github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
-	Content   string                           `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ID is comment's identifier
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// ArticleID identifies article that comment is posted to
+	ArticleID []byte `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	// Owner is the owner address of the comment
+	Owner github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
+	// Content is content of the comment
+	Content string `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
 }
 
 func (m *Comment) Reset()         { *m = Comment{} }
@@ -361,10 +382,13 @@ func (m *Comment) GetContent() string {
 }
 
 type Like struct {
-	Metadata  *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ID        []byte                           `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	ArticleID []byte                           `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
-	Owner     github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ID is like's identifier
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// ArticleID identifies article that like is posted to
+	ArticleID []byte `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	// Owner is the owner address of the like
+	Owner github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
 }
 
 func (m *Like) Reset()         { *m = Like{} }
@@ -430,8 +454,10 @@ func (m *Like) GetOwner() github_com_iov_one_weave.Address {
 
 type CreateUser struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Username string          `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-	Bio      string          `protobuf:"bytes,3,opt,name=bio,proto3" json:"bio,omitempty"`
+	// Username is user's alias
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	// Bio is user information
+	Bio string `protobuf:"bytes,3,opt,name=bio,proto3" json:"bio,omitempty"`
 }
 
 func (m *CreateUser) Reset()         { *m = CreateUser{} }
@@ -489,9 +515,11 @@ func (m *CreateUser) GetBio() string {
 }
 
 type CreateBlog struct {
-	Metadata    *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Title       string          `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Description string          `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// Title is title of the blog
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	// Description is description section of the blog
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 func (m *CreateBlog) Reset()         { *m = CreateBlog{} }
@@ -549,14 +577,16 @@ func (m *CreateBlog) GetDescription() string {
 }
 
 type CreateArticle struct {
-	Metadata     *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	BlogID       []byte                            `protobuf:"bytes,2,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
-	Title        string                            `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
-	Content      string                            `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
-	CommentCount int64                             `protobuf:"varint,5,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`
-	LikeCount    int64                             `protobuf:"varint,6,opt,name=like_count,json=likeCount,proto3" json:"like_count,omitempty"`
-	CreatedAt    github_com_iov_one_weave.UnixTime `protobuf:"varint,7,opt,name=created_at,json=createdAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"created_at,omitempty"`
-	DeleteAt     github_com_iov_one_weave.UnixTime `protobuf:"varint,8,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// BlogID identifies blog that article is posted to
+	BlogID []byte `protobuf:"bytes,2,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
+	// Title is title of the article
+	Title string `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	// Content is content of the blog
+	Content string `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	// DeleteAt defines deletion time of the article.
+	// Could be nil if there is not a time of deletion, or in future
+	DeleteAt github_com_iov_one_weave.UnixTime `protobuf:"varint,5,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
 }
 
 func (m *CreateArticle) Reset()         { *m = CreateArticle{} }
@@ -620,27 +650,6 @@ func (m *CreateArticle) GetContent() string {
 	return ""
 }
 
-func (m *CreateArticle) GetCommentCount() int64 {
-	if m != nil {
-		return m.CommentCount
-	}
-	return 0
-}
-
-func (m *CreateArticle) GetLikeCount() int64 {
-	if m != nil {
-		return m.LikeCount
-	}
-	return 0
-}
-
-func (m *CreateArticle) GetCreatedAt() github_com_iov_one_weave.UnixTime {
-	if m != nil {
-		return m.CreatedAt
-	}
-	return 0
-}
-
 func (m *CreateArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	if m != nil {
 		return m.DeleteAt
@@ -648,10 +657,11 @@ func (m *CreateArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
+// DeleteArticle message deletes the the article instantly
 type DeleteArticle struct {
-	Metadata  *weave.Metadata                   `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ArticleID []byte                            `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
-	DeleteAt  github_com_iov_one_weave.UnixTime `protobuf:"varint,3,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ArticleID is the identifier of the article that is desired to be deleted
+	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
 }
 
 func (m *DeleteArticle) Reset()         { *m = DeleteArticle{} }
@@ -701,17 +711,12 @@ func (m *DeleteArticle) GetArticleID() []byte {
 	return nil
 }
 
-func (m *DeleteArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
-	if m != nil {
-		return m.DeleteAt
-	}
-	return 0
-}
-
 type CreateComment struct {
-	Metadata  *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ArticleID []byte          `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
-	Content   string          `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ArticleID is the identifier of the article that is desired to be commented
+	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	// Content is the comment's content
+	Content string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
 }
 
 func (m *CreateComment) Reset()         { *m = CreateComment{} }
@@ -769,8 +774,9 @@ func (m *CreateComment) GetContent() string {
 }
 
 type CreateLike struct {
-	Metadata  *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	ArticleID []byte          `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// ArticleID is the identifier of the article that is desired to be liked
+	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
 }
 
 func (m *CreateLike) Reset()         { *m = CreateLike{} }
@@ -837,45 +843,45 @@ func init() {
 func init() { proto.RegisterFile("x/blog/codec.proto", fileDescriptor_87ea59410c2fea68) }
 
 var fileDescriptor_87ea59410c2fea68 = []byte{
-	// 604 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0x3d, 0x6f, 0xd3, 0x50,
-	0x14, 0xed, 0xb3, 0x1d, 0x3b, 0xbe, 0x6d, 0x04, 0x7a, 0xaa, 0x90, 0x15, 0x09, 0xc7, 0xb8, 0x20,
-	0x45, 0x02, 0x12, 0x09, 0x36, 0xb6, 0x38, 0x59, 0x22, 0xc1, 0x62, 0xd1, 0x39, 0x72, 0xec, 0x27,
-	0xf3, 0x54, 0xdb, 0xaf, 0x38, 0x2f, 0x6d, 0xd9, 0x61, 0xe7, 0x97, 0xb0, 0xf1, 0x1f, 0x18, 0x2b,
-	0x26, 0xa6, 0x80, 0x9c, 0x5f, 0xc0, 0xda, 0x09, 0xf9, 0x23, 0xa9, 0x23, 0x48, 0x23, 0x5b, 0x59,
-	0xd8, 0xfc, 0xce, 0xfb, 0xb8, 0xf7, 0x9e, 0x7b, 0xcf, 0x91, 0x01, 0x5f, 0xf5, 0xa7, 0x01, 0xf3,
-	0xfb, 0x2e, 0xf3, 0x88, 0xdb, 0x3b, 0x8f, 0x19, 0x67, 0x58, 0x4a, 0x91, 0xf6, 0x61, 0x09, 0x6a,
-	0x1f, 0xfb, 0xcc, 0x67, 0xd9, 0x67, 0x3f, 0xfd, 0xca, 0x51, 0xf3, 0x03, 0x48, 0xa7, 0x33, 0x12,
-	0xe3, 0xa7, 0xd0, 0x0c, 0x09, 0x77, 0x3c, 0x87, 0x3b, 0x1a, 0x32, 0x50, 0xf7, 0xf0, 0xc5, 0xbd,
-	0xde, 0x25, 0x71, 0x2e, 0x48, 0xef, 0x4d, 0x01, 0xdb, 0xeb, 0x03, 0xf8, 0x01, 0x08, 0xd4, 0xd3,
-	0x04, 0x03, 0x75, 0x8f, 0x2c, 0x39, 0x59, 0x74, 0x84, 0xf1, 0xc8, 0x16, 0xa8, 0x87, 0xdb, 0xd0,
-	0x9c, 0xcf, 0x48, 0x1c, 0x39, 0x21, 0xd1, 0x44, 0x03, 0x75, 0x55, 0x7b, 0xbd, 0xc6, 0xf7, 0x41,
-	0x9c, 0x52, 0xa6, 0x49, 0x19, 0x9c, 0x7e, 0x9a, 0x9f, 0x04, 0x90, 0xac, 0x80, 0xf9, 0xfb, 0x89,
-	0xfd, 0x0a, 0x1a, 0xec, 0x32, 0x22, 0x71, 0x16, 0xf8, 0xc8, 0x7a, 0x7c, 0xb3, 0xe8, 0x18, 0x3e,
-	0xe5, 0xef, 0xe6, 0xd3, 0x9e, 0xcb, 0xc2, 0x3e, 0x65, 0x17, 0xcf, 0x59, 0x44, 0xfa, 0xf9, 0xbb,
-	0x03, 0xcf, 0x8b, 0xc9, 0x6c, 0x66, 0xe7, 0x57, 0xf0, 0x31, 0x34, 0x38, 0xe5, 0x01, 0x29, 0xb2,
-	0xcb, 0x17, 0xd8, 0x80, 0x43, 0x8f, 0xcc, 0xdc, 0x98, 0x9e, 0x73, 0xca, 0x22, 0xad, 0x91, 0xed,
-	0x95, 0x21, 0x3c, 0x02, 0x70, 0x63, 0xe2, 0x70, 0xe2, 0x4d, 0x1c, 0xae, 0xc9, 0x06, 0xea, 0x8a,
-	0xd6, 0x93, 0x9b, 0x45, 0xe7, 0xd1, 0xd6, 0xc0, 0xa7, 0x11, 0xbd, 0x7a, 0x4b, 0x43, 0x62, 0xab,
-	0xc5, 0xc5, 0x01, 0x37, 0x7f, 0x0b, 0xa0, 0x0c, 0x62, 0x4e, 0xdd, 0x80, 0xec, 0x87, 0x8a, 0x13,
-	0x50, 0xd2, 0xf6, 0x4f, 0xa8, 0x57, 0x90, 0x01, 0xc9, 0xa2, 0x23, 0xa7, 0x54, 0x8f, 0x47, 0xb6,
-	0x9c, 0x6e, 0x8d, 0xbd, 0x2d, 0x35, 0x6b, 0xa0, 0xb8, 0x2c, 0xe2, 0x24, 0xe2, 0x45, 0xbd, 0xab,
-	0x25, 0x3e, 0x81, 0x96, 0xcb, 0xc2, 0x90, 0x44, 0x7c, 0xe2, 0xb2, 0x79, 0x54, 0x94, 0x6b, 0x1f,
-	0x15, 0xe0, 0x30, 0xc5, 0xf0, 0x43, 0x80, 0x80, 0x9e, 0x91, 0xe2, 0x84, 0x92, 0x9d, 0x50, 0x53,
-	0x24, 0xdf, 0xde, 0xe4, 0xab, 0x59, 0x8f, 0x2f, 0x6c, 0x81, 0xea, 0x91, 0x80, 0x70, 0x92, 0x3e,
-	0xa2, 0x56, 0x79, 0xa4, 0x99, 0xdf, 0x1b, 0x70, 0xf3, 0x3b, 0x02, 0x65, 0x98, 0x67, 0xbe, 0x1f,
-	0xce, 0x9f, 0x01, 0x38, 0x79, 0x0f, 0x6f, 0x69, 0x6f, 0x25, 0x8b, 0x8e, 0x5a, 0x74, 0x76, 0x3c,
-	0xb2, 0xd5, 0xe2, 0xc0, 0xb8, 0x34, 0xac, 0x52, 0xf5, 0x61, 0xdd, 0xda, 0x22, 0xf3, 0x2b, 0x02,
-	0xe9, 0x35, 0x3d, 0x23, 0xff, 0x59, 0x45, 0xa6, 0x0f, 0x30, 0xcc, 0xba, 0x5b, 0xdd, 0x89, 0xca,
-	0x8e, 0x23, 0xfc, 0xdb, 0x71, 0xc4, 0x5b, 0xc7, 0x79, 0xbf, 0x0a, 0x54, 0xdd, 0x76, 0xd6, 0x72,
-	0x11, 0xee, 0xb0, 0x08, 0xf1, 0x2f, 0x8b, 0x30, 0x7f, 0x0a, 0xd0, 0xca, 0x63, 0xd6, 0x92, 0x78,
-	0x49, 0xca, 0xc2, 0x6e, 0x29, 0x8b, 0x5b, 0xa4, 0x2c, 0xed, 0x90, 0x72, 0x63, 0xa7, 0x94, 0xe5,
-	0xbb, 0xa5, 0xac, 0xec, 0x43, 0xca, 0xcd, 0x7a, 0x52, 0xfe, 0x82, 0xa0, 0x35, 0xca, 0x17, 0x75,
-	0x18, 0xde, 0x1c, 0x73, 0x61, 0xc7, 0x98, 0x6f, 0x24, 0x2c, 0xd6, 0x4b, 0xf8, 0x23, 0x5a, 0x8d,
-	0x44, 0x2d, 0x07, 0xaa, 0x96, 0x70, 0x69, 0x0a, 0xc4, 0x4d, 0xb7, 0x58, 0xab, 0xae, 0xba, 0x65,
-	0x54, 0x4a, 0xc1, 0xd2, 0xbe, 0x25, 0x3a, 0xba, 0x4e, 0x74, 0xf4, 0x2b, 0xd1, 0xd1, 0xe7, 0xa5,
-	0x7e, 0x70, 0xbd, 0xd4, 0x0f, 0x7e, 0x2c, 0xf5, 0x83, 0xa9, 0x9c, 0xfd, 0x83, 0xbc, 0xfc, 0x13,
-	0x00, 0x00, 0xff, 0xff, 0xe4, 0xc3, 0x5e, 0xc7, 0xc2, 0x08, 0x00, 0x00,
+	// 602 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0x4d, 0x6f, 0xd3, 0x4c,
+	0x10, 0xae, 0x3f, 0xf2, 0xe1, 0x69, 0xa2, 0xb7, 0x5a, 0x55, 0xaf, 0xac, 0x1e, 0x6c, 0x63, 0x40,
+	0x8a, 0x44, 0x49, 0x24, 0x10, 0x17, 0x6e, 0x71, 0x73, 0x89, 0x04, 0x17, 0x8b, 0x9e, 0x23, 0xc7,
+	0x1e, 0x99, 0xa5, 0xb6, 0xb7, 0x38, 0x9b, 0xb6, 0xdc, 0xe1, 0x8e, 0xf8, 0x2f, 0xfc, 0x07, 0x8e,
+	0x15, 0x12, 0x12, 0x27, 0x0b, 0x39, 0xff, 0xa2, 0x27, 0xe4, 0x8f, 0xa4, 0x0e, 0x90, 0x22, 0x47,
+	0xb9, 0x70, 0x9b, 0x99, 0xf5, 0xec, 0xec, 0x3c, 0x33, 0xcf, 0x63, 0x20, 0x57, 0x83, 0x69, 0xc0,
+	0xfc, 0x81, 0xcb, 0x3c, 0x74, 0xfb, 0xe7, 0x31, 0xe3, 0x8c, 0xc8, 0x59, 0xe4, 0x68, 0xbf, 0x12,
+	0x3a, 0x3a, 0xf4, 0x99, 0xcf, 0x72, 0x73, 0x90, 0x59, 0x45, 0xd4, 0x7c, 0x07, 0xf2, 0xe9, 0x0c,
+	0x63, 0xf2, 0x08, 0xda, 0x21, 0x72, 0xc7, 0x73, 0xb8, 0xa3, 0x0a, 0x86, 0xd0, 0xdb, 0x7f, 0xf2,
+	0x5f, 0xff, 0x12, 0x9d, 0x0b, 0xec, 0xbf, 0x2c, 0xc3, 0xf6, 0xea, 0x03, 0xf2, 0x3f, 0x88, 0xd4,
+	0x53, 0x45, 0x43, 0xe8, 0x75, 0xac, 0x66, 0x9a, 0xe8, 0xe2, 0x78, 0x64, 0x8b, 0xd4, 0x23, 0x47,
+	0xd0, 0x9e, 0xcf, 0x30, 0x8e, 0x9c, 0x10, 0x55, 0xc9, 0x10, 0x7a, 0x8a, 0xbd, 0xf2, 0xc9, 0x01,
+	0x48, 0x53, 0xca, 0x54, 0x39, 0x0f, 0x67, 0xa6, 0xf9, 0x41, 0x04, 0xd9, 0x0a, 0x98, 0xbf, 0x9b,
+	0xda, 0xcf, 0xa1, 0xc1, 0x2e, 0x23, 0x8c, 0xf3, 0xc2, 0x1d, 0xeb, 0xc1, 0x4d, 0xa2, 0x1b, 0x3e,
+	0xe5, 0xaf, 0xe7, 0xd3, 0xbe, 0xcb, 0xc2, 0x01, 0x65, 0x17, 0x8f, 0x59, 0x84, 0x83, 0xe2, 0xde,
+	0xa1, 0xe7, 0xc5, 0x38, 0x9b, 0xd9, 0x45, 0x0a, 0x39, 0x84, 0x06, 0xa7, 0x3c, 0xc0, 0xf2, 0x75,
+	0x85, 0x43, 0x0c, 0xd8, 0xf7, 0x70, 0xe6, 0xc6, 0xf4, 0x9c, 0x53, 0x16, 0xa9, 0x8d, 0xfc, 0xac,
+	0x1a, 0x22, 0x23, 0x00, 0x37, 0x46, 0x87, 0xa3, 0x37, 0x71, 0xb8, 0xda, 0x34, 0x84, 0x9e, 0x64,
+	0x3d, 0xbc, 0x49, 0xf4, 0x7b, 0x1b, 0x0b, 0x9f, 0x46, 0xf4, 0xea, 0x15, 0x0d, 0xd1, 0x56, 0xca,
+	0xc4, 0x21, 0x37, 0x3f, 0x49, 0xd0, 0x1a, 0xc6, 0x9c, 0xba, 0x01, 0xee, 0x06, 0x8a, 0xfb, 0xd0,
+	0xca, 0xc6, 0x3f, 0xa1, 0x5e, 0x09, 0x06, 0xa4, 0x89, 0xde, 0xcc, 0xa0, 0x1e, 0x8f, 0xec, 0x66,
+	0x76, 0x34, 0xf6, 0x36, 0xf4, 0xac, 0x42, 0xcb, 0x65, 0x11, 0xc7, 0x88, 0x97, 0xfd, 0x2e, 0x5d,
+	0xf2, 0x0c, 0xba, 0x2e, 0x0b, 0x43, 0x8c, 0xf8, 0xc4, 0x65, 0xf3, 0x68, 0xd9, 0xee, 0x41, 0x9a,
+	0xe8, 0x9d, 0x93, 0xe2, 0xe0, 0x24, 0x8b, 0xdb, 0x1d, 0xb7, 0xe2, 0x91, 0x63, 0x80, 0x80, 0x9e,
+	0x61, 0x99, 0xd3, 0xca, 0x73, 0xba, 0x69, 0xa2, 0x2b, 0x2f, 0xe8, 0x19, 0x16, 0x09, 0x4a, 0xb0,
+	0x34, 0x7f, 0x01, 0xb4, 0xbd, 0x1d, 0xa0, 0xc4, 0x02, 0xc5, 0xc3, 0x00, 0x39, 0x66, 0x97, 0x28,
+	0x75, 0x2e, 0x69, 0x17, 0x79, 0x43, 0x6e, 0x7e, 0x15, 0xa0, 0x55, 0xb6, 0xb5, 0x9b, 0xa1, 0x1c,
+	0x03, 0x38, 0xc5, 0x90, 0x6f, 0xe7, 0x92, 0x03, 0x51, 0x8e, 0x7e, 0x3c, 0xb2, 0x95, 0xf2, 0x83,
+	0x71, 0x65, 0x9b, 0xe5, 0xfa, 0xdb, 0xbc, 0x71, 0x86, 0xe6, 0x67, 0x01, 0xe4, 0x0c, 0xf7, 0x7f,
+	0xac, 0x23, 0xd3, 0x07, 0x38, 0xc9, 0xa7, 0x5b, 0x5f, 0xaa, 0xaa, 0x92, 0x24, 0xfe, 0x59, 0x92,
+	0xa4, 0x5b, 0x49, 0x7a, 0xbb, 0x2c, 0x54, 0x5f, 0x97, 0x56, 0x7c, 0x12, 0xef, 0xd0, 0x10, 0xe9,
+	0x37, 0x0d, 0x31, 0xbf, 0x09, 0xd0, 0x2d, 0x6a, 0x6e, 0xa5, 0x01, 0x15, 0xae, 0x8b, 0x7f, 0xe7,
+	0xba, 0xb4, 0x81, 0xeb, 0xf2, 0x3a, 0xd7, 0xd7, 0x08, 0xd4, 0xd8, 0x8e, 0x40, 0x6f, 0xa0, 0x3b,
+	0x2a, 0xec, 0x6d, 0xda, 0x5a, 0xdf, 0x2d, 0xf1, 0xee, 0xdd, 0x32, 0xdf, 0xaf, 0x30, 0xdc, 0x8a,
+	0xb2, 0xb5, 0x8a, 0x55, 0x61, 0x93, 0xd6, 0xe9, 0xb5, 0x5a, 0xd3, 0xfa, 0x1c, 0xab, 0xf5, 0x04,
+	0x4b, 0xfd, 0x92, 0x6a, 0xc2, 0x75, 0xaa, 0x09, 0x3f, 0x52, 0x4d, 0xf8, 0xb8, 0xd0, 0xf6, 0xae,
+	0x17, 0xda, 0xde, 0xf7, 0x85, 0xb6, 0x37, 0x6d, 0xe6, 0x7f, 0xf5, 0xa7, 0x3f, 0x03, 0x00, 0x00,
+	0xff, 0xff, 0x0a, 0xdc, 0x55, 0xa1, 0x14, 0x08, 0x00, 0x00,
 }
 
 func (m *User) Marshal() (dAtA []byte, err error) {
@@ -1274,23 +1280,8 @@ func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintCodec(dAtA, i, uint64(len(m.Content)))
 		i += copy(dAtA[i:], m.Content)
 	}
-	if m.CommentCount != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.CommentCount))
-	}
-	if m.LikeCount != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.LikeCount))
-	}
-	if m.CreatedAt != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.CreatedAt))
-	}
 	if m.DeleteAt != 0 {
-		dAtA[i] = 0x40
+		dAtA[i] = 0x28
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.DeleteAt))
 	}
@@ -1327,11 +1318,6 @@ func (m *DeleteArticle) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(len(m.ArticleID)))
 		i += copy(dAtA[i:], m.ArticleID)
-	}
-	if m.DeleteAt != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.DeleteAt))
 	}
 	return i, nil
 }
@@ -1635,15 +1621,6 @@ func (m *CreateArticle) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovCodec(uint64(l))
 	}
-	if m.CommentCount != 0 {
-		n += 1 + sovCodec(uint64(m.CommentCount))
-	}
-	if m.LikeCount != 0 {
-		n += 1 + sovCodec(uint64(m.LikeCount))
-	}
-	if m.CreatedAt != 0 {
-		n += 1 + sovCodec(uint64(m.CreatedAt))
-	}
 	if m.DeleteAt != 0 {
 		n += 1 + sovCodec(uint64(m.DeleteAt))
 	}
@@ -1663,9 +1640,6 @@ func (m *DeleteArticle) Size() (n int) {
 	l = len(m.ArticleID)
 	if l > 0 {
 		n += 1 + l + sovCodec(uint64(l))
-	}
-	if m.DeleteAt != 0 {
-		n += 1 + sovCodec(uint64(m.DeleteAt))
 	}
 	return n
 }
@@ -3330,63 +3304,6 @@ func (m *CreateArticle) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CommentCount", wireType)
-			}
-			m.CommentCount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCodec
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.CommentCount |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LikeCount", wireType)
-			}
-			m.LikeCount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCodec
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.LikeCount |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			m.CreatedAt = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCodec
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.CreatedAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DeleteAt", wireType)
 			}
 			m.DeleteAt = 0
@@ -3527,25 +3444,6 @@ func (m *DeleteArticle) Unmarshal(dAtA []byte) error {
 				m.ArticleID = []byte{}
 			}
 			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DeleteAt", wireType)
-			}
-			m.DeleteAt = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCodec
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.DeleteAt |= github_com_iov_one_weave.UnixTime(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCodec(dAtA[iNdEx:])

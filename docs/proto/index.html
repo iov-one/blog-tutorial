@@ -300,56 +300,57 @@
                   <td>id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ID is article&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
                   <td>blog_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>BlogID identifies blog that article is posted to </p></td>
                 </tr>
               
                 <tr>
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Title is title of the article </p></td>
                 </tr>
               
                 <tr>
                   <td>content</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Content is content of the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>comment_count</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>CommentCount is total number of comments posted under article </p></td>
                 </tr>
               
                 <tr>
                   <td>like_count</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>LikeCount is total number of likes posted under article </p></td>
                 </tr>
               
                 <tr>
                   <td>created_at</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>CreatedAt defines creation time of the article </p></td>
                 </tr>
               
                 <tr>
                   <td>delete_at</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>DeleteAt defines deletion time of the article.
+Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
             </tbody>
@@ -379,35 +380,35 @@
                   <td>id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ID is blog&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
                   <td>owner</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Owner is the owner address if the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Title is title of the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>description</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Description is description section of the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>created_at</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>CreatedAt defines creation time of the blog </p></td>
                 </tr>
               
             </tbody>
@@ -437,28 +438,28 @@
                   <td>id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ID is comment&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ArticleID identifies article that comment is posted to </p></td>
                 </tr>
               
                 <tr>
                   <td>owner</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Owner is the owner address of the comment </p></td>
                 </tr>
               
                 <tr>
                   <td>content</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Content is content of the comment </p></td>
                 </tr>
               
             </tbody>
@@ -488,49 +489,29 @@
                   <td>blog_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>BlogID identifies blog that article is posted to </p></td>
                 </tr>
               
                 <tr>
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Title is title of the article </p></td>
                 </tr>
               
                 <tr>
                   <td>content</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>comment_count</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>like_count</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>created_at</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
+                  <td><p>Content is content of the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>delete_at</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>DeleteAt defines deletion time of the article.
+Could be nil if there is not a time of deletion, or in future </p></td>
                 </tr>
               
             </tbody>
@@ -560,14 +541,14 @@
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Title is title of the blog </p></td>
                 </tr>
               
                 <tr>
                   <td>description</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Description is description section of the blog </p></td>
                 </tr>
               
             </tbody>
@@ -597,14 +578,14 @@
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ArticleID is the identifier of the article that is desired to be commented </p></td>
                 </tr>
               
                 <tr>
                   <td>content</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Content is the comment&#39;s content </p></td>
                 </tr>
               
             </tbody>
@@ -634,7 +615,7 @@
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ArticleID is the identifier of the article that is desired to be liked </p></td>
                 </tr>
               
             </tbody>
@@ -664,14 +645,14 @@
                   <td>username</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Username is user&#39;s alias </p></td>
                 </tr>
               
                 <tr>
                   <td>bio</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Bio is user information </p></td>
                 </tr>
               
             </tbody>
@@ -681,7 +662,7 @@
         
       
         <h3 id="blog.DeleteArticle">DeleteArticle</h3>
-        <p></p>
+        <p>DeleteArticle message deletes the the article instantly</p>
 
         
           <table class="field-table">
@@ -701,14 +682,7 @@
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>delete_at</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
+                  <td><p>ArticleID is the identifier of the article that is desired to be deleted </p></td>
                 </tr>
               
             </tbody>
@@ -738,21 +712,21 @@
                   <td>id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ID is like&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ArticleID identifies article that like is posted to </p></td>
                 </tr>
               
                 <tr>
                   <td>owner</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Owner is the owner address of the like </p></td>
                 </tr>
               
             </tbody>
@@ -782,21 +756,21 @@
                   <td>id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>ID is users identifier </p></td>
                 </tr>
               
                 <tr>
                   <td>username</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Username is user&#39;s alias </p></td>
                 </tr>
               
                 <tr>
                   <td>bio</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Bio is user information </p></td>
                 </tr>
               
             </tbody>
