@@ -75,8 +75,8 @@ func (m *Blog) Copy() orm.CloneableData {
 	}
 }
 
-var validBlogTitle = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,32}$`).MatchString
-var validBlogDescription = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,1000}$`).MatchString
+var validBlogTitle = regexp.MustCompile(`^[a-zA-Z0-9$@$!%*?&#'^;-_. +]{4,32}$`).MatchString
+var validBlogDescription = regexp.MustCompile(`^[a-zA-Z0-9$@$!%*?&#'^;-_. +]{4,1000}$`).MatchString
 
 // Validate validates blog's fields
 func (m *Blog) Validate() error {
