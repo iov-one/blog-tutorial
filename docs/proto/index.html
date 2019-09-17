@@ -187,11 +187,19 @@
                 </li>
               
                 <li>
+                  <a href="#blog.Comment"><span class="badge">M</span>Comment</a>
+                </li>
+              
+                <li>
                   <a href="#blog.CreateArticle"><span class="badge">M</span>CreateArticle</a>
                 </li>
               
                 <li>
                   <a href="#blog.CreateBlog"><span class="badge">M</span>CreateBlog</a>
+                </li>
+              
+                <li>
+                  <a href="#blog.CreateComment"><span class="badge">M</span>CreateComment</a>
                 </li>
               
                 <li>
@@ -396,6 +404,57 @@
 
         
       
+        <h3 id="blog.Comment">Comment</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>article_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>owner</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>content</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
         <h3 id="blog.CreateArticle">CreateArticle</h3>
         <p></p>
 
@@ -494,6 +553,43 @@
               
                 <tr>
                   <td>description</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="blog.CreateComment">CreateComment</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>article_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>content</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>

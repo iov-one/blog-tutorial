@@ -284,6 +284,82 @@ func (m *Article) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
+type Comment struct {
+	Metadata  *weave.Metadata                  `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	ID        []byte                           `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	ArticleID []byte                           `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	Owner     github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=owner,proto3,casttype=github.com/iov-one/weave.Address" json:"owner,omitempty"`
+	Content   string                           `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+}
+
+func (m *Comment) Reset()         { *m = Comment{} }
+func (m *Comment) String() string { return proto.CompactTextString(m) }
+func (*Comment) ProtoMessage()    {}
+func (*Comment) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{3}
+}
+func (m *Comment) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Comment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Comment.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Comment) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Comment.Merge(m, src)
+}
+func (m *Comment) XXX_Size() int {
+	return m.Size()
+}
+func (m *Comment) XXX_DiscardUnknown() {
+	xxx_messageInfo_Comment.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Comment proto.InternalMessageInfo
+
+func (m *Comment) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *Comment) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
+}
+
+func (m *Comment) GetArticleID() []byte {
+	if m != nil {
+		return m.ArticleID
+	}
+	return nil
+}
+
+func (m *Comment) GetOwner() github_com_iov_one_weave.Address {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
+}
+
+func (m *Comment) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
 type CreateUser struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Username string          `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
@@ -294,7 +370,7 @@ func (m *CreateUser) Reset()         { *m = CreateUser{} }
 func (m *CreateUser) String() string { return proto.CompactTextString(m) }
 func (*CreateUser) ProtoMessage()    {}
 func (*CreateUser) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{3}
+	return fileDescriptor_87ea59410c2fea68, []int{4}
 }
 func (m *CreateUser) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -354,7 +430,7 @@ func (m *CreateBlog) Reset()         { *m = CreateBlog{} }
 func (m *CreateBlog) String() string { return proto.CompactTextString(m) }
 func (*CreateBlog) ProtoMessage()    {}
 func (*CreateBlog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{4}
+	return fileDescriptor_87ea59410c2fea68, []int{5}
 }
 func (m *CreateBlog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -419,7 +495,7 @@ func (m *CreateArticle) Reset()         { *m = CreateArticle{} }
 func (m *CreateArticle) String() string { return proto.CompactTextString(m) }
 func (*CreateArticle) ProtoMessage()    {}
 func (*CreateArticle) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{5}
+	return fileDescriptor_87ea59410c2fea68, []int{6}
 }
 func (m *CreateArticle) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -504,51 +580,117 @@ func (m *CreateArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
+type CreateComment struct {
+	Metadata  *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	ArticleID []byte          `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	Content   string          `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+}
+
+func (m *CreateComment) Reset()         { *m = CreateComment{} }
+func (m *CreateComment) String() string { return proto.CompactTextString(m) }
+func (*CreateComment) ProtoMessage()    {}
+func (*CreateComment) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{7}
+}
+func (m *CreateComment) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateComment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateComment.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateComment) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateComment.Merge(m, src)
+}
+func (m *CreateComment) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateComment) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateComment.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateComment proto.InternalMessageInfo
+
+func (m *CreateComment) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *CreateComment) GetArticleID() []byte {
+	if m != nil {
+		return m.ArticleID
+	}
+	return nil
+}
+
+func (m *CreateComment) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*User)(nil), "blog.User")
 	proto.RegisterType((*Blog)(nil), "blog.Blog")
 	proto.RegisterType((*Article)(nil), "blog.Article")
+	proto.RegisterType((*Comment)(nil), "blog.Comment")
 	proto.RegisterType((*CreateUser)(nil), "blog.CreateUser")
 	proto.RegisterType((*CreateBlog)(nil), "blog.CreateBlog")
 	proto.RegisterType((*CreateArticle)(nil), "blog.CreateArticle")
+	proto.RegisterType((*CreateComment)(nil), "blog.CreateComment")
 }
 
 func init() { proto.RegisterFile("x/blog/codec.proto", fileDescriptor_87ea59410c2fea68) }
 
 var fileDescriptor_87ea59410c2fea68 = []byte{
-	// 503 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xbd, 0x8e, 0xd3, 0x40,
-	0x10, 0xc7, 0xe3, 0x75, 0xe2, 0xc4, 0x93, 0x9c, 0x40, 0xab, 0x13, 0xb2, 0x22, 0xe1, 0x18, 0x1f,
-	0x48, 0x91, 0x10, 0xb1, 0x04, 0x1d, 0x5d, 0x7c, 0x69, 0x52, 0xd0, 0x58, 0x5c, 0x1d, 0x39, 0xde,
-	0x91, 0x59, 0x61, 0x7b, 0x0f, 0x7b, 0x73, 0x77, 0x3c, 0x00, 0x3d, 0x8f, 0x45, 0x79, 0x25, 0x55,
-	0x40, 0xce, 0x13, 0xd0, 0x5e, 0x85, 0xfc, 0x71, 0x21, 0x08, 0x72, 0x51, 0xa2, 0x74, 0x33, 0xff,
-	0xf9, 0xf2, 0xcc, 0xfe, 0x64, 0xa0, 0x37, 0xce, 0x3c, 0x12, 0xa1, 0x13, 0x08, 0x86, 0xc1, 0xe8,
-	0x32, 0x15, 0x52, 0xd0, 0x66, 0xa1, 0xf4, 0xbb, 0x1b, 0x52, 0xff, 0x34, 0x14, 0xa1, 0x28, 0x4d,
-	0xa7, 0xb0, 0x2a, 0xd5, 0xfe, 0x0c, 0xcd, 0x8b, 0x0c, 0x53, 0xfa, 0x12, 0x3a, 0x31, 0x4a, 0x9f,
-	0xf9, 0xd2, 0x37, 0x14, 0x4b, 0x19, 0x76, 0x5f, 0x3f, 0x1a, 0x5d, 0xa3, 0x7f, 0x85, 0xa3, 0x77,
-	0xb5, 0xec, 0xad, 0x13, 0xe8, 0x13, 0x20, 0x9c, 0x19, 0xc4, 0x52, 0x86, 0x3d, 0x57, 0xcb, 0x97,
-	0x03, 0x32, 0x9d, 0x78, 0x84, 0x33, 0xda, 0x87, 0xce, 0x22, 0xc3, 0x34, 0xf1, 0x63, 0x34, 0x54,
-	0x4b, 0x19, 0xea, 0xde, 0xda, 0xa7, 0x8f, 0x41, 0x9d, 0x73, 0x61, 0x34, 0x4b, 0xb9, 0x30, 0xed,
-	0x2f, 0x04, 0x9a, 0x6e, 0x24, 0xc2, 0xe3, 0xcc, 0x7e, 0x0b, 0x2d, 0x71, 0x9d, 0x60, 0x5a, 0x0e,
-	0xee, 0xb9, 0xcf, 0xef, 0x96, 0x03, 0x2b, 0xe4, 0xf2, 0xc3, 0x62, 0x3e, 0x0a, 0x44, 0xec, 0x70,
-	0x71, 0xf5, 0x4a, 0x24, 0xe8, 0x54, 0x7d, 0xc7, 0x8c, 0xa5, 0x98, 0x65, 0x5e, 0x55, 0x42, 0x4f,
-	0xa1, 0x25, 0xb9, 0x8c, 0xb0, 0xfe, 0xba, 0xca, 0xa1, 0x16, 0x74, 0x19, 0x66, 0x41, 0xca, 0x2f,
-	0x25, 0x17, 0x89, 0xd1, 0x2a, 0x63, 0x9b, 0x12, 0x9d, 0x00, 0x04, 0x29, 0xfa, 0x12, 0xd9, 0xcc,
-	0x97, 0x86, 0x66, 0x29, 0x43, 0xd5, 0x7d, 0x71, 0xb7, 0x1c, 0x3c, 0xdb, 0x3a, 0xf8, 0x22, 0xe1,
-	0x37, 0xef, 0x79, 0x8c, 0x9e, 0x5e, 0x17, 0x8e, 0xa5, 0xfd, 0x8b, 0x40, 0x7b, 0x9c, 0x4a, 0x1e,
-	0x44, 0x78, 0x9c, 0x53, 0x9c, 0x41, 0xbb, 0x78, 0xfe, 0x19, 0x67, 0xf5, 0x31, 0x20, 0x5f, 0x0e,
-	0xb4, 0xe2, 0xd4, 0xd3, 0x89, 0xa7, 0x15, 0xa1, 0x29, 0xdb, 0xb2, 0xb3, 0x01, 0xed, 0x40, 0x24,
-	0x12, 0x13, 0x59, 0xef, 0x7b, 0xef, 0xd2, 0x33, 0x38, 0x09, 0x44, 0x1c, 0x63, 0x22, 0x67, 0x81,
-	0x58, 0x24, 0xf5, 0xba, 0x5e, 0xaf, 0x16, 0xcf, 0x0b, 0x8d, 0x3e, 0x05, 0x88, 0xf8, 0x47, 0xac,
-	0x33, 0xda, 0x65, 0x86, 0x5e, 0x28, 0x55, 0xf8, 0xef, 0x7b, 0x75, 0x0e, 0xbb, 0x17, 0x75, 0x41,
-	0x67, 0x18, 0xa1, 0xc4, 0xa2, 0x89, 0xbe, 0x4f, 0x93, 0x4e, 0x55, 0x37, 0x96, 0x76, 0x08, 0x70,
-	0x5e, 0x36, 0xdc, 0x1f, 0xfe, 0x4d, 0xc8, 0xc9, 0xff, 0x21, 0x57, 0xff, 0x40, 0xfe, 0xe9, 0x7e,
-	0xd0, 0xfe, 0xa4, 0xaf, 0x5f, 0x88, 0x3c, 0x40, 0xa5, 0xfa, 0x0f, 0x95, 0xf6, 0x0f, 0x02, 0x27,
-	0xd5, 0xcc, 0x83, 0xa8, 0xda, 0xa0, 0x87, 0xec, 0xa6, 0x47, 0xdd, 0x42, 0x4f, 0x73, 0x07, 0x3d,
-	0xad, 0x9d, 0xf4, 0x68, 0x0f, 0xd3, 0xd3, 0x3e, 0x06, 0x3d, 0x9d, 0x83, 0xe8, 0x71, 0x8d, 0x6f,
-	0xb9, 0xa9, 0xdc, 0xe6, 0xa6, 0xf2, 0x33, 0x37, 0x95, 0xaf, 0x2b, 0xb3, 0x71, 0xbb, 0x32, 0x1b,
-	0xdf, 0x57, 0x66, 0x63, 0xae, 0x95, 0x7f, 0xd5, 0x37, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xb0,
-	0x34, 0x6a, 0x73, 0x94, 0x05, 0x00, 0x00,
+	// 563 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x95, 0x3d, 0x8f, 0xd3, 0x4c,
+	0x10, 0xc7, 0xe3, 0x97, 0xd8, 0xf1, 0x24, 0xd1, 0xf3, 0x68, 0x75, 0x42, 0x56, 0x24, 0x1c, 0xe3,
+	0x03, 0x29, 0x12, 0x90, 0x48, 0xd0, 0xd1, 0xc5, 0x49, 0x93, 0x82, 0xc6, 0xe2, 0xea, 0xc8, 0xb1,
+	0x47, 0x66, 0x85, 0xed, 0x3d, 0x9c, 0xcd, 0xdd, 0xd1, 0x43, 0xcf, 0xc7, 0xa2, 0x3c, 0x51, 0x51,
+	0x05, 0xe4, 0x7c, 0x02, 0xda, 0xab, 0x90, 0x5f, 0x92, 0x73, 0x04, 0xb9, 0x28, 0x51, 0xba, 0xdd,
+	0xff, 0xce, 0xee, 0x78, 0xfe, 0x33, 0x3f, 0x19, 0xc8, 0xcd, 0x60, 0x16, 0xb2, 0x60, 0xe0, 0x31,
+	0x1f, 0xbd, 0xfe, 0x65, 0xc2, 0x38, 0x23, 0x72, 0xa6, 0x74, 0x9a, 0x15, 0xa9, 0x73, 0x16, 0xb0,
+	0x80, 0xe5, 0xcb, 0x41, 0xb6, 0x2a, 0x54, 0xeb, 0x13, 0xc8, 0x17, 0x73, 0x4c, 0xc8, 0x73, 0x68,
+	0x44, 0xc8, 0x5d, 0xdf, 0xe5, 0xae, 0x2e, 0x98, 0x42, 0xaf, 0xf9, 0xea, 0xbf, 0xfe, 0x35, 0xba,
+	0x57, 0xd8, 0x7f, 0x5b, 0xca, 0xce, 0x26, 0x80, 0x3c, 0x02, 0x91, 0xfa, 0xba, 0x68, 0x0a, 0xbd,
+	0x96, 0xad, 0xa4, 0xcb, 0xae, 0x38, 0x19, 0x3b, 0x22, 0xf5, 0x49, 0x07, 0x1a, 0x8b, 0x39, 0x26,
+	0xb1, 0x1b, 0xa1, 0x2e, 0x99, 0x42, 0x4f, 0x73, 0x36, 0x7b, 0xf2, 0x3f, 0x48, 0x33, 0xca, 0x74,
+	0x39, 0x97, 0xb3, 0xa5, 0xf5, 0x45, 0x04, 0xd9, 0x0e, 0x59, 0x70, 0x9a, 0xdc, 0x6f, 0xa0, 0xce,
+	0xae, 0x63, 0x4c, 0xf2, 0xc4, 0x2d, 0xfb, 0xe9, 0xdd, 0xb2, 0x6b, 0x06, 0x94, 0xbf, 0x5f, 0xcc,
+	0xfa, 0x1e, 0x8b, 0x06, 0x94, 0x5d, 0xbd, 0x64, 0x31, 0x0e, 0x8a, 0x77, 0x87, 0xbe, 0x9f, 0xe0,
+	0x7c, 0xee, 0x14, 0x57, 0xc8, 0x19, 0xd4, 0x39, 0xe5, 0x21, 0x96, 0x5f, 0x57, 0x6c, 0x88, 0x09,
+	0x4d, 0x1f, 0xe7, 0x5e, 0x42, 0x2f, 0x39, 0x65, 0xb1, 0x5e, 0xcf, 0xcf, 0xaa, 0x12, 0x19, 0x03,
+	0x78, 0x09, 0xba, 0x1c, 0xfd, 0xa9, 0xcb, 0x75, 0xc5, 0x14, 0x7a, 0x92, 0xfd, 0xec, 0x6e, 0xd9,
+	0x7d, 0xb2, 0x33, 0xf1, 0x45, 0x4c, 0x6f, 0xde, 0xd1, 0x08, 0x1d, 0xad, 0xbc, 0x38, 0xe4, 0xd6,
+	0x6f, 0x11, 0xd4, 0x61, 0xc2, 0xa9, 0x17, 0xe2, 0x69, 0xac, 0x38, 0x07, 0x35, 0x6b, 0xff, 0x94,
+	0xfa, 0xa5, 0x19, 0x90, 0x2e, 0xbb, 0x4a, 0x66, 0xf5, 0x64, 0xec, 0x28, 0xd9, 0xd1, 0xc4, 0xdf,
+	0x51, 0xb3, 0x0e, 0xaa, 0xc7, 0x62, 0x8e, 0x31, 0x2f, 0xeb, 0x5d, 0x6f, 0xc9, 0x39, 0xb4, 0x3d,
+	0x16, 0x45, 0x18, 0xf3, 0xa9, 0xc7, 0x16, 0x71, 0x59, 0xae, 0xd3, 0x2a, 0xc5, 0x51, 0xa6, 0x91,
+	0xc7, 0x00, 0x21, 0xfd, 0x80, 0x65, 0x84, 0x9a, 0x47, 0x68, 0x99, 0x52, 0x1c, 0x6f, 0xfb, 0xd5,
+	0x38, 0xce, 0x2f, 0x62, 0x83, 0xe6, 0x63, 0x88, 0x1c, 0xb3, 0x47, 0xb4, 0x43, 0x1e, 0x69, 0x14,
+	0xf7, 0x86, 0xdc, 0xfa, 0x2e, 0x80, 0x3a, 0x2a, 0xbe, 0xfc, 0x34, 0x9e, 0xbf, 0x00, 0x70, 0x8b,
+	0x1e, 0xde, 0xdb, 0xde, 0x4e, 0x97, 0x5d, 0xad, 0xec, 0xec, 0x64, 0xec, 0x68, 0x65, 0xc0, 0xa4,
+	0x32, 0xac, 0xf2, 0xe1, 0xc3, 0xba, 0xb3, 0x45, 0x56, 0x00, 0x30, 0xca, 0x5d, 0x3a, 0x9c, 0xe8,
+	0x2a, 0xb9, 0xe2, 0xbf, 0xc9, 0x95, 0xee, 0xc9, 0xfd, 0xb8, 0x4e, 0x74, 0x38, 0xbe, 0x9b, 0xb1,
+	0x13, 0x1f, 0x40, 0x4d, 0xfa, 0x0b, 0x35, 0xeb, 0xa7, 0x08, 0xed, 0x22, 0xe7, 0x51, 0xa8, 0x54,
+	0x90, 0x10, 0xf7, 0x23, 0x21, 0xed, 0x40, 0x42, 0xde, 0x83, 0x44, 0x7d, 0x2f, 0x12, 0xca, 0xc3,
+	0x48, 0xa8, 0xa7, 0x40, 0xa2, 0x71, 0x1c, 0x12, 0x9f, 0x85, 0xb5, 0xc3, 0x47, 0x81, 0xb1, 0x0d,
+	0x80, 0xb8, 0x07, 0x80, 0x8a, 0xa9, 0xd2, 0x96, 0xa9, 0xb6, 0xfe, 0x2d, 0x35, 0x84, 0xdb, 0xd4,
+	0x10, 0x7e, 0xa5, 0x86, 0xf0, 0x75, 0x65, 0xd4, 0x6e, 0x57, 0x46, 0xed, 0xc7, 0xca, 0xa8, 0xcd,
+	0x94, 0xfc, 0x8f, 0xf5, 0xfa, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x97, 0xaf, 0x1c, 0xf0,
+	0x06, 0x00, 0x00,
 }
 
 func (m *User) Marshal() (dAtA []byte, err error) {
@@ -726,6 +868,58 @@ func (m *Article) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *Comment) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Comment) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n4, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n4
+	}
+	if len(m.ID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if len(m.ArticleID) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ArticleID)))
+		i += copy(dAtA[i:], m.ArticleID)
+	}
+	if len(m.Owner) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Owner)))
+		i += copy(dAtA[i:], m.Owner)
+	}
+	if len(m.Content) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Content)))
+		i += copy(dAtA[i:], m.Content)
+	}
+	return i, nil
+}
+
 func (m *CreateUser) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -745,11 +939,11 @@ func (m *CreateUser) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n4, err := m.Metadata.MarshalTo(dAtA[i:])
+		n5, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n4
+		i += n5
 	}
 	if len(m.Username) > 0 {
 		dAtA[i] = 0x12
@@ -785,11 +979,11 @@ func (m *CreateBlog) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n5, err := m.Metadata.MarshalTo(dAtA[i:])
+		n6, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n5
+		i += n6
 	}
 	if len(m.Title) > 0 {
 		dAtA[i] = 0x12
@@ -825,11 +1019,11 @@ func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n6, err := m.Metadata.MarshalTo(dAtA[i:])
+		n7, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n6
+		i += n7
 	}
 	if len(m.BlogID) > 0 {
 		dAtA[i] = 0x12
@@ -868,6 +1062,46 @@ func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x40
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.DeleteAt))
+	}
+	return i, nil
+}
+
+func (m *CreateComment) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateComment) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n8, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n8
+	}
+	if len(m.ArticleID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ArticleID)))
+		i += copy(dAtA[i:], m.ArticleID)
+	}
+	if len(m.Content) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.Content)))
+		i += copy(dAtA[i:], m.Content)
 	}
 	return i, nil
 }
@@ -979,6 +1213,35 @@ func (m *Article) Size() (n int) {
 	return n
 }
 
+func (m *Comment) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ArticleID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+
 func (m *CreateUser) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1054,6 +1317,27 @@ func (m *CreateArticle) Size() (n int) {
 	}
 	if m.DeleteAt != 0 {
 		n += 1 + sovCodec(uint64(m.DeleteAt))
+	}
+	return n
+}
+
+func (m *CreateComment) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ArticleID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.Content)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
 	}
 	return n
 }
@@ -1795,6 +2079,229 @@ func (m *Article) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *Comment) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Comment: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Comment: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = append(m.ID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ID == nil {
+				m.ID = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ArticleID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ArticleID = append(m.ArticleID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ArticleID == nil {
+				m.ArticleID = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = append(m.Owner[:0], dAtA[iNdEx:postIndex]...)
+			if m.Owner == nil {
+				m.Owner = []byte{}
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *CreateUser) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2340,6 +2847,161 @@ func (m *CreateArticle) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateComment) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateComment: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateComment: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ArticleID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ArticleID = append(m.ArticleID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ArticleID == nil {
+				m.ArticleID = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Content = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCodec(dAtA[iNdEx:])

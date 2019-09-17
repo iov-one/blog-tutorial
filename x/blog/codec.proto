@@ -35,6 +35,14 @@ message Article {
   int64 delete_at = 9 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
+message Comment {
+  weave.Metadata metadata = 1;
+  bytes id = 2 [(gogoproto.customname) = "ID"];
+  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
+  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  string content = 5;
+}
+
 // ---------- MESSAGES -----------
 
 message CreateUser {
@@ -58,4 +66,10 @@ message CreateArticle {
   int64 like_count = 6;
   int64 created_at = 7 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
   int64 delete_at = 8 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
+}
+
+message CreateComment {
+  weave.Metadata metadata = 1;
+  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+  string content = 3;
 }
