@@ -205,6 +205,45 @@ func (m *Comment) Validate() error {
 	return errs
 }
 
+var _ morm.Model = (*Like)(nil)
+
+// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+func (m *Like) SetID(id []byte) error {
+	m.ID = id
+	return nil
+}
+
+// Copy produces a new copy to fulfill the Model interface
+// TODO remove after weave 0.22.0 is released
+func (m *Like) Copy() orm.CloneableData {
+	return &Comment{
+		Metadata:  m.Metadata.Copy(),
+		ID:        copyBytes(m.ID),
+		ArticleID: copyBytes(m.ArticleID),
+		Owner:     m.Owner.Clone(),
+		CreatedAt: m.CreatedAt,
+	}
+}
+
+// Validate validates like's fields
+func (m *Like) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ID", isGenID(m.ID, false))
+	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+
+	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
+
+	if err := m.Validate(); err != nil {
+		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+	} else if m.CreatedAt == 0 {
+		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
+	}
+
+	return errs
+}
+
 func copyBytes(in []byte) []byte {
 	if in == nil {
 		return nil
