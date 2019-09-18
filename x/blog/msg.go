@@ -86,6 +86,23 @@ func (m CreateArticleMsg) Validate() error {
 	return errs
 }
 
+var _ weave.Msg = (*DeleteArticleMsg)(nil)
+
+// Path returns the routing path for this message.
+func (DeleteArticleMsg) Path() string {
+	return "blog/delete_article"
+}
+
+// Validate ensures the DeleteArticle is valid
+func (m DeleteArticleMsg) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+
+	return errs
+}
+
 var _ weave.Msg = (*CreateCommentMsg)(nil)
 
 // Path returns the routing path for this message.

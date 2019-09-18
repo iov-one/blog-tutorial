@@ -181,6 +181,42 @@ func TestValidateCreateArticleMsg(t *testing.T) {
 	}
 }
 
+func TestValidateDeleteArticle(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &DeleteArticleMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ArticleID": nil,
+			},
+		},
+		// add missing metadata test
+		"failure missing article id": {
+			msg: &CreateLikeMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ArticleID": errors.ErrEmpty,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateCreateCommentMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg
