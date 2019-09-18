@@ -85,3 +85,24 @@ func (m CreateArticleMsg) Validate() error {
 
 	return errs
 }
+
+var _ weave.Msg = (*CreateCommentMsg)(nil)
+
+// Path returns the routing path for this message.
+func (CreateCommentMsg) Path() string {
+	return "blog/create_comment"
+}
+
+// Validate ensures the CreateCommentMsg is valid
+func (m CreateCommentMsg) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+
+	if !validArticleContent(m.Content) {
+		errs = errors.AppendField(errs, "Content", errors.ErrModel)
+	}
+
+	return errs
+}
