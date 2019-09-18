@@ -157,10 +157,10 @@ func (m *Article) Validate() error {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
 	}
 
-	if err := m.DeleteAt.Validate(); err != nil {
-		errs = errors.AppendField(errs, "DeleteAt", m.CreatedAt.Validate())
-	} else if m.DeleteAt == 0 {
-		errs = errors.AppendField(errs, "DeleteAt", errors.ErrEmpty)
+	if m.DeleteAt != 0 {
+		if err := m.DeleteAt.Validate(); err != nil {
+			errs = errors.AppendField(errs, "DeleteAt", err)
+		}
 	}
 
 	return errs

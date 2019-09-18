@@ -215,6 +215,7 @@ func TestValidateBlog(t *testing.T) {
 
 func TestValidateArticle(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
 
 	cases := map[string]struct {
 		model    orm.Model
@@ -230,6 +231,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -240,8 +242,33 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
+		"successs no delete at": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    future,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
+
 		// TODO add missing metadata test
 		"failure missing ID": {
 			model: &Article{
@@ -252,6 +279,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -262,6 +290,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure missing blog id": {
@@ -273,6 +302,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -283,6 +313,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure missing title": {
@@ -294,6 +325,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -304,6 +336,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure missing content": {
@@ -315,6 +348,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -325,6 +359,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure negative comment count": {
@@ -337,6 +372,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: -100,
 				LikeCount:    2,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -347,6 +383,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": errors.ErrModel,
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure negative like count": {
@@ -359,6 +396,7 @@ func TestValidateArticle(t *testing.T) {
 				CommentCount: 1,
 				LikeCount:    -100,
 				CreatedAt:    now,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -369,6 +407,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    errors.ErrModel,
 				"CreatedAt":    nil,
+				"DeleteAt":     nil,
 			},
 		},
 		"failure missing created at": {
@@ -380,6 +419,7 @@ func TestValidateArticle(t *testing.T) {
 				Content:      "Best description ever",
 				CommentCount: 1,
 				LikeCount:    2,
+				DeleteAt:     future,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -390,6 +430,7 @@ func TestValidateArticle(t *testing.T) {
 				"CommentCount": nil,
 				"LikeCount":    nil,
 				"CreatedAt":    errors.ErrEmpty,
+				"DeleteAt":     nil,
 			},
 		},
 	}
