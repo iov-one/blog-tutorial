@@ -106,3 +106,20 @@ func (m CreateCommentMsg) Validate() error {
 
 	return errs
 }
+
+var _ weave.Msg = (*CreateLikeMsg)(nil)
+
+// Path returns the routing path for this message.
+func (CreateLikeMsg) Path() string {
+	return "blog/create_like"
+}
+
+// Validate ensures the CreateLikeMsg is valid
+func (m CreateLikeMsg) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+
+	return errs
+}
