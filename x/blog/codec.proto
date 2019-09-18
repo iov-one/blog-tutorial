@@ -15,6 +15,8 @@ message User {
   string username = 3;
   // Bio is user information
   string bio = 4;
+  // RegisteredAt defines registration time of the user
+  int64 registered_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 message Blog {
@@ -62,6 +64,8 @@ message Comment {
   bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
   // Content is content of the comment
   string content = 5;
+  // CreatedAt defines creation time of the comment
+  int64 created_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 message Like {
@@ -72,6 +76,8 @@ message Like {
   bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
   // Owner is the owner address of the like
   bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // CreatedAt defines creation time of the like
+  int64 created_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
 // ---------- MESSAGES -----------
