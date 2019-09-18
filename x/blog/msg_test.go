@@ -58,3 +58,54 @@ func TestValidateCreateUserMsg(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateCreateBlogMsg(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"Title":       nil,
+				"Description": nil,
+			},
+		},
+		// add missing metadata test
+		"failure missing title": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Description: "best description in the existence",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"Title":       errors.ErrModel,
+				"Description": nil,
+			},
+		},
+		"failure missing description": {
+			msg: &CreateBlogMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				Title:    "insanely good title",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"Title":       nil,
+				"Description": errors.ErrModel,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
