@@ -34,6 +34,7 @@ func TestValidateUser(t *testing.T) {
 				"RegisteredAt": nil,
 			},
 		},
+		// TODO add missing metadata test
 		"failure missing ID": {
 			model: &User{
 				Metadata:     &weave.Metadata{Schema: 1},
@@ -115,6 +116,7 @@ func TestValidateBlog(t *testing.T) {
 				"CreatedAt":   nil,
 			},
 		},
+		// TODO add missing metadata test
 		"failure missing ID": {
 			model: &Blog{
 				Metadata:    &weave.Metadata{Schema: 1},
@@ -168,11 +170,11 @@ func TestValidateBlog(t *testing.T) {
 		},
 		"failure missing description": {
 			model: &Blog{
-				Metadata:    &weave.Metadata{Schema: 1},
-				ID:          weavetest.SequenceID(1),
-				Owner:       weavetest.NewCondition().Address(),
-				Title:       "Best hacker's blog",
-				CreatedAt:   now,
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				Owner:     weavetest.NewCondition().Address(),
+				Title:     "Best hacker's blog",
+				CreatedAt: now,
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":    nil,
@@ -198,6 +200,196 @@ func TestValidateBlog(t *testing.T) {
 				"Title":       nil,
 				"Description": nil,
 				"CreatedAt":   errors.ErrEmpty,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.model.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
+func TestValidateArticle(t *testing.T) {
+	now := weave.AsUnixTime(time.Now())
+
+	cases := map[string]struct {
+		model    orm.Model
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		// TODO add missing metadata test
+		"failure missing ID": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           errors.ErrEmpty,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure missing blog id": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       errors.ErrEmpty,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure missing title": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        errors.ErrModel,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure missing content": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				CommentCount: 1,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      errors.ErrModel,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure negative comment count": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: -100,
+				LikeCount:    2,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": errors.ErrModel,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure negative like count": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    -100,
+				CreatedAt:    now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    errors.ErrModel,
+				"CreatedAt":    nil,
+			},
+		},
+		"failure missing created at": {
+			model: &Article{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				BlogID:       weavetest.SequenceID(1),
+				Title:        "Best hacker's blog",
+				Content:      "Best description ever",
+				CommentCount: 1,
+				LikeCount:    2,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    errors.ErrEmpty,
 			},
 		},
 	}
