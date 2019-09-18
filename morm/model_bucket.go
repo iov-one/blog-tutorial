@@ -179,7 +179,10 @@ func (mb *modelBucket) One(db weave.ReadOnlyKVStore, key []byte, dest Model) err
 
 	ptr := reflect.ValueOf(dest)
 	ptr.Elem().Set(reflect.ValueOf(res).Elem())
-	ptr.Interface().(Model).SetID(key)
+	err = ptr.Interface().(Model).SetID(key)
+	if err != nil {
+		return errors.Wrap(err, "cannot set id")
+	}
 	return nil
 }
 
@@ -281,7 +284,10 @@ func (mb *modelBucket) ByIndex(db weave.ReadOnlyKVStore, indexName string, key [
 			continue
 		}
 		val := reflect.ValueOf(obj.Value())
-		val.Interface().(Model).SetID(obj.Key())
+		err = val.Interface().(Model).SetID(obj.Key())
+		if err != nil {
+			return errors.Wrap(err, "cannot set id")
+		}
 		if !sliceOfPointers {
 			val = val.Elem()
 		}
@@ -314,7 +320,10 @@ func (mb *modelBucket) Put(db weave.KVStore, m Model) error {
 		}
 	} else {
 		// always nil out the key before saving the value
-		m.SetID(nil)
+		err := m.SetID(nil)
+		if err != nil {
+			return errors.Wrap(err, "cannot set id")
+		}
 	}
 
 	obj := orm.NewSimpleObj(key, m)
@@ -322,7 +331,10 @@ func (mb *modelBucket) Put(db weave.KVStore, m Model) error {
 		return errors.Wrap(err, "cannot store in the database")
 	}
 	// after serialization, return original/generated key on model
-	m.SetID(key)
+	err := m.SetID(key)
+	if err != nil {
+		return errors.Wrap(err, "cannot set id")
+	}
 
 	return nil
 }

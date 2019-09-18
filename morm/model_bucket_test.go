@@ -91,6 +91,7 @@ func TestModelBucketPrefixScan(t *testing.T) {
 
 	var loaded Counter
 	iter, err := b.PrefixScan(db, nil, false)
+	assert.Nil(t, err)
 
 	err = iter.LoadNext(&loaded)
 	assert.Nil(t, err)
