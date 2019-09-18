@@ -94,7 +94,7 @@ func (m *Blog) Validate() error {
 	}
 
 	if err := m.CreatedAt.Validate(); err != nil {
-		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+		errs = errors.AppendField(errs, "CreatedAt", err)
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
 	}
@@ -152,7 +152,7 @@ func (m *Article) Validate() error {
 	}
 
 	if err := m.CreatedAt.Validate(); err != nil {
-		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+		errs = errors.AppendField(errs, "CreatedAt", err)
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
 	}
@@ -204,7 +204,7 @@ func (m *Comment) Validate() error {
 	}
 
 	if err := m.CreatedAt.Validate(); err != nil {
-		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+		errs = errors.AppendField(errs, "CreatedAt", err)
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
 	}
@@ -243,7 +243,7 @@ func (m *Like) Validate() error {
 	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
 
 	if err := m.Validate(); err != nil {
-		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
+		errs = errors.AppendField(errs, "CreatedAt", err)
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
 	}
