@@ -203,7 +203,7 @@ func (m *Comment) Validate() error {
 		errs = errors.AppendField(errs, "Content", errors.ErrModel)
 	}
 
-	if err := m.Validate(); err != nil {
+	if err := m.CreatedAt.Validate(); err != nil {
 		errs = errors.AppendField(errs, "CreatedAt", m.CreatedAt.Validate())
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)
