@@ -223,7 +223,7 @@ func (m *Like) SetID(id []byte) error {
 // Copy produces a new copy to fulfill the Model interface
 // TODO remove after weave 0.22.0 is released
 func (m *Like) Copy() orm.CloneableData {
-	return &Comment{
+	return &Like{
 		Metadata:  m.Metadata.Copy(),
 		ID:        copyBytes(m.ID),
 		ArticleID: copyBytes(m.ArticleID),
@@ -242,7 +242,7 @@ func (m *Like) Validate() error {
 
 	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
 
-	if err := m.Validate(); err != nil {
+	if err := m.CreatedAt.Validate(); err != nil {
 		errs = errors.AppendField(errs, "CreatedAt", err)
 	} else if m.CreatedAt == 0 {
 		errs = errors.AppendField(errs, "CreatedAt", errors.ErrEmpty)

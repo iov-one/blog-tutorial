@@ -565,3 +565,98 @@ func TestValidateComment(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateLike(t *testing.T) {
+	now := weave.AsUnixTime(time.Now())
+
+	cases := map[string]struct {
+		model    orm.Model
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			model: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: weavetest.SequenceID(1),
+				Owner:     weavetest.NewCondition().Address(),
+				CreatedAt: now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+		// TODO add missing metadata test
+		"failure missing id": {
+			model: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: weavetest.SequenceID(1),
+				Owner:     weavetest.NewCondition().Address(),
+				CreatedAt: now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        errors.ErrEmpty,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+		"failure missing article id": {
+			model: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				Owner:     weavetest.NewCondition().Address(),
+				CreatedAt: now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": errors.ErrEmpty,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+		"failure missing owner": {
+			model: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: weavetest.SequenceID(1),
+				CreatedAt: now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     errors.ErrEmpty,
+				"CreatedAt": nil,
+			},
+		},
+		"failure missing created at": {
+			model: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: weavetest.SequenceID(1),
+				Owner:     weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": errors.ErrEmpty,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.model.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
