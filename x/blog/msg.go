@@ -55,3 +55,33 @@ func (m CreateBlogMsg) Validate() error {
 
 	return errs
 }
+
+var _ weave.Msg = (*CreateArticleMsg)(nil)
+
+// Path returns the routing path for this message.
+func (CreateArticleMsg) Path() string {
+	return "blog/create_article"
+}
+
+// Validate ensures the CreateArticleMsg is valid
+func (m CreateArticleMsg) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+
+	if !validBlogTitle(m.Title) {
+		errs = errors.AppendField(errs, "Title", errors.ErrModel)
+	}
+	if !validBlogDescription(m.Content) {
+		errs = errors.AppendField(errs, "Content", errors.ErrModel)
+	}
+
+	if m.DeleteAt != 0 {
+		if err := m.DeleteAt.Validate(); err != nil {
+			errs = errors.AppendField(errs, "DeleteAt", err)
+		}
+	}
+
+	return errs
+}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/errors"
+	"github.com/iov-one/weave/weavetest"
 	"github.com/iov-one/weave/weavetest/assert"
 )
 
@@ -97,6 +98,76 @@ func TestValidateCreateBlogMsg(t *testing.T) {
 				"Metadata":    nil,
 				"Title":       nil,
 				"Description": errors.ErrModel,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
+func TestValidateCreateArticleMsg(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &CreateArticleMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+				Title:    "insanely good title",
+				Content:  "best content in the existence",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"Title":    nil,
+				"Content":  nil,
+			},
+		},
+		// add missing metadata test
+		"failure missing blog id": {
+			msg: &CreateArticleMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				Title:    "insanely good title",
+				Content:  "best content in the existence",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrEmpty,
+				"Title":    nil,
+				"Content":  nil,
+			},
+		},
+		"failure missing title": {
+			msg: &CreateArticleMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+				Content:  "best content in the existence",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"Title":    errors.ErrModel,
+				"Content":  nil,
+			},
+		},
+		"failure missing content": {
+			msg: &CreateArticleMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+				Title:    "insanely good title",
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"Title":    nil,
+				"Content":  errors.ErrModel,
 			},
 		},
 	}
