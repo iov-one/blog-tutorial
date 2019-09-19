@@ -82,7 +82,7 @@ message Like {
 
 // ---------- MESSAGES -----------
 
-message CreateUser {
+message CreateUserMsg {
   weave.Metadata metadata = 1;
   // Username is user's alias
   string username = 2;
@@ -90,7 +90,7 @@ message CreateUser {
   string bio = 3;
 }
 
-message CreateBlog {
+message CreateBlogMsg {
   weave.Metadata metadata = 1;
   // Title is title of the blog
   string title = 2;
@@ -98,7 +98,7 @@ message CreateBlog {
   string description = 3;
 }
 
-message CreateArticle {
+message CreateArticleMsg {
   weave.Metadata metadata = 1;
   // BlogID identifies blog that article is posted to
   bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
@@ -111,14 +111,14 @@ message CreateArticle {
   int64 delete_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
-// DeleteArticle message deletes the the article instantly
-message DeleteArticle {
+// DeleteArticleMsg message deletes the the article instantly
+message DeleteArticleMsg {
   weave.Metadata metadata = 1;
   // ArticleID is the identifier of the article that is desired to be deleted
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
 }
 
-message CreateComment {
+message CreateCommentMsg {
   weave.Metadata metadata = 1;
   // ArticleID is the identifier of the article that is desired to be commented
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
@@ -126,7 +126,7 @@ message CreateComment {
   string content = 3;
 }
 
-message CreateLike {
+message CreateLikeMsg {
   weave.Metadata metadata = 1;
   // ArticleID is the identifier of the article that is desired to be liked
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];

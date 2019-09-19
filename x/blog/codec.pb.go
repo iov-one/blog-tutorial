@@ -5,12 +5,13 @@ package blog
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_iov_one_weave "github.com/iov-one/weave"
 	weave "github.com/iov-one/weave"
-	io "io"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -479,7 +480,7 @@ func (m *Like) GetCreatedAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
-type CreateUser struct {
+type CreateUserMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Username is user's alias
 	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
@@ -487,18 +488,18 @@ type CreateUser struct {
 	Bio string `protobuf:"bytes,3,opt,name=bio,proto3" json:"bio,omitempty"`
 }
 
-func (m *CreateUser) Reset()         { *m = CreateUser{} }
-func (m *CreateUser) String() string { return proto.CompactTextString(m) }
-func (*CreateUser) ProtoMessage()    {}
-func (*CreateUser) Descriptor() ([]byte, []int) {
+func (m *CreateUserMsg) Reset()         { *m = CreateUserMsg{} }
+func (m *CreateUserMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateUserMsg) ProtoMessage()    {}
+func (*CreateUserMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{5}
 }
-func (m *CreateUser) XXX_Unmarshal(b []byte) error {
+func (m *CreateUserMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateUserMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateUser.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateUserMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -508,40 +509,40 @@ func (m *CreateUser) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CreateUser) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateUser.Merge(m, src)
+func (m *CreateUserMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateUserMsg.Merge(m, src)
 }
-func (m *CreateUser) XXX_Size() int {
+func (m *CreateUserMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateUser) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateUser.DiscardUnknown(m)
+func (m *CreateUserMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateUserMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateUser proto.InternalMessageInfo
+var xxx_messageInfo_CreateUserMsg proto.InternalMessageInfo
 
-func (m *CreateUser) GetMetadata() *weave.Metadata {
+func (m *CreateUserMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *CreateUser) GetUsername() string {
+func (m *CreateUserMsg) GetUsername() string {
 	if m != nil {
 		return m.Username
 	}
 	return ""
 }
 
-func (m *CreateUser) GetBio() string {
+func (m *CreateUserMsg) GetBio() string {
 	if m != nil {
 		return m.Bio
 	}
 	return ""
 }
 
-type CreateBlog struct {
+type CreateBlogMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Title is title of the blog
 	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
@@ -549,18 +550,18 @@ type CreateBlog struct {
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 }
 
-func (m *CreateBlog) Reset()         { *m = CreateBlog{} }
-func (m *CreateBlog) String() string { return proto.CompactTextString(m) }
-func (*CreateBlog) ProtoMessage()    {}
-func (*CreateBlog) Descriptor() ([]byte, []int) {
+func (m *CreateBlogMsg) Reset()         { *m = CreateBlogMsg{} }
+func (m *CreateBlogMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateBlogMsg) ProtoMessage()    {}
+func (*CreateBlogMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{6}
 }
-func (m *CreateBlog) XXX_Unmarshal(b []byte) error {
+func (m *CreateBlogMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateBlog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateBlogMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateBlog.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateBlogMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -570,40 +571,40 @@ func (m *CreateBlog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CreateBlog) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateBlog.Merge(m, src)
+func (m *CreateBlogMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateBlogMsg.Merge(m, src)
 }
-func (m *CreateBlog) XXX_Size() int {
+func (m *CreateBlogMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateBlog) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateBlog.DiscardUnknown(m)
+func (m *CreateBlogMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateBlogMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateBlog proto.InternalMessageInfo
+var xxx_messageInfo_CreateBlogMsg proto.InternalMessageInfo
 
-func (m *CreateBlog) GetMetadata() *weave.Metadata {
+func (m *CreateBlogMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *CreateBlog) GetTitle() string {
+func (m *CreateBlogMsg) GetTitle() string {
 	if m != nil {
 		return m.Title
 	}
 	return ""
 }
 
-func (m *CreateBlog) GetDescription() string {
+func (m *CreateBlogMsg) GetDescription() string {
 	if m != nil {
 		return m.Description
 	}
 	return ""
 }
 
-type CreateArticle struct {
+type CreateArticleMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// BlogID identifies blog that article is posted to
 	BlogID []byte `protobuf:"bytes,2,opt,name=blog_id,json=blogId,proto3" json:"blog_id,omitempty"`
@@ -616,18 +617,18 @@ type CreateArticle struct {
 	DeleteAt github_com_iov_one_weave.UnixTime `protobuf:"varint,5,opt,name=delete_at,json=deleteAt,proto3,casttype=github.com/iov-one/weave.UnixTime" json:"delete_at,omitempty"`
 }
 
-func (m *CreateArticle) Reset()         { *m = CreateArticle{} }
-func (m *CreateArticle) String() string { return proto.CompactTextString(m) }
-func (*CreateArticle) ProtoMessage()    {}
-func (*CreateArticle) Descriptor() ([]byte, []int) {
+func (m *CreateArticleMsg) Reset()         { *m = CreateArticleMsg{} }
+func (m *CreateArticleMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateArticleMsg) ProtoMessage()    {}
+func (*CreateArticleMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{7}
 }
-func (m *CreateArticle) XXX_Unmarshal(b []byte) error {
+func (m *CreateArticleMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateArticleMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateArticle.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateArticleMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -637,72 +638,72 @@ func (m *CreateArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *CreateArticle) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateArticle.Merge(m, src)
+func (m *CreateArticleMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateArticleMsg.Merge(m, src)
 }
-func (m *CreateArticle) XXX_Size() int {
+func (m *CreateArticleMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateArticle) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateArticle.DiscardUnknown(m)
+func (m *CreateArticleMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateArticleMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateArticle proto.InternalMessageInfo
+var xxx_messageInfo_CreateArticleMsg proto.InternalMessageInfo
 
-func (m *CreateArticle) GetMetadata() *weave.Metadata {
+func (m *CreateArticleMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *CreateArticle) GetBlogID() []byte {
+func (m *CreateArticleMsg) GetBlogID() []byte {
 	if m != nil {
 		return m.BlogID
 	}
 	return nil
 }
 
-func (m *CreateArticle) GetTitle() string {
+func (m *CreateArticleMsg) GetTitle() string {
 	if m != nil {
 		return m.Title
 	}
 	return ""
 }
 
-func (m *CreateArticle) GetContent() string {
+func (m *CreateArticleMsg) GetContent() string {
 	if m != nil {
 		return m.Content
 	}
 	return ""
 }
 
-func (m *CreateArticle) GetDeleteAt() github_com_iov_one_weave.UnixTime {
+func (m *CreateArticleMsg) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	if m != nil {
 		return m.DeleteAt
 	}
 	return 0
 }
 
-// DeleteArticle message deletes the the article instantly
-type DeleteArticle struct {
+// DeleteArticleMsg message deletes the the article instantly
+type DeleteArticleMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ArticleID is the identifier of the article that is desired to be deleted
 	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
 }
 
-func (m *DeleteArticle) Reset()         { *m = DeleteArticle{} }
-func (m *DeleteArticle) String() string { return proto.CompactTextString(m) }
-func (*DeleteArticle) ProtoMessage()    {}
-func (*DeleteArticle) Descriptor() ([]byte, []int) {
+func (m *DeleteArticleMsg) Reset()         { *m = DeleteArticleMsg{} }
+func (m *DeleteArticleMsg) String() string { return proto.CompactTextString(m) }
+func (*DeleteArticleMsg) ProtoMessage()    {}
+func (*DeleteArticleMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{8}
 }
-func (m *DeleteArticle) XXX_Unmarshal(b []byte) error {
+func (m *DeleteArticleMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *DeleteArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *DeleteArticleMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_DeleteArticle.Marshal(b, m, deterministic)
+		return xxx_messageInfo_DeleteArticleMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -712,33 +713,33 @@ func (m *DeleteArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *DeleteArticle) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteArticle.Merge(m, src)
+func (m *DeleteArticleMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteArticleMsg.Merge(m, src)
 }
-func (m *DeleteArticle) XXX_Size() int {
+func (m *DeleteArticleMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *DeleteArticle) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteArticle.DiscardUnknown(m)
+func (m *DeleteArticleMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteArticleMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeleteArticle proto.InternalMessageInfo
+var xxx_messageInfo_DeleteArticleMsg proto.InternalMessageInfo
 
-func (m *DeleteArticle) GetMetadata() *weave.Metadata {
+func (m *DeleteArticleMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *DeleteArticle) GetArticleID() []byte {
+func (m *DeleteArticleMsg) GetArticleID() []byte {
 	if m != nil {
 		return m.ArticleID
 	}
 	return nil
 }
 
-type CreateComment struct {
+type CreateCommentMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ArticleID is the identifier of the article that is desired to be commented
 	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
@@ -746,18 +747,18 @@ type CreateComment struct {
 	Content string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
 }
 
-func (m *CreateComment) Reset()         { *m = CreateComment{} }
-func (m *CreateComment) String() string { return proto.CompactTextString(m) }
-func (*CreateComment) ProtoMessage()    {}
-func (*CreateComment) Descriptor() ([]byte, []int) {
+func (m *CreateCommentMsg) Reset()         { *m = CreateCommentMsg{} }
+func (m *CreateCommentMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateCommentMsg) ProtoMessage()    {}
+func (*CreateCommentMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{9}
 }
-func (m *CreateComment) XXX_Unmarshal(b []byte) error {
+func (m *CreateCommentMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateComment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateCommentMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateComment.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateCommentMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -767,57 +768,57 @@ func (m *CreateComment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *CreateComment) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateComment.Merge(m, src)
+func (m *CreateCommentMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateCommentMsg.Merge(m, src)
 }
-func (m *CreateComment) XXX_Size() int {
+func (m *CreateCommentMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateComment) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateComment.DiscardUnknown(m)
+func (m *CreateCommentMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateCommentMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateComment proto.InternalMessageInfo
+var xxx_messageInfo_CreateCommentMsg proto.InternalMessageInfo
 
-func (m *CreateComment) GetMetadata() *weave.Metadata {
+func (m *CreateCommentMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *CreateComment) GetArticleID() []byte {
+func (m *CreateCommentMsg) GetArticleID() []byte {
 	if m != nil {
 		return m.ArticleID
 	}
 	return nil
 }
 
-func (m *CreateComment) GetContent() string {
+func (m *CreateCommentMsg) GetContent() string {
 	if m != nil {
 		return m.Content
 	}
 	return ""
 }
 
-type CreateLike struct {
+type CreateLikeMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ArticleID is the identifier of the article that is desired to be liked
 	ArticleID []byte `protobuf:"bytes,2,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
 }
 
-func (m *CreateLike) Reset()         { *m = CreateLike{} }
-func (m *CreateLike) String() string { return proto.CompactTextString(m) }
-func (*CreateLike) ProtoMessage()    {}
-func (*CreateLike) Descriptor() ([]byte, []int) {
+func (m *CreateLikeMsg) Reset()         { *m = CreateLikeMsg{} }
+func (m *CreateLikeMsg) String() string { return proto.CompactTextString(m) }
+func (*CreateLikeMsg) ProtoMessage()    {}
+func (*CreateLikeMsg) Descriptor() ([]byte, []int) {
 	return fileDescriptor_87ea59410c2fea68, []int{10}
 }
-func (m *CreateLike) XXX_Unmarshal(b []byte) error {
+func (m *CreateLikeMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateLike) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateLikeMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateLike.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateLikeMsg.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -827,26 +828,26 @@ func (m *CreateLike) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *CreateLike) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateLike.Merge(m, src)
+func (m *CreateLikeMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateLikeMsg.Merge(m, src)
 }
-func (m *CreateLike) XXX_Size() int {
+func (m *CreateLikeMsg) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateLike) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateLike.DiscardUnknown(m)
+func (m *CreateLikeMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateLikeMsg.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateLike proto.InternalMessageInfo
+var xxx_messageInfo_CreateLikeMsg proto.InternalMessageInfo
 
-func (m *CreateLike) GetMetadata() *weave.Metadata {
+func (m *CreateLikeMsg) GetMetadata() *weave.Metadata {
 	if m != nil {
 		return m.Metadata
 	}
 	return nil
 }
 
-func (m *CreateLike) GetArticleID() []byte {
+func (m *CreateLikeMsg) GetArticleID() []byte {
 	if m != nil {
 		return m.ArticleID
 	}
@@ -859,58 +860,58 @@ func init() {
 	proto.RegisterType((*Article)(nil), "blog.Article")
 	proto.RegisterType((*Comment)(nil), "blog.Comment")
 	proto.RegisterType((*Like)(nil), "blog.Like")
-	proto.RegisterType((*CreateUser)(nil), "blog.CreateUser")
-	proto.RegisterType((*CreateBlog)(nil), "blog.CreateBlog")
-	proto.RegisterType((*CreateArticle)(nil), "blog.CreateArticle")
-	proto.RegisterType((*DeleteArticle)(nil), "blog.DeleteArticle")
-	proto.RegisterType((*CreateComment)(nil), "blog.CreateComment")
-	proto.RegisterType((*CreateLike)(nil), "blog.CreateLike")
+	proto.RegisterType((*CreateUserMsg)(nil), "blog.CreateUserMsg")
+	proto.RegisterType((*CreateBlogMsg)(nil), "blog.CreateBlogMsg")
+	proto.RegisterType((*CreateArticleMsg)(nil), "blog.CreateArticleMsg")
+	proto.RegisterType((*DeleteArticleMsg)(nil), "blog.DeleteArticleMsg")
+	proto.RegisterType((*CreateCommentMsg)(nil), "blog.CreateCommentMsg")
+	proto.RegisterType((*CreateLikeMsg)(nil), "blog.CreateLikeMsg")
 }
 
 func init() { proto.RegisterFile("x/blog/codec.proto", fileDescriptor_87ea59410c2fea68) }
 
 var fileDescriptor_87ea59410c2fea68 = []byte{
-	// 628 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0xcb, 0x6e, 0xd3, 0x50,
-	0x10, 0xad, 0x1f, 0x79, 0x78, 0x9a, 0x88, 0xea, 0xaa, 0x42, 0x56, 0x17, 0xb1, 0x31, 0x20, 0x45,
-	0xa2, 0x24, 0x12, 0x88, 0x0d, 0xbb, 0xb8, 0xd9, 0x04, 0xc1, 0xc6, 0xa2, 0xeb, 0xca, 0xb1, 0x47,
-	0xe6, 0x52, 0xdb, 0xb7, 0xd8, 0xb7, 0x8f, 0x0f, 0x80, 0x3d, 0x62, 0xc5, 0x0f, 0x21, 0xb1, 0xec,
-	0x06, 0x89, 0x95, 0x85, 0xdc, 0xbf, 0x28, 0x1b, 0xe4, 0x47, 0x52, 0x07, 0x48, 0x91, 0xad, 0x6c,
-	0xd8, 0xcd, 0x8c, 0x3d, 0xbe, 0xf7, 0x9c, 0x39, 0x73, 0x64, 0x20, 0x17, 0xe3, 0xb9, 0xcf, 0xbc,
-	0xb1, 0xc3, 0x5c, 0x74, 0x46, 0x27, 0x11, 0xe3, 0x8c, 0xc8, 0x59, 0x65, 0x6f, 0xbb, 0x52, 0xda,
-	0xdb, 0xf5, 0x98, 0xc7, 0xf2, 0x70, 0x9c, 0x45, 0x45, 0xd5, 0xf8, 0x22, 0x80, 0x7c, 0x18, 0x63,
-	0x44, 0x1e, 0x41, 0x37, 0x40, 0x6e, 0xbb, 0x36, 0xb7, 0x55, 0x41, 0x17, 0x86, 0xdb, 0x4f, 0xee,
-	0x8c, 0xce, 0xd1, 0x3e, 0xc3, 0xd1, 0xab, 0xb2, 0x6c, 0x2d, 0x5f, 0x20, 0x77, 0x41, 0xa4, 0xae,
-	0x2a, 0xea, 0xc2, 0xb0, 0x67, 0xb6, 0xd3, 0x44, 0x13, 0x67, 0x53, 0x4b, 0xa4, 0x2e, 0xd9, 0x83,
-	0xee, 0x69, 0x8c, 0x51, 0x68, 0x07, 0xa8, 0x4a, 0xba, 0x30, 0x54, 0xac, 0x65, 0x4e, 0x76, 0x40,
-	0x9a, 0x53, 0xa6, 0xca, 0x79, 0x39, 0x0b, 0xc9, 0x0b, 0xe8, 0x47, 0xe8, 0xd1, 0x98, 0x63, 0x84,
-	0xee, 0x91, 0xcd, 0xd5, 0x96, 0x2e, 0x0c, 0x25, 0xf3, 0xe1, 0x75, 0xa2, 0xdd, 0xf3, 0x28, 0x7f,
-	0x73, 0x3a, 0x1f, 0x39, 0x2c, 0x18, 0x53, 0x76, 0xf6, 0x98, 0x85, 0x38, 0x2e, 0x6e, 0x73, 0x18,
-	0xd2, 0x8b, 0xd7, 0x34, 0x40, 0xab, 0x77, 0xd3, 0x3b, 0xe1, 0xc6, 0x07, 0x11, 0x64, 0xd3, 0x67,
-	0xde, 0x66, 0x70, 0x3c, 0x87, 0x16, 0x3b, 0x0f, 0x31, 0xca, 0x41, 0xf4, 0xcc, 0x07, 0xd7, 0x89,
-	0xa6, 0xaf, 0xbd, 0xd1, 0xc4, 0x75, 0x23, 0x8c, 0x63, 0xab, 0x68, 0x21, 0xbb, 0xd0, 0xe2, 0x94,
-	0xfb, 0x58, 0x22, 0x2d, 0x12, 0xa2, 0xc3, 0xb6, 0x8b, 0xb1, 0x13, 0xd1, 0x13, 0x4e, 0x59, 0x98,
-	0x23, 0x55, 0xac, 0x6a, 0x89, 0x4c, 0x01, 0x9c, 0x08, 0x6d, 0x5e, 0x50, 0xd1, 0xae, 0x43, 0x85,
-	0x52, 0x36, 0x4e, 0xb8, 0xf1, 0x49, 0x82, 0xce, 0x24, 0xe2, 0xd4, 0xf1, 0x71, 0x33, 0x54, 0xdc,
-	0x87, 0x4e, 0xa6, 0xa5, 0x23, 0xea, 0x96, 0x64, 0x40, 0x9a, 0x68, 0xed, 0x8c, 0xea, 0xd9, 0xd4,
-	0x6a, 0x67, 0x8f, 0x66, 0xee, 0x1a, 0xcc, 0x2a, 0x74, 0x1c, 0x16, 0x72, 0x0c, 0x79, 0x89, 0x77,
-	0x91, 0x92, 0x67, 0xd0, 0x77, 0x58, 0x10, 0x60, 0xc8, 0x8f, 0x1c, 0x76, 0x1a, 0x2e, 0xe0, 0xee,
-	0xa4, 0x89, 0xd6, 0x3b, 0x28, 0x1e, 0x1c, 0x64, 0x75, 0xab, 0xe7, 0x54, 0x32, 0xb2, 0x0f, 0xe0,
-	0xd3, 0x63, 0x2c, 0x7b, 0x3a, 0x79, 0x4f, 0x3f, 0x4d, 0x34, 0xe5, 0x25, 0x3d, 0xc6, 0xa2, 0x41,
-	0xf1, 0x17, 0xe1, 0x6f, 0x84, 0x76, 0x9b, 0x11, 0x4a, 0x4c, 0x50, 0x5c, 0xf4, 0x91, 0x63, 0xf6,
-	0x11, 0xa5, 0xce, 0x47, 0xba, 0x45, 0xdf, 0x84, 0x1b, 0x9f, 0x45, 0xe8, 0x94, 0xb0, 0x36, 0x33,
-	0x94, 0x7d, 0x00, 0xbb, 0x18, 0xf2, 0xcd, 0x5c, 0x72, 0x22, 0xca, 0xd1, 0xcf, 0xa6, 0x96, 0x52,
-	0xbe, 0x30, 0xab, 0xa8, 0x59, 0xae, 0xaf, 0xe6, 0xf5, 0x33, 0xdc, 0x8c, 0x5e, 0x7f, 0x0a, 0x20,
-	0x67, 0xd3, 0xfb, 0xdf, 0x78, 0x59, 0x45, 0xdf, 0x6a, 0x88, 0xde, 0x03, 0x38, 0xc8, 0x93, 0xfa,
-	0x16, 0x5c, 0xb5, 0x5a, 0xf1, 0xef, 0x56, 0x2b, 0x2d, 0xad, 0xd6, 0x78, 0xb7, 0x38, 0xa8, 0xbe,
-	0x47, 0x2e, 0x77, 0x5b, 0xbc, 0xc5, 0xcf, 0xa4, 0x3f, 0xfc, 0xcc, 0xf8, 0x26, 0x40, 0xbf, 0x38,
-	0xb3, 0x91, 0x1f, 0x55, 0x7c, 0x47, 0xfc, 0xb7, 0xef, 0x48, 0x6b, 0x7c, 0x47, 0x5e, 0xd5, 0xec,
-	0xca, 0x32, 0xb7, 0x9a, 0x2d, 0xf3, 0x5b, 0xe8, 0x4f, 0x8b, 0xb8, 0x09, 0xac, 0x55, 0x85, 0x8a,
-	0xb7, 0x2b, 0xd4, 0x78, 0xbf, 0xe4, 0xb0, 0x91, 0x7d, 0xd4, 0x3a, 0xac, 0x4a, 0x9b, 0xb4, 0x42,
-	0xdb, 0x8d, 0x4c, 0xeb, 0x6f, 0x6a, 0xad, 0x2b, 0x98, 0xea, 0xd7, 0x74, 0x20, 0x5c, 0xa6, 0x03,
-	0xe1, 0x47, 0x3a, 0x10, 0x3e, 0x5e, 0x0d, 0xb6, 0x2e, 0xaf, 0x06, 0x5b, 0xdf, 0xaf, 0x06, 0x5b,
-	0xf3, 0x76, 0xfe, 0xbb, 0xf2, 0xf4, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0x1c, 0xfa, 0x1f, 0xd5,
-	0xed, 0x08, 0x00, 0x00,
+	// 636 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xae, 0x7f, 0xf2, 0xe3, 0x69, 0x22, 0xa2, 0x55, 0x85, 0xac, 0x1e, 0x92, 0x60, 0x40, 0x8a,
+	0x44, 0x49, 0x24, 0x10, 0x17, 0x6e, 0x71, 0x73, 0x09, 0xa2, 0x17, 0x8b, 0x9e, 0x2b, 0xc7, 0x1e,
+	0x99, 0xa5, 0xb6, 0xb7, 0xb2, 0xb7, 0x3f, 0x2f, 0x80, 0xb8, 0x22, 0x4e, 0xbc, 0x10, 0x12, 0xc7,
+	0x1e, 0x7b, 0xb2, 0x90, 0xfb, 0x16, 0xe5, 0x82, 0xd6, 0x76, 0x52, 0x07, 0x48, 0x91, 0xa3, 0xf4,
+	0xc0, 0x6d, 0x66, 0xbc, 0xb3, 0xb3, 0xdf, 0x37, 0x33, 0x9f, 0x0c, 0xe4, 0x62, 0x34, 0xf3, 0x99,
+	0x37, 0x72, 0x98, 0x8b, 0xce, 0xf0, 0x24, 0x62, 0x9c, 0x11, 0x55, 0x44, 0x76, 0xb7, 0x4b, 0xa1,
+	0xdd, 0x1d, 0x8f, 0x79, 0x2c, 0x33, 0x47, 0xc2, 0xca, 0xa3, 0xc6, 0x37, 0x09, 0xd4, 0xc3, 0x18,
+	0x23, 0xf2, 0x0c, 0x9a, 0x01, 0x72, 0xdb, 0xb5, 0xb9, 0xad, 0x4b, 0x7d, 0x69, 0xb0, 0xfd, 0xe2,
+	0xc1, 0xf0, 0x1c, 0xed, 0x33, 0x1c, 0x1e, 0x14, 0x61, 0x6b, 0x71, 0x80, 0x3c, 0x04, 0x99, 0xba,
+	0xba, 0xdc, 0x97, 0x06, 0x2d, 0xb3, 0x9e, 0x26, 0x3d, 0x79, 0x3a, 0xb1, 0x64, 0xea, 0x92, 0x5d,
+	0x68, 0x9e, 0xc6, 0x18, 0x85, 0x76, 0x80, 0xba, 0xd2, 0x97, 0x06, 0x9a, 0xb5, 0xf0, 0x49, 0x07,
+	0x94, 0x19, 0x65, 0xba, 0x9a, 0x85, 0x85, 0x49, 0xde, 0x40, 0x3b, 0x42, 0x8f, 0xc6, 0x1c, 0x23,
+	0x74, 0x8f, 0x6c, 0xae, 0xd7, 0xfa, 0xd2, 0x40, 0x31, 0x9f, 0xde, 0x24, 0xbd, 0x47, 0x1e, 0xe5,
+	0xef, 0x4f, 0x67, 0x43, 0x87, 0x05, 0x23, 0xca, 0xce, 0x9e, 0xb3, 0x10, 0x47, 0xf9, 0x6b, 0x0e,
+	0x43, 0x7a, 0xf1, 0x8e, 0x06, 0x68, 0xb5, 0x6e, 0x73, 0xc7, 0xdc, 0xf8, 0x28, 0x83, 0x6a, 0xfa,
+	0xcc, 0xdb, 0x0c, 0x8e, 0xd7, 0x50, 0x63, 0xe7, 0x21, 0x46, 0x19, 0x88, 0x96, 0xf9, 0xe4, 0x26,
+	0xe9, 0xf5, 0x57, 0xbe, 0x68, 0xec, 0xba, 0x11, 0xc6, 0xb1, 0x95, 0xa7, 0x90, 0x1d, 0xa8, 0x71,
+	0xca, 0x7d, 0x2c, 0x90, 0xe6, 0x0e, 0xe9, 0xc3, 0xb6, 0x8b, 0xb1, 0x13, 0xd1, 0x13, 0x4e, 0x59,
+	0x98, 0x21, 0xd5, 0xac, 0x72, 0x88, 0x4c, 0x00, 0x9c, 0x08, 0x6d, 0x9e, 0x53, 0x51, 0xaf, 0x42,
+	0x85, 0x56, 0x24, 0x8e, 0xb9, 0xf1, 0x45, 0x81, 0xc6, 0x38, 0xe2, 0xd4, 0xf1, 0x71, 0x33, 0x54,
+	0x3c, 0x86, 0x86, 0x98, 0xa5, 0x23, 0xea, 0x16, 0x64, 0x40, 0x9a, 0xf4, 0xea, 0x82, 0xea, 0xe9,
+	0xc4, 0xaa, 0x8b, 0x4f, 0x53, 0x77, 0x05, 0x66, 0x1d, 0x1a, 0x0e, 0x0b, 0x39, 0x86, 0xbc, 0xc0,
+	0x3b, 0x77, 0xc9, 0x2b, 0x68, 0x3b, 0x2c, 0x08, 0x30, 0xe4, 0x47, 0x0e, 0x3b, 0x0d, 0xe7, 0x70,
+	0x3b, 0x69, 0xd2, 0x6b, 0xed, 0xe7, 0x1f, 0xf6, 0x45, 0xdc, 0x6a, 0x39, 0x25, 0x8f, 0xec, 0x01,
+	0xf8, 0xf4, 0x18, 0x8b, 0x9c, 0x46, 0x96, 0xd3, 0x4e, 0x93, 0x9e, 0xf6, 0x96, 0x1e, 0x63, 0x9e,
+	0xa0, 0xf9, 0x73, 0xf3, 0x37, 0x42, 0x9b, 0xeb, 0x11, 0x4a, 0x4c, 0xd0, 0x5c, 0xf4, 0x91, 0xa3,
+	0xb8, 0x44, 0xab, 0x72, 0x49, 0x33, 0xcf, 0x1b, 0x73, 0xe3, 0xab, 0x0c, 0x8d, 0x02, 0xd6, 0x66,
+	0x9a, 0xb2, 0x07, 0x60, 0xe7, 0x4d, 0xbe, 0xed, 0x4b, 0x46, 0x44, 0xd1, 0xfa, 0xe9, 0xc4, 0xd2,
+	0x8a, 0x03, 0xd3, 0xd2, 0x34, 0xab, 0xd5, 0xa7, 0x79, 0x75, 0x0f, 0x37, 0x33, 0xaf, 0x3f, 0x25,
+	0x50, 0x45, 0xf7, 0xfe, 0x37, 0x5e, 0x96, 0xd1, 0xd7, 0xd6, 0x44, 0xff, 0x01, 0xda, 0xfb, 0x99,
+	0x23, 0x24, 0xf8, 0x20, 0xae, 0xa8, 0x5e, 0x65, 0xb5, 0x95, 0xff, 0xae, 0xb6, 0xca, 0x42, 0x6d,
+	0x0d, 0x3e, 0xaf, 0x25, 0x76, 0xb7, 0x72, 0xad, 0xc5, 0x86, 0xcb, 0x77, 0xa8, 0x9a, 0xf2, 0x87,
+	0xaa, 0x19, 0x57, 0x12, 0x74, 0xf2, 0xb2, 0x45, 0x0b, 0x2a, 0x57, 0x2e, 0x09, 0x90, 0xfc, 0x6f,
+	0x01, 0x52, 0x56, 0x08, 0x90, 0xba, 0x3c, 0xbc, 0x4b, 0x5b, 0x5d, 0x5b, 0x6f, 0xab, 0x03, 0xe8,
+	0x4c, 0x72, 0x7b, 0x4d, 0x64, 0xcb, 0xd3, 0x2a, 0xdf, 0x3d, 0xad, 0xc6, 0xa7, 0x05, 0x93, 0x85,
+	0x94, 0xdc, 0x6f, 0xbd, 0x32, 0x79, 0xca, 0x12, 0x79, 0xb7, 0x53, 0x2b, 0x16, 0xf7, 0x7e, 0x5f,
+	0x61, 0xea, 0xdf, 0xd3, 0xae, 0x74, 0x99, 0x76, 0xa5, 0x1f, 0x69, 0x57, 0xfa, 0x7c, 0xdd, 0xdd,
+	0xba, 0xbc, 0xee, 0x6e, 0x5d, 0x5d, 0x77, 0xb7, 0x66, 0xf5, 0xec, 0x07, 0xe6, 0xe5, 0xaf, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x0e, 0x06, 0x88, 0x49, 0xff, 0x08, 0x00, 0x00,
 }
 
 func (m *User) Marshal() (dAtA []byte, err error) {
@@ -1201,7 +1202,7 @@ func (m *Like) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateUser) Marshal() (dAtA []byte, err error) {
+func (m *CreateUserMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1211,7 +1212,7 @@ func (m *CreateUser) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateUser) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateUserMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1241,7 +1242,7 @@ func (m *CreateUser) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateBlog) Marshal() (dAtA []byte, err error) {
+func (m *CreateBlogMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1251,7 +1252,7 @@ func (m *CreateBlog) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateBlog) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateBlogMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1281,7 +1282,7 @@ func (m *CreateBlog) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateArticle) Marshal() (dAtA []byte, err error) {
+func (m *CreateArticleMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1291,7 +1292,7 @@ func (m *CreateArticle) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateArticleMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1332,7 +1333,7 @@ func (m *CreateArticle) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *DeleteArticle) Marshal() (dAtA []byte, err error) {
+func (m *DeleteArticleMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1342,7 +1343,7 @@ func (m *DeleteArticle) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *DeleteArticle) MarshalTo(dAtA []byte) (int, error) {
+func (m *DeleteArticleMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1366,7 +1367,7 @@ func (m *DeleteArticle) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateComment) Marshal() (dAtA []byte, err error) {
+func (m *CreateCommentMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1376,7 +1377,7 @@ func (m *CreateComment) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateComment) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateCommentMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1406,7 +1407,7 @@ func (m *CreateComment) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateLike) Marshal() (dAtA []byte, err error) {
+func (m *CreateLikeMsg) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1416,7 +1417,7 @@ func (m *CreateLike) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateLike) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateLikeMsg) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1610,7 +1611,7 @@ func (m *Like) Size() (n int) {
 	return n
 }
 
-func (m *CreateUser) Size() (n int) {
+func (m *CreateUserMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1631,7 +1632,7 @@ func (m *CreateUser) Size() (n int) {
 	return n
 }
 
-func (m *CreateBlog) Size() (n int) {
+func (m *CreateBlogMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1652,7 +1653,7 @@ func (m *CreateBlog) Size() (n int) {
 	return n
 }
 
-func (m *CreateArticle) Size() (n int) {
+func (m *CreateArticleMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1680,7 +1681,7 @@ func (m *CreateArticle) Size() (n int) {
 	return n
 }
 
-func (m *DeleteArticle) Size() (n int) {
+func (m *DeleteArticleMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1697,7 +1698,7 @@ func (m *DeleteArticle) Size() (n int) {
 	return n
 }
 
-func (m *CreateComment) Size() (n int) {
+func (m *CreateCommentMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1718,7 +1719,7 @@ func (m *CreateComment) Size() (n int) {
 	return n
 }
 
-func (m *CreateLike) Size() (n int) {
+func (m *CreateLikeMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2943,7 +2944,7 @@ func (m *Like) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateUser) Unmarshal(dAtA []byte) error {
+func (m *CreateUserMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2966,10 +2967,10 @@ func (m *CreateUser) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateUser: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateUserMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateUser: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateUserMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3096,7 +3097,7 @@ func (m *CreateUser) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateBlog) Unmarshal(dAtA []byte) error {
+func (m *CreateBlogMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3119,10 +3120,10 @@ func (m *CreateBlog) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateBlog: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateBlogMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateBlog: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateBlogMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3249,7 +3250,7 @@ func (m *CreateBlog) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateArticle) Unmarshal(dAtA []byte) error {
+func (m *CreateArticleMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3272,10 +3273,10 @@ func (m *CreateArticle) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateArticle: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateArticleMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateArticle: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateArticleMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3455,7 +3456,7 @@ func (m *CreateArticle) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *DeleteArticle) Unmarshal(dAtA []byte) error {
+func (m *DeleteArticleMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3478,10 +3479,10 @@ func (m *DeleteArticle) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: DeleteArticle: wiretype end group for non-group")
+			return fmt.Errorf("proto: DeleteArticleMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DeleteArticle: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: DeleteArticleMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3578,7 +3579,7 @@ func (m *DeleteArticle) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateComment) Unmarshal(dAtA []byte) error {
+func (m *CreateCommentMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3601,10 +3602,10 @@ func (m *CreateComment) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateComment: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateCommentMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateComment: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateCommentMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3733,7 +3734,7 @@ func (m *CreateComment) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateLike) Unmarshal(dAtA []byte) error {
+func (m *CreateLikeMsg) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3756,10 +3757,10 @@ func (m *CreateLike) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateLike: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateLikeMsg: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateLike: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateLikeMsg: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
