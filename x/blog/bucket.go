@@ -2,6 +2,8 @@ package blog
 
 import (
 	"github.com/iov-one/blog-tutorial/morm"
+	"github.com/iov-one/weave/errors"
+	"github.com/iov-one/weave/orm"
 )
 
 type UserBucket struct {
@@ -33,8 +35,21 @@ type ArticleBucket struct {
 // NewArticleBucket returns a new article bucket
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
-		morm.NewModelBucket("article", &Article{}),
+		morm.NewModelBucket("article", &Article{},
+			morm.WithIndex("blog", blogIDIndexer, true)),
 	}
+}
+
+// blogIDIndexer enables querying articles by blog ids
+func blogIDIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	article, ok := obj.Value().(*Article)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
+	}
+	return article.BlogID, nil
 }
 
 type CommentBucket struct {
