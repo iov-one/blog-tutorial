@@ -83,6 +83,7 @@ type LikeBucket struct {
 // NewLikeBucket returns a new like bucket
 func NewLikeBucket() *LikeBucket {
 	return &LikeBucket{
-		morm.NewModelBucket("like", &Like{}),
+		morm.NewModelBucket("like", &Like{},
+			morm.WithIndex("article", articleIDIndexer, false)),
 	}
 }
