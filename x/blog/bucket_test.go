@@ -62,3 +62,51 @@ func TestBlogIDIndexer(t *testing.T) {
 		})
 	}
 }
+
+func TestArticleIDIndexer(t *testing.T) {
+	now := weave.AsUnixTime(time.Now())
+
+	articleID := weavetest.SequenceID(1)
+
+	comment := &Comment{
+		Metadata:  &weave.Metadata{Schema: 1},
+		ID:        weavetest.SequenceID(1),
+		ArticleID: articleID,
+		Owner:     weavetest.NewCondition().Address(),
+		Content:   "Best description ever",
+		CreatedAt: now,
+	}
+
+	cases := map[string]struct {
+		obj      orm.Object
+		expected []byte
+		wantErr  *errors.Error
+	}{
+		"success": {
+			obj:      orm.NewSimpleObj(nil, comment),
+			expected: articleID,
+			wantErr:  nil,
+		},
+		"failure, obj is nil": {
+			obj:      nil,
+			expected: nil,
+			wantErr:  nil,
+		},
+		"not article": {
+			obj:      orm.NewSimpleObj(nil, new(Blog)),
+			expected: nil,
+			wantErr:  errors.ErrState,
+		},
+	}
+
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			index, err := articleIDIndexer(tc.obj)
+
+			if !tc.wantErr.Is(err) {
+				t.Fatalf("unexpected error: %+v", err)
+			}
+			assert.Equal(t, tc.expected, index)
+		})
+	}
+}

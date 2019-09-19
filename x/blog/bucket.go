@@ -36,7 +36,7 @@ type ArticleBucket struct {
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
 		morm.NewModelBucket("article", &Article{},
-			morm.WithIndex("blog", blogIDIndexer, true)),
+			morm.WithIndex("blog", blogIDIndexer, false)),
 	}
 }
 
@@ -59,8 +59,21 @@ type CommentBucket struct {
 // NewCommentBucket returns a new comment bucket
 func NewCommentBucket() *CommentBucket {
 	return &CommentBucket{
-		morm.NewModelBucket("comment", &Comment{}),
+		morm.NewModelBucket("comment", &Comment{},
+			morm.WithIndex("article", articleIDIndexer, false)),
 	}
+}
+
+// articleIDIndexer enables querying comment by article ID
+func articleIDIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	comment, ok := obj.Value().(*Comment)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
+	}
+	return comment.ArticleID, nil
 }
 
 type LikeBucket struct {
