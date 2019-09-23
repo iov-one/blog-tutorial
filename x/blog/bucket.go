@@ -24,8 +24,21 @@ type BlogBucket struct {
 // NewBlogBucket returns a new blog bucket
 func NewBlogBucket() *BlogBucket {
 	return &BlogBucket{
-		morm.NewModelBucket("blog", &Blog{}),
+		morm.NewModelBucket("blog", &Blog{},
+			morm.WithIndex("user", blogUserIDIndexer, false)),
 	}
+}
+
+// userIDIndexer enables querying blogs by user ids
+func blogUserIDIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	blog, ok := obj.Value().(*Blog)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected blog, got %T", obj.Value())
+	}
+	return blog.Owner, nil
 }
 
 type ArticleBucket struct {
@@ -36,12 +49,12 @@ type ArticleBucket struct {
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
 		morm.NewModelBucket("article", &Article{},
-			morm.WithIndex("blog", blogIDIndexer, false)),
+			morm.WithIndex("blog", articleBlogIDIndexer, false)),
 	}
 }
 
-// blogIDIndexer enables querying articles by blog ids
-func blogIDIndexer(obj orm.Object) ([]byte, error) {
+// articleBlogIDIndexer enables querying articles by blog ids
+func articleBlogIDIndexer(obj orm.Object) ([]byte, error) {
 	if obj == nil || obj.Value() == nil {
 		return nil, nil
 	}
@@ -60,12 +73,13 @@ type CommentBucket struct {
 func NewCommentBucket() *CommentBucket {
 	return &CommentBucket{
 		morm.NewModelBucket("comment", &Comment{},
-			morm.WithIndex("article", articleIDIndexer, false)),
+			morm.WithIndex("article", commentArticleIDIndexer, false),
+			morm.WithIndex("user", commentUserIDIndexer, false)),
 	}
 }
 
-// articleIDIndexer enables querying comment by article ID
-func articleIDIndexer(obj orm.Object) ([]byte, error) {
+// commentArticleIDIndexer enables querying comment by article ID
+func commentArticleIDIndexer(obj orm.Object) ([]byte, error) {
 	if obj == nil || obj.Value() == nil {
 		return nil, nil
 	}
@@ -76,6 +90,18 @@ func articleIDIndexer(obj orm.Object) ([]byte, error) {
 	return comment.ArticleID, nil
 }
 
+// commentUserIDIndexer enables querying comment by user ID
+func commentUserIDIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	comment, ok := obj.Value().(*Comment)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
+	}
+	return comment.Owner, nil
+}
+
 type LikeBucket struct {
 	morm.ModelBucket
 }
@@ -84,6 +110,18 @@ type LikeBucket struct {
 func NewLikeBucket() *LikeBucket {
 	return &LikeBucket{
 		morm.NewModelBucket("like", &Like{},
-			morm.WithIndex("article", articleIDIndexer, false)),
+			morm.WithIndex("article", likeArticleIDIndexer, false)),
 	}
+}
+
+// likeArticleIDIndexer enables querying comment by user ID
+func likeArticleIDIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	like, ok := obj.Value().(*Like)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected like, got %T", obj.Value())
+	}
+	return like.ArticleID, nil
 }
