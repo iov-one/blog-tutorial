@@ -8,6 +8,11 @@ import (
 
 func init() {
 	migration.MustRegister(1, &CreateUserMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateBlogMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateArticleMsg{}, migration.NoModification)
+	migration.MustRegister(1, &DeleteArticleMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateCommentMsg{}, migration.NoModification)
+	migration.MustRegister(1, &CreateLikeMsg{}, migration.NoModification)
 }
 
 var _ weave.Msg = (*CreateUserMsg)(nil)
