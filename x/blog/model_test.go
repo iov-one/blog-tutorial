@@ -35,6 +35,21 @@ func TestValidateUser(t *testing.T) {
 			},
 		},
 		// TODO add missing metadata test
+		"success no bio": {
+			model: &User{
+				Metadata:     &weave.Metadata{Schema: 1},
+				ID:           weavetest.SequenceID(1),
+				Username:     "Crypt0xxx",
+				RegisteredAt: now,
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"Username":     nil,
+				"Bio":          nil,
+				"RegisteredAt": nil,
+			},
+		},
 		"failure missing ID": {
 			model: &User{
 				Metadata:     &weave.Metadata{Schema: 1},

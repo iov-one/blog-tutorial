@@ -42,7 +42,7 @@ func (m *User) Validate() error {
 		errs = errors.AppendField(errs, "Username", errors.ErrModel)
 	}
 
-	if !validBio(m.Bio) {
+	if m.Bio != "" && !validBio(m.Bio) {
 		errs = errors.AppendField(errs, "Bio", errors.ErrModel)
 	}
 
