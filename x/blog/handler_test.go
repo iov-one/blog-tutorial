@@ -128,3 +128,156 @@ func TestCreateUser(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateBlog(t *testing.T) {
+	owner := weavetest.NewCondition()
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		owner           weave.Condition
+		expected        *Blog
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			owner: owner,
+			expected: &Blog{
+				Metadata:    &weave.Metadata{Schema: 1},
+				ID:          weavetest.SequenceID(1),
+				Owner:       owner.Address(),
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": nil,
+			},
+		},
+		// TODO add metadata test
+		"failure no signer": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			owner: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       errors.ErrEmpty,
+				"Title":       nil,
+				"Description": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       errors.ErrEmpty,
+				"Title":       nil,
+				"Description": nil,
+			},
+		},
+		"failure missing title": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Description: "best description in the existence",
+			},
+			owner: owner,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       errors.ErrModel,
+				"Description": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       errors.ErrModel,
+				"Description": nil,
+			},
+		},
+		"failure missing description": {
+			msg: &CreateBlogMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				Title:    "insanely good title",
+			},
+			owner:    owner,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": errors.ErrModel,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":    nil,
+				"ID":          nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": errors.ErrModel,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{
+				Signer: tc.owner,
+			}
+
+			rt := app.NewRouter()
+			RegisterRoutes(rt, auth)
+			kv := store.MemStore()
+			bucket := NewBlogBucket()
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
+
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			res, err := rt.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			if tc.expected != nil {
+				var stored Blog
+				err := bucket.One(kv, res.Data, &stored)
+				assert.Nil(t, err)
+
+				// ensure createdAt is after test execution starting time
+				createdAt := stored.CreatedAt
+				weave.InTheFuture(ctx, createdAt.Time())
+
+				// avoid registered at missing error
+				tc.expected.CreatedAt = createdAt
+
+				assert.Nil(t, err)
+				assert.Equal(t, tc.expected, &stored)
+			}
+		})
+	}
+}
