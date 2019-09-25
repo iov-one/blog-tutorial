@@ -36,7 +36,7 @@ func (m *User) Validate() error {
 	var errs error
 
 	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "ID", isGenID(m.ID, true))
+	errs = errors.AppendField(errs, "ID", isGenID(m.ID, false))
 
 	if !validUsername(m.Username) {
 		errs = errors.AppendField(errs, "Username", errors.ErrModel)
