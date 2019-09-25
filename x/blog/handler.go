@@ -7,8 +7,10 @@ import (
 )
 
 const (
-	packageName       = "blog"
-	newUserCost int64 = 100
+	packageName          = "blog"
+	newUserCost    int64 = 100
+	newBlogCost    int64 = 100
+	newArticleCost int64 = 100
 )
 
 // RegisterQuery registers buckets for querying.
@@ -20,6 +22,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	//r = migration.SchemaMigratingRegistry(packageName, r)
 	r.Handle(&CreateUserMsg{}, NewCreateUserHandler(auth))
 	r.Handle(&CreateBlogMsg{}, NewCreateBlogHandler(auth))
+	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth))
 }
 
 // ------------------- CreateUserHandler -------------------
@@ -128,7 +131,7 @@ func (h CreateBlogHandler) Check(ctx weave.Context, store weave.KVStore, tx weav
 		return nil, err
 	}
 
-	return &weave.CheckResult{GasAllocated: newUserCost}, nil
+	return &weave.CheckResult{GasAllocated: newBlogCost}, nil
 }
 
 // Deliver creates an custom state and saves if all preconditions are met
@@ -159,4 +162,87 @@ func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 
 	// Returns generated blog ID as response
 	return &weave.DeliverResult{Data: blog.ID}, nil
+}
+
+// ------------------- CreateArticleHandler -------------------
+
+// CreateArticleHandler will handle CreateArticleMsg
+type CreateArticleHandler struct {
+	auth x.Authenticator
+	ab   *ArticleBucket
+	bb   *BlogBucket
+}
+
+var _ weave.Handler = CreateArticleHandler{}
+
+// NewCreateArticleHandler creates a article message handler
+func NewCreateArticleHandler(auth x.Authenticator) weave.Handler {
+	return CreateArticleHandler{
+		auth: auth,
+		ab:   NewArticleBucket(),
+		bb:   NewBlogBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h CreateArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateArticleMsg, error) {
+	var msg CreateArticleMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newArticleCost}, nil
+}
+
+// Deliver creates an custom state and saves if all preconditions are met
+func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	var blog Blog
+	h.bb.One(store, msg.BlogID, &blog)
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+	if !blog.Owner.Equals(signer) {
+		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with ID %s", signer, blog.ID)
+	}
+
+	blockTime, err := weave.BlockTime(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "no block time in header")
+	}
+	now := weave.AsUnixTime(blockTime)
+
+	article := &Article{
+		Metadata:     msg.Metadata,
+		BlogID:       msg.BlogID,
+		Title:        msg.Title,
+		Content:      msg.Content,
+		CommentCount: 0,
+		LikeCount:    0,
+		CreatedAt:    now,
+		DeleteAt:     msg.DeleteAt,
+	}
+
+	err = h.ab.Put(store, article)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot store article")
+	}
+
+	// Returns generated article ID as response
+	return &weave.DeliverResult{Data: article.ID}, nil
 }
