@@ -38,17 +38,6 @@ func TestValidateCreateUserMsg(t *testing.T) {
 				"Bio":      nil,
 			},
 		},
-		"failure missing bio": {
-			msg: &CreateUserMsg{
-				Metadata: &weave.Metadata{Schema: 1},
-				Username: "Crpto0X",
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata": nil,
-				"Username": nil,
-				"Bio":      errors.ErrModel,
-			},
-		},
 	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
