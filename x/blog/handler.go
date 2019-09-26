@@ -230,6 +230,7 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 	article := &Article{
 		Metadata:     msg.Metadata,
 		BlogID:       msg.BlogID,
+		Owner:        signer,
 		Title:        msg.Title,
 		Content:      msg.Content,
 		CommentCount: 0,

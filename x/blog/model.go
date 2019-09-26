@@ -117,6 +117,7 @@ func (m *Article) Copy() orm.CloneableData {
 		Metadata:     m.Metadata.Copy(),
 		ID:           copyBytes(m.ID),
 		BlogID:       copyBytes(m.BlogID),
+		Owner:        m.Owner.Clone(),
 		Title:        m.Title,
 		Content:      m.Content,
 		CommentCount: m.CommentCount,
@@ -136,6 +137,7 @@ func (m *Article) Validate() error {
 	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	errs = errors.AppendField(errs, "ID", isGenID(m.ID, false))
 	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
 
 	if !validBlogTitle(m.Title) {
 		errs = errors.AppendField(errs, "Title", errors.ErrModel)
