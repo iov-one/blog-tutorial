@@ -23,6 +23,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	r.Handle(&CreateUserMsg{}, NewCreateUserHandler(auth))
 	r.Handle(&CreateBlogMsg{}, NewCreateBlogHandler(auth))
 	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth))
+	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
 }
 
 // ------------------- CreateUserHandler -------------------
@@ -246,4 +247,69 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 
 	// Returns generated article ID as response
 	return &weave.DeliverResult{Data: article.ID}, nil
+}
+
+// ------------------- DeleteArticleHandler -------------------
+
+// DeleteArticleHandler will handle DeleteArticleMsg
+type DeleteArticleHandler struct {
+	auth x.Authenticator
+	b    *ArticleBucket
+}
+
+var _ weave.Handler = DeleteArticleHandler{}
+
+// NewDeleteArticleHandler creates a article message handler
+func NewDeleteArticleHandler(auth x.Authenticator) weave.Handler {
+	return DeleteArticleHandler{
+		auth: auth,
+		b:    NewArticleBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h DeleteArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, error) {
+	var msg DeleteArticleMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h DeleteArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Deleting is free of charge
+	return &weave.CheckResult{}, nil
+}
+
+// Deliver creates an custom state and saves if all preconditions are met
+func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	var article Article
+	if err := h.b.One(store, msg.ArticleID, &article); err != nil {
+		return nil, errors.Wrapf(err, "cannot retrieve article with ID %s", msg.ArticleID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+	if !article.Owner.Equals(signer) {
+		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with ID %s", signer, article.ID)
+	}
+
+	if err := h.b.Delete(store, article.ID); err != nil {
+		return nil, errors.Wrapf(err, "cannot delete article with ID %s", article.ID)
+	}
+
+	return &weave.DeliverResult{}, nil
 }

@@ -669,3 +669,155 @@ func TestCreateArticle(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteArticle(t *testing.T) {
+	bob := weavetest.NewCondition()
+	signer := weavetest.NewCondition()
+
+	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+
+	ownedArticleID := weavetest.SequenceID(1)
+	ownedArticle := &Article{
+		Metadata:     &weave.Metadata{Schema: 1},
+		ID:           ownedArticleID,
+		BlogID:       weavetest.SequenceID(1),
+		Owner:        signer.Address(),
+		Title:        "Best hacker's blog",
+		Content:      "Best description ever",
+		CommentCount: 1,
+		LikeCount:    2,
+		CreatedAt:    now,
+		DeleteAt:     future,
+	}
+
+	notOwnedArticleID := weavetest.SequenceID(2)
+	notOwnedArticle := &Article{
+		Metadata:     &weave.Metadata{Schema: 1},
+		ID:           notOwnedArticleID,
+		BlogID:       weavetest.SequenceID(2),
+		Owner:        bob.Address(),
+		Title:        "Worst hacker's blog",
+		Content:      "Worst description ever",
+		CommentCount: 1,
+		LikeCount:    2,
+		CreatedAt:    now,
+		DeleteAt:     future,
+	}
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		signer          weave.Condition
+		expected        *Article
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &DeleteArticleMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: ownedArticleID,
+			},
+			signer:   signer,
+			expected: ownedArticle,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
+		"failure unauthorized": {
+			msg: &DeleteArticleMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: notOwnedArticleID,
+			},
+			signer:   signer,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{
+				Signer: tc.signer,
+			}
+
+			// initalize environment
+			rt := app.NewRouter()
+			RegisterRoutes(rt, auth)
+			kv := store.MemStore()
+
+			// initalize article bucket and save articles
+			articleBucket := NewArticleBucket()
+			err := articleBucket.Put(kv, ownedArticle)
+			assert.Nil(t, err)
+
+			err = articleBucket.Put(kv, notOwnedArticle)
+			assert.Nil(t, err)
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
+
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			_, err = rt.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			if tc.expected != nil {
+				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleID); err == nil {
+					t.Fatalf("got %+v", err)
+				}
+			}
+		})
+	}
+}
