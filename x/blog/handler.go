@@ -26,6 +26,15 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
 }
 
+// RegisterCronRoutes registers routes that are not exposed to
+// routers
+func RegisterCronRoutes(
+	r weave.Registry,
+	auth x.Authenticator,
+) {
+	r.Handle(&DeleteArticleMsg{}, newCronDeleteArticleHandler(auth))
+}
+
 // ------------------- CreateUserHandler -------------------
 
 // CreateUserHandler will handle CreateUserMsg
@@ -309,6 +318,61 @@ func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 
 	if err := h.b.Delete(store, article.ID); err != nil {
 		return nil, errors.Wrapf(err, "cannot delete article with ID %s", article.ID)
+	}
+
+	return &weave.DeliverResult{}, nil
+}
+
+// ------------------- CronDeleteArticleHandler -------------------
+
+// CronDeleteArticleHandler will handle scheduled DeleteArticleMsg
+type CronDeleteArticleHandler struct {
+	auth x.Authenticator
+	b    *ArticleBucket
+}
+
+var _ weave.Handler = CronDeleteArticleHandler{}
+
+// newCronDeleteArticleHandler creates a article message handler
+func newCronDeleteArticleHandler(auth x.Authenticator) weave.Handler {
+	return CronDeleteArticleHandler{
+		auth: auth,
+		b:    NewArticleBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h CronDeleteArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, error) {
+	var msg DeleteArticleMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CronDeleteArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Deleting is free of charge
+	return &weave.CheckResult{}, nil
+}
+
+// Deliver stages a scheduled deletion if all preconditions are met
+func (h CronDeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := h.b.Delete(store, msg.ArticleID); err != nil {
+		return nil, errors.Wrapf(err, "cannot delete article with ID %s", msg.ArticleID)
 	}
 
 	return &weave.DeliverResult{}, nil

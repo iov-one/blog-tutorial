@@ -821,3 +821,132 @@ func TestDeleteArticle(t *testing.T) {
 		})
 	}
 }
+
+func TestCronDeleteArticle(t *testing.T) {
+	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+
+	articleID := weavetest.SequenceID(1)
+	article := &Article{
+		Metadata:     &weave.Metadata{Schema: 1},
+		ID:           articleID,
+		BlogID:       weavetest.SequenceID(1),
+		Owner:        weavetest.NewCondition().Address(),
+		Title:        "Best hacker's blog",
+		Content:      "Best description ever",
+		CommentCount: 1,
+		LikeCount:    2,
+		CreatedAt:    now,
+		DeleteAt:     future,
+	}
+
+	notExistingArticleID := weavetest.SequenceID(2)
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		expected        *Article
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &DeleteArticleMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: articleID,
+			},
+			expected: article,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
+		"success article already deleted": {
+			msg: &DeleteArticleMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: notExistingArticleID,
+			},
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{}
+
+			// initalize environment
+			rt := app.NewRouter()
+			RegisterCronRoutes(rt, auth)
+			kv := store.MemStore()
+
+			// initalize article bucket and save articles
+			articleBucket := NewArticleBucket()
+			err := articleBucket.Put(kv, article)
+			assert.Nil(t, err)
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
+
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			_, err = rt.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			if tc.expected != nil {
+				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleID); err != nil && !errors.ErrNotFound.Is(err) {
+					t.Fatal("article still exists")
+				}
+			}
+		})
+	}
+}
