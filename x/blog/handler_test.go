@@ -1100,3 +1100,143 @@ func TestCreateComment(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateLike(t *testing.T) {
+	existingArticleID := weavetest.SequenceID(1)
+	notExistingArticleID := weavetest.SequenceID(2)
+
+	likeOwner := weavetest.NewCondition()
+
+	now := weave.AsUnixTime(time.Now())
+
+	article := &Article{
+		Metadata:     &weave.Metadata{Schema: 1},
+		ID:           existingArticleID,
+		BlogID:       weavetest.SequenceID(1),
+		Owner:        weavetest.NewCondition().Address(),
+		Title:        "Best hacker's blog",
+		Content:      "Best description ever",
+		CommentCount: 1,
+		LikeCount:    2,
+		CreatedAt:    now,
+	}
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		expected        *Like
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &CreateLikeMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: existingArticleID,
+			},
+			expected: &Like{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: existingArticleID,
+				Owner:     likeOwner.Address(),
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+		// TODO add missing metadata test
+		"failure missing article id": {
+			msg: &CreateLikeMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+			},
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": errors.ErrEmpty,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": errors.ErrEmpty,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+		"failure article does not exist": {
+			msg: &CreateLikeMsg{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: notExistingArticleID,
+			},
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"Owner":     nil,
+				"CreatedAt": nil,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{
+				Signer: likeOwner,
+			}
+
+			rt := app.NewRouter()
+			RegisterRoutes(rt, auth)
+			kv := store.MemStore()
+
+			articleBucket := NewArticleBucket()
+
+			err := articleBucket.Put(kv, article)
+			assert.Nil(t, err)
+
+			likeBucket := NewLikeBucket()
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
+
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			res, err := rt.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			if tc.expected != nil {
+				var stored Like
+				err := likeBucket.One(kv, res.Data, &stored)
+				assert.Nil(t, err)
+				tc.expected.CreatedAt = stored.CreatedAt
+				assert.Equal(t, tc.expected, &stored)
+			}
+		})
+	}
+}

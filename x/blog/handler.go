@@ -26,6 +26,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth))
 	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
 	r.Handle(&CreateCommentMsg{}, NewCreateCommentHandler(auth))
+	r.Handle(&CreateLikeMsg{}, NewCreateLikeHandler(auth))
 }
 
 // RegisterCronRoutes registers routes that are not exposed to
@@ -457,4 +458,82 @@ func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 
 	// Returns generated user ID as response
 	return &weave.DeliverResult{Data: comment.ID}, nil
+}
+
+// ------------------- CreateLikeHandler -------------------
+
+// CreateLikeHander will handle CreateLikeMsg
+type CreateLikeHandler struct {
+	auth x.Authenticator
+	ab   *ArticleBucket
+	lb   *LikeBucket
+}
+
+var _ weave.Handler = CreateLikeHandler{}
+
+// NewCreateLikeHandler creates a like message handler
+func NewCreateLikeHandler(auth x.Authenticator) weave.Handler {
+	return CreateLikeHandler{
+		auth: auth,
+		ab:   NewArticleBucket(),
+		lb:   NewLikeBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h CreateLikeHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateLikeMsg, error) {
+	var msg CreateLikeMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateLikeHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newCommentCost}, nil
+}
+
+// Deliver creates a like and saves if all preconditions are met
+func (h CreateLikeHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if article exists
+	if err := h.ab.Has(store, msg.ArticleID); err != nil {
+		return nil, errors.Wrapf(err, "article with ID %s does not exist", msg.ArticleID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+
+	blockTime, err := weave.BlockTime(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "no block time in header")
+	}
+	now := weave.AsUnixTime(blockTime)
+
+	like := &Like{
+		Metadata:  msg.Metadata,
+		ArticleID: msg.ArticleID,
+		Owner:     signer,
+		CreatedAt: now,
+	}
+
+	err = h.lb.Put(store, like)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot store like")
+	}
+
+	// Returns generated like ID as response
+	return &weave.DeliverResult{Data: like.ID}, nil
 }
