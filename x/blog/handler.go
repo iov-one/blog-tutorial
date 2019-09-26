@@ -11,6 +11,7 @@ const (
 	newUserCost    int64 = 100
 	newBlogCost    int64 = 100
 	newArticleCost int64 = 100
+	newCommentCost int64 = 100
 )
 
 // RegisterQuery registers buckets for querying.
@@ -24,6 +25,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	r.Handle(&CreateBlogMsg{}, NewCreateBlogHandler(auth))
 	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth))
 	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
+	r.Handle(&CreateCommentMsg{}, NewCreateCommentHandler(auth))
 }
 
 // RegisterCronRoutes registers routes that are not exposed to
@@ -376,4 +378,83 @@ func (h CronDeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore
 	}
 
 	return &weave.DeliverResult{}, nil
+}
+
+// ------------------- CreateCommentHandler -------------------
+
+// CreateCommentHandler will handle CreateCommentMsg
+type CreateCommentHandler struct {
+	auth x.Authenticator
+	cb   *CommentBucket
+	ab   *ArticleBucket
+}
+
+var _ weave.Handler = CreateCommentHandler{}
+
+// NewCreateCommentHandler creates a comment message handler
+func NewCreateCommentHandler(auth x.Authenticator) weave.Handler {
+	return CreateCommentHandler{
+		auth: auth,
+		cb:   NewCommentBucket(),
+		ab:   NewArticleBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h CreateCommentHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateCommentMsg, error) {
+	var msg CreateCommentMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateCommentHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newCommentCost}, nil
+}
+
+// Deliver creates a comment and saves if all preconditions are met
+func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if article exists
+	if err := h.ab.Has(store, msg.ArticleID); err != nil {
+		return nil, errors.Wrapf(err, "article with ID %s does not exist", msg.ArticleID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+
+	blockTime, err := weave.BlockTime(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "no block time in header")
+	}
+	now := weave.AsUnixTime(blockTime)
+
+	comment := &Comment{
+		Metadata:  msg.Metadata,
+		ArticleID: msg.ArticleID,
+		Owner:     signer,
+		Content:   msg.Content,
+		CreatedAt: now,
+	}
+
+	err = h.cb.Put(store, comment)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot store comment")
+	}
+
+	// Returns generated user ID as response
+	return &weave.DeliverResult{Data: comment.ID}, nil
 }
