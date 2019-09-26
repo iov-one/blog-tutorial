@@ -307,10 +307,6 @@ func (mb *modelBucket) Put(db weave.KVStore, m Model) error {
 		return errors.Wrapf(errors.ErrType, "cannot store %T type in this bucket", m)
 	}
 
-	if err := m.Validate(); err != nil {
-		return errors.Wrap(err, "invalid model")
-	}
-
 	key := m.GetID()
 	if len(key) == 0 {
 		var err error
@@ -326,16 +322,20 @@ func (mb *modelBucket) Put(db weave.KVStore, m Model) error {
 		}
 	}
 
-	obj := orm.NewSimpleObj(key, m)
-	if err := mb.b.Save(db, obj); err != nil {
-		return errors.Wrap(err, "cannot store in the database")
-	}
-	// after serialization, return original/generated key on model
 	err := m.SetID(key)
 	if err != nil {
 		return errors.Wrap(err, "cannot set id")
 	}
 
+	if err := m.Validate(); err != nil {
+		return errors.Wrap(err, "invalid model")
+	}
+
+	obj := orm.NewSimpleObj(key, m)
+	if err := mb.b.Save(db, obj); err != nil {
+		return errors.Wrap(err, "cannot store in the database")
+	}
+	// after serialization, return original/generated key on model
 	return nil
 }
 
