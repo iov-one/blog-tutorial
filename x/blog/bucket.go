@@ -1,6 +1,8 @@
 package blog
 
 import (
+	"encoding/binary"
+
 	"github.com/iov-one/blog-tutorial/morm"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
@@ -49,7 +51,8 @@ type ArticleBucket struct {
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
 		morm.NewModelBucket("article", &Article{},
-			morm.WithIndex("blog", articleBlogIDIndexer, false)),
+			morm.WithIndex("blog", articleBlogIDIndexer, false),
+			morm.WithIndex("timedBlog", blogTimedIndexer, false)),
 	}
 }
 
@@ -63,6 +66,38 @@ func articleBlogIDIndexer(obj orm.Object) ([]byte, error) {
 		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
 	}
 	return article.BlogID, nil
+
+}
+
+// blogTimedIndexer indexes articles by
+//   (blog id, createdAt)
+// so give us easy lookup of the most recently posted articles on a given blog
+// (we can also use this client side with range queries to select all trades on a given
+// blog during any given timeframe)
+func blogTimedIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	article, ok := obj.Value().(*Article)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
+	}
+
+	return BuildBlogTimedIndex(article)
+}
+
+// BuildBlogTimedIndex produces 8 bytes BlogID || big-endian createdAt
+// This allows lexographical searches over the time ranges (or earliest or latest)
+// of all articles within one blog
+func BuildBlogTimedIndex(article *Article) ([]byte, error) {
+	res := make([]byte, 16)
+	copy(res, article.BlogID)
+	// this would violate lexographical ordering as negatives would be highest
+	if article.CreatedAt < 0 {
+		return nil, errors.Wrap(errors.ErrState, "cannot index negative creation times")
+	}
+	binary.BigEndian.PutUint64(res[8:], uint64(article.CreatedAt))
+	return res, nil
 }
 
 type CommentBucket struct {
