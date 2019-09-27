@@ -1,6 +1,7 @@
 package blog
 
 import (
+	"bytes"
 	"encoding/binary"
 
 	"github.com/iov-one/blog-tutorial/morm"
@@ -109,7 +110,8 @@ func NewCommentBucket() *CommentBucket {
 	return &CommentBucket{
 		morm.NewModelBucket("comment", &Comment{},
 			morm.WithIndex("article", commentArticleIDIndexer, false),
-			morm.WithIndex("user", commentUserIDIndexer, false)),
+			morm.WithIndex("user", commentUserIDIndexer, false),
+			morm.WithIndex("articleuser", articleUserIndexer, false)),
 	}
 }
 
@@ -135,6 +137,27 @@ func commentUserIDIndexer(obj orm.Object) ([]byte, error) {
 		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
 	}
 	return comment.Owner, nil
+}
+
+// articleUserIndexer produces in SQL parlance, a compound index.
+// Used for returning users all comments on an article
+// (articleID, userID) -> index
+func articleUserIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	comment, ok := obj.Value().(*Comment)
+
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
+	}
+
+	return BuildArticleUserIndex(comment), nil
+}
+
+// BuildArticleUserIndex indexByteSize = 8(ArticleID) + 8(UserID)
+func BuildArticleUserIndex(comment *Comment) []byte {
+	return bytes.Join([][]byte{comment.ArticleID, comment.Owner}, nil)
 }
 
 type LikeBucket struct {
