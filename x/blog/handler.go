@@ -57,20 +57,33 @@ func NewCreateUserHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateUserHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateUserMsg, error) {
+func (h CreateUserHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateUserMsg, *User, error) {
 	var msg CreateUserMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	return &msg, nil
+	blockTime, err := weave.BlockTime(ctx)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "no block time in header")
+	}
+	now := weave.AsUnixTime(blockTime)
+
+	user := &User{
+		Metadata:     msg.Metadata,
+		Username:     msg.Username,
+		Bio:          msg.Bio,
+		RegisteredAt: now,
+	}
+
+	return &msg, user, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CreateUserHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
+	_, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -80,22 +93,9 @@ func (h CreateUserHandler) Check(ctx weave.Context, store weave.KVStore, tx weav
 
 // Deliver creates an custom state and saves if all preconditions are met
 func (h CreateUserHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
+	_, user, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
-	}
-
-	blockTime, err := weave.BlockTime(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "no block time in header")
-	}
-	now := weave.AsUnixTime(blockTime)
-
-	user := &User{
-		Metadata:     msg.Metadata,
-		Username:     msg.Username,
-		Bio:          msg.Bio,
-		RegisteredAt: now,
 	}
 
 	err = h.b.Put(store, user)
@@ -126,37 +126,16 @@ func NewCreateBlogHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateBlogHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateBlogMsg, error) {
+func (h CreateBlogHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateBlogMsg, *Blog, error) {
 	var msg CreateBlogMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
-	}
-
-	return &msg, nil
-}
-
-// Check just verifies it is properly formed and returns
-// the cost of executing it.
-func (h CreateBlogHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &weave.CheckResult{GasAllocated: newBlogCost}, nil
-}
-
-// Deliver creates an custom state and saves if all preconditions are met
-func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
 	blockTime, err := weave.BlockTime(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "no block time in header")
+		return nil, nil, errors.Wrap(err, "no block time in header")
 	}
 	now := weave.AsUnixTime(blockTime)
 
@@ -166,6 +145,27 @@ func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 		Title:       msg.Title,
 		Description: msg.Description,
 		CreatedAt:   now,
+	}
+
+	return &msg, blog, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateBlogHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, _, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newBlogCost}, nil
+}
+
+// Deliver creates an custom state and saves if all preconditions are met
+func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	_, blog, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
 	}
 
 	err = h.b.Put(store, blog)
@@ -198,46 +198,28 @@ func NewCreateArticleHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateArticleMsg, error) {
+func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateArticleMsg, *Article, error) {
 	var msg CreateArticleMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
-	}
-
-	return &msg, nil
-}
-
-// Check just verifies it is properly formed and returns
-// the cost of executing it.
-func (h CreateArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &weave.CheckResult{GasAllocated: newArticleCost}, nil
-}
-
-// Deliver creates an custom state and saves if all preconditions are met
-func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
 	var blog Blog
-	h.bb.One(store, msg.BlogID, &blog)
+	if err := h.bb.One(store, msg.BlogID, &blog); err != nil {
+		return nil, nil, errors.Wrapf(err, "blog id with %s does not exist", msg.BlogID)
+	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 	if !blog.Owner.Equals(signer) {
-		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with ID %s", signer, blog.ID)
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with ID %s", signer, blog.ID)
 	}
 
 	blockTime, err := weave.BlockTime(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "no block time in header")
+		return nil, nil, errors.Wrap(err, "no block time in header")
 	}
+
 	now := weave.AsUnixTime(blockTime)
 
 	article := &Article{
@@ -250,6 +232,27 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 		LikeCount:    0,
 		CreatedAt:    now,
 		DeleteAt:     msg.DeleteAt,
+	}
+
+	return &msg, article, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, _, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newArticleCost}, nil
+}
+
+// Deliver creates an custom state and saves if all preconditions are met
+func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	_, article, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
 	}
 
 	err = h.ab.Put(store, article)
@@ -280,20 +283,30 @@ func NewDeleteArticleHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h DeleteArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, error) {
+func (h DeleteArticleHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, *Article, error) {
 	var msg DeleteArticleMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	return &msg, nil
+	var article Article
+	if err := h.b.One(store, msg.ArticleID, &article); err != nil {
+		return nil, nil, errors.Wrapf(err, "cannot retrieve article with ID %s", msg.ArticleID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+	if !article.Owner.Equals(signer) {
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with ID %s", signer, article.ID)
+	}
+
+	return &msg, &article, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h DeleteArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
+	_, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -304,19 +317,9 @@ func (h DeleteArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx w
 
 // Deliver creates an custom state and saves if all preconditions are met
 func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
+	_, article, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
-	}
-
-	var article Article
-	if err := h.b.One(store, msg.ArticleID, &article); err != nil {
-		return nil, errors.Wrapf(err, "cannot retrieve article with ID %s", msg.ArticleID)
-	}
-
-	signer := x.MainSigner(ctx, h.auth).Address()
-	if !article.Owner.Equals(signer) {
-		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with ID %s", signer, article.ID)
 	}
 
 	if err := h.b.Delete(store, article.ID); err != nil {
@@ -345,7 +348,7 @@ func newCronDeleteArticleHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CronDeleteArticleHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, error) {
+func (h CronDeleteArticleHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*DeleteArticleMsg, error) {
 	var msg DeleteArticleMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
@@ -402,44 +405,23 @@ func NewCreateCommentHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateCommentHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateCommentMsg, error) {
+func (h CreateCommentHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateCommentMsg, *Comment, error) {
 	var msg CreateCommentMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
-	}
-
-	return &msg, nil
-}
-
-// Check just verifies it is properly formed and returns
-// the cost of executing it.
-func (h CreateCommentHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &weave.CheckResult{GasAllocated: newCommentCost}, nil
-}
-
-// Deliver creates a comment and saves if all preconditions are met
-func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
-	if err != nil {
-		return nil, err
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
 	// Check if article exists
 	if err := h.ab.Has(store, msg.ArticleID); err != nil {
-		return nil, errors.Wrapf(err, "article with ID %s does not exist", msg.ArticleID)
+		return nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 
 	blockTime, err := weave.BlockTime(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "no block time in header")
+		return nil, nil, errors.Wrap(err, "no block time in header")
 	}
 	now := weave.AsUnixTime(blockTime)
 
@@ -449,6 +431,27 @@ func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 		Owner:     signer,
 		Content:   msg.Content,
 		CreatedAt: now,
+	}
+
+	return &msg, comment, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CreateCommentHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, _, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newCommentCost}, nil
+}
+
+// Deliver creates a comment and saves if all preconditions are met
+func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	_, comment, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
 	}
 
 	err = h.cb.Put(store, comment)
@@ -481,20 +484,40 @@ func NewCreateLikeHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateLikeHandler) validate(ctx weave.Context, db weave.KVStore, tx weave.Tx) (*CreateLikeMsg, error) {
+func (h CreateLikeHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateLikeMsg, *Like, error) {
 	var msg CreateLikeMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	return &msg, nil
+	// Check if article exists
+	if err := h.ab.Has(store, msg.ArticleID); err != nil {
+		return nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+
+	blockTime, err := weave.BlockTime(ctx)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "no block time in header")
+	}
+	now := weave.AsUnixTime(blockTime)
+
+	like := &Like{
+		Metadata:  msg.Metadata,
+		ArticleID: msg.ArticleID,
+		Owner:     signer,
+		CreatedAt: now,
+	}
+
+	return &msg, like, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CreateLikeHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
+	_, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -504,29 +527,9 @@ func (h CreateLikeHandler) Check(ctx weave.Context, store weave.KVStore, tx weav
 
 // Deliver creates a like and saves if all preconditions are met
 func (h CreateLikeHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
+	_, like, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
-	}
-
-	// Check if article exists
-	if err := h.ab.Has(store, msg.ArticleID); err != nil {
-		return nil, errors.Wrapf(err, "article with ID %s does not exist", msg.ArticleID)
-	}
-
-	signer := x.MainSigner(ctx, h.auth).Address()
-
-	blockTime, err := weave.BlockTime(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "no block time in header")
-	}
-	now := weave.AsUnixTime(blockTime)
-
-	like := &Like{
-		Metadata:  msg.Metadata,
-		ArticleID: msg.ArticleID,
-		Owner:     signer,
-		CreatedAt: now,
 	}
 
 	err = h.lb.Put(store, like)
