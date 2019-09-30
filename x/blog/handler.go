@@ -236,7 +236,7 @@ func (h ChangeBlogOwnerHandler) Check(ctx weave.Context, store weave.KVStore, tx
 		return nil, err
 	}
 
-	return &weave.CheckResult{GasAllocated: newBlogCost}, nil
+	return &weave.CheckResult{GasAllocated: changeBlogOwnerCost}, nil
 }
 
 // Deliver creates an custom state and saves if all preconditions are met
