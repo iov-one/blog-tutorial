@@ -7,11 +7,12 @@ import (
 )
 
 const (
-	packageName          = "blog"
-	newUserCost    int64 = 100
-	newBlogCost    int64 = 100
-	newArticleCost int64 = 100
-	newCommentCost int64 = 100
+	packageName               = "blog"
+	newUserCost         int64 = 100
+	newBlogCost         int64 = 100
+	changeBlogOwnerCost int64 = 100
+	newArticleCost      int64 = 100
+	newCommentCost      int64 = 100
 )
 
 // RegisterQuery registers buckets for querying.
@@ -23,6 +24,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator) {
 	//r = migration.SchemaMigratingRegistry(packageName, r)
 	r.Handle(&CreateUserMsg{}, NewCreateUserHandler(auth))
 	r.Handle(&CreateBlogMsg{}, NewCreateBlogHandler(auth))
+	r.Handle(&ChangeBlogOwnerMsg{}, NewChangeBlogOwnerHandler(auth))
 	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth))
 	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
 	r.Handle(&CreateCommentMsg{}, NewCreateCommentHandler(auth))
@@ -171,6 +173,80 @@ func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 	err = h.b.Put(store, blog)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot store blog")
+	}
+
+	// Returns generated blog ID as response
+	return &weave.DeliverResult{Data: blog.ID}, nil
+}
+
+// ------------------- ChangeBlogOwnerHandler -------------------
+
+// ChangeBlogOwnerHandler will handle ChangeBlogOWnerMsg
+type ChangeBlogOwnerHandler struct {
+	auth x.Authenticator
+	b    *BlogBucket
+}
+
+var _ weave.Handler = ChangeBlogOwnerHandler{}
+
+// NewChangeBlogOwnerHandler creates a blog message handler
+func NewChangeBlogOwnerHandler(auth x.Authenticator) weave.Handler {
+	return ChangeBlogOwnerHandler{
+		auth: auth,
+		b:    NewBlogBucket(),
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h ChangeBlogOwnerHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*ChangeBlogOwnerMsg, *Blog, error) {
+	var msg ChangeBlogOwnerMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, nil, errors.Wrap(err, "load msg")
+	}
+
+	var blog Blog
+	if err := h.b.One(store, msg.BlogID, &blog); err != nil {
+		return nil, nil, errors.Wrapf(err, "cannot retrieve blog with id %s from database", msg.BlogID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+	if !blog.Owner.Equals(signer) {
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to change the owner of the blog with ID %s", signer, blog.ID)
+	}
+
+	newBlog := &Blog{
+		Metadata:    blog.Metadata,
+		Owner:       msg.NewOwner,
+		Title:       blog.Title,
+		Description: blog.Description,
+		CreatedAt:   blog.CreatedAt,
+	}
+
+	return &msg, newBlog, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h ChangeBlogOwnerHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, _, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &weave.CheckResult{GasAllocated: newBlogCost}, nil
+}
+
+// Deliver creates an custom state and saves if all preconditions are met
+func (h ChangeBlogOwnerHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	_, blog, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	err = h.b.Put(store, blog)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot update blog")
 	}
 
 	// Returns generated blog ID as response

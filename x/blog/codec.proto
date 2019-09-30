@@ -100,6 +100,14 @@ message CreateBlogMsg {
   string description = 3;
 }
 
+message ChangeBlogOwnerMsg {
+  weave.Metadata metadata = 1;
+  // ID of the blog that is desired to change owner
+  bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
+  // Address of the new owner
+  bytes new_owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+}
+
 message CreateArticleMsg {
   weave.Metadata metadata = 1;
   // BlogID identifies blog that article is posted to

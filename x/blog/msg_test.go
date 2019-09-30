@@ -100,6 +100,81 @@ func TestValidateCreateBlogMsg(t *testing.T) {
 	}
 }
 
+func TestChangeBlogOwnerMsg(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+				NewOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": nil,
+			},
+		},
+		// add missing metadata test
+		"failure missing blog id": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				NewOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrEmpty,
+				"NewOwner": nil,
+			},
+		},
+		"failure invalid blog id": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   []byte{0, 0},
+				NewOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrInput,
+				"NewOwner": nil,
+			},
+		},
+		"failure missing owner": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": errors.ErrInput,
+			},
+		},
+		"failure invalid owner": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   weavetest.SequenceID(1),
+				NewOwner: []byte{0, 0},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": errors.ErrInput,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateCreateArticleMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg

@@ -282,6 +282,180 @@ func TestCreateBlog(t *testing.T) {
 	}
 }
 
+func TestChangeOwner(t *testing.T) {
+	owner := weavetest.NewCondition()
+	newOwner := weavetest.NewCondition()
+
+	blogID := weavetest.SequenceID(1)
+
+	blog := &Blog{
+		Metadata:    &weave.Metadata{Schema: 1},
+		ID:          blogID,
+		Owner:       owner.Address(),
+		Title:       "insanely good title",
+		Description: "best description in the existence",
+		CreatedAt:   weave.AsUnixTime(time.Now()),
+	}
+
+	cases := map[string]struct {
+		msg             weave.Msg
+		owner           weave.Condition
+		expected        *Blog
+		wantCheckErrs   map[string]*errors.Error
+		wantDeliverErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   blogID,
+				NewOwner: newOwner.Address(),
+			},
+			owner: owner,
+			expected: &Blog{
+				Metadata:    &weave.Metadata{Schema: 1},
+				ID:          blogID,
+				Owner:       newOwner.Address(),
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": nil,
+			},
+		},
+		// TODO add metadata test
+		"failure signer does not own the blog": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   blogID,
+				NewOwner: newOwner.Address(),
+			},
+			owner:    weavetest.NewCondition(),
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": nil,
+			},
+		},
+		"failure invalid owner": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   blogID,
+				NewOwner: []byte{0, 0},
+			},
+			owner:    owner,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": errors.ErrInput,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   nil,
+				"NewOwner": errors.ErrInput,
+			},
+		},
+		"failure missing blog id": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				NewOwner: newOwner.Address(),
+			},
+			owner:    owner,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrEmpty,
+				"NewOwner": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrEmpty,
+				"NewOwner": nil,
+			},
+		},
+		"failure invalid blog id": {
+			msg: &ChangeBlogOwnerMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   []byte{0, 0},
+				NewOwner: newOwner.Address(),
+			},
+			owner:    owner,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrInput,
+				"NewOwner": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"BlogID":   errors.ErrInput,
+				"NewOwner": nil,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			auth := &weavetest.Auth{
+				Signer: tc.owner,
+			}
+
+			rt := app.NewRouter()
+			RegisterRoutes(rt, auth)
+			kv := store.MemStore()
+			bucket := NewBlogBucket()
+
+			err := bucket.Put(kv, blog)
+			assert.Nil(t, err)
+
+			tx := &weavetest.Tx{Msg: tc.msg}
+
+			ctx := weave.WithBlockTime(context.Background(), time.Now().Round(time.Second))
+
+			if _, err := rt.Check(ctx, kv, tx); err != nil {
+				for field, wantErr := range tc.wantCheckErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			res, err := rt.Deliver(ctx, kv, tx)
+			if err != nil {
+				for field, wantErr := range tc.wantDeliverErrs {
+					assert.FieldError(t, err, field, wantErr)
+				}
+			}
+
+			if tc.expected != nil {
+				var stored Blog
+				err := bucket.One(kv, res.Data, &stored)
+				assert.Nil(t, err)
+
+				// ensure createdAt is after test execution starting time
+				createdAt := stored.CreatedAt
+				weave.InTheFuture(ctx, createdAt.Time())
+
+				// avoid registered at missing error
+				tc.expected.CreatedAt = createdAt
+
+				assert.Nil(t, err)
+				assert.Equal(t, tc.expected, &stored)
+			}
+		})
+	}
+}
+
 func TestCreateArticle(t *testing.T) {
 	blogOwner := weavetest.NewCondition()
 	signer := weavetest.NewCondition()
