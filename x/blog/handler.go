@@ -486,23 +486,24 @@ func NewCreateCommentHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateCommentHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateCommentMsg, *Comment, error) {
+func (h CreateCommentHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateCommentMsg, *Comment, *Article, error) {
 	var msg CreateCommentMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, nil, errors.Wrap(err, "load msg")
+		return nil, nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	// Check if article exists
-	if err := h.ab.Has(store, msg.ArticleID); err != nil {
-		return nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
+	// Retrieve article
+	var article Article
+	if err := h.ab.One(store, msg.ArticleID, &article); err != nil {
+		return nil, nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 
 	blockTime, err := weave.BlockTime(ctx)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "no block time in header")
+		return nil, nil, nil, errors.Wrap(err, "no block time in header")
 	}
 	now := weave.AsUnixTime(blockTime)
 
@@ -514,13 +515,13 @@ func (h CreateCommentHandler) validate(ctx weave.Context, store weave.KVStore, t
 		CreatedAt: now,
 	}
 
-	return &msg, comment, nil
+	return &msg, comment, &article, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CreateCommentHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, _, err := h.validate(ctx, store, tx)
+	_, _, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -530,14 +531,18 @@ func (h CreateCommentHandler) Check(ctx weave.Context, store weave.KVStore, tx w
 
 // Deliver creates a comment and saves if all preconditions are met
 func (h CreateCommentHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	_, comment, err := h.validate(ctx, store, tx)
+	_, comment, article, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = h.cb.Put(store, comment)
-	if err != nil {
+	if err = h.cb.Put(store, comment); err != nil {
 		return nil, errors.Wrap(err, "cannot store comment")
+	}
+
+	article.CommentCount++
+	if err = h.ab.Put(store, article); err != nil {
+		return nil, errors.Wrap(err, "cannot store article")
 	}
 
 	// Returns generated user ID as response

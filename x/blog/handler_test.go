@@ -1126,12 +1126,13 @@ func TestCronDeleteArticle(t *testing.T) {
 }
 
 func TestCreateComment(t *testing.T) {
-	existingArticleID := weavetest.SequenceID(1)
-	notExistingArticleID := weavetest.SequenceID(2)
+	now := weave.AsUnixTime(time.Now())
 
 	commentOwner := weavetest.NewCondition()
+	commentCount := int64(0)
 
-	now := weave.AsUnixTime(time.Now())
+	existingArticleID := weavetest.SequenceID(1)
+	notExistingArticleID := weavetest.SequenceID(2)
 
 	article := &Article{
 		Metadata:     &weave.Metadata{Schema: 1},
@@ -1140,7 +1141,7 @@ func TestCreateComment(t *testing.T) {
 		Owner:        weavetest.NewCondition().Address(),
 		Title:        "Best hacker's blog",
 		Content:      "Best description ever",
-		CommentCount: 1,
+		CommentCount: commentCount,
 		LikeCount:    2,
 		CreatedAt:    now,
 	}
@@ -1148,6 +1149,7 @@ func TestCreateComment(t *testing.T) {
 	cases := map[string]struct {
 		msg             weave.Msg
 		expected        *Comment
+		newCommentCount int64
 		wantCheckErrs   map[string]*errors.Error
 		wantDeliverErrs map[string]*errors.Error
 	}{
@@ -1164,6 +1166,7 @@ func TestCreateComment(t *testing.T) {
 				Owner:     commentOwner.Address(),
 				Content:   "best content in the existence",
 			},
+			newCommentCount: commentCount + 1,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":  nil,
 				"ID":        nil,
@@ -1265,11 +1268,20 @@ func TestCreateComment(t *testing.T) {
 			}
 
 			if tc.expected != nil {
-				var stored Comment
-				err := commentBucket.One(kv, res.Data, &stored)
+				var storedComment Comment
+				err := commentBucket.One(kv, res.Data, &storedComment)
 				assert.Nil(t, err)
-				tc.expected.CreatedAt = stored.CreatedAt
-				assert.Equal(t, tc.expected, &stored)
+				tc.expected.CreatedAt = storedComment.CreatedAt
+				assert.Equal(t, tc.expected, &storedComment)
+
+				// assert if comment count is increased on article
+				var storedArticle Article
+				err = articleBucket.One(kv, existingArticleID, &storedArticle)
+				assert.Nil(t, err)
+
+				if storedArticle.CommentCount != tc.newCommentCount {
+					t.Errorf("expected %d but got %d", tc.newCommentCount, article.CommentCount)
+				}
 			}
 		})
 	}
@@ -1419,8 +1431,8 @@ func TestCreateLike(t *testing.T) {
 				err = articleBucket.One(kv, existingArticleID, &article)
 				assert.Nil(t, err)
 
-				if article.LikeCount != likeCount+1 {
-					t.Errorf("expected %d but got %d", likeCount+1, article.LikeCount)
+				if article.LikeCount != tc.newLikeCount {
+					t.Errorf("expected %d but got %d", tc.newLikeCount, article.LikeCount)
 				}
 			}
 		})
