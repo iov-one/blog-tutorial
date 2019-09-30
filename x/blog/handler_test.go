@@ -1283,6 +1283,7 @@ func TestCreateLike(t *testing.T) {
 
 	now := weave.AsUnixTime(time.Now())
 
+	likeCount := int64(1)
 	article := &Article{
 		Metadata:     &weave.Metadata{Schema: 1},
 		ID:           existingArticleID,
@@ -1291,7 +1292,7 @@ func TestCreateLike(t *testing.T) {
 		Title:        "Best hacker's blog",
 		Content:      "Best description ever",
 		CommentCount: 1,
-		LikeCount:    2,
+		LikeCount:    likeCount,
 		CreatedAt:    now,
 	}
 
@@ -1299,6 +1300,7 @@ func TestCreateLike(t *testing.T) {
 		msg             weave.Msg
 		expected        *Like
 		wantCheckErrs   map[string]*errors.Error
+		newLikeCount    int64
 		wantDeliverErrs map[string]*errors.Error
 	}{
 		"success": {
@@ -1312,6 +1314,7 @@ func TestCreateLike(t *testing.T) {
 				ArticleID: existingArticleID,
 				Owner:     likeOwner.Address(),
 			},
+			newLikeCount: likeCount + 1,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":  nil,
 				"ID":        nil,
@@ -1405,11 +1408,20 @@ func TestCreateLike(t *testing.T) {
 			}
 
 			if tc.expected != nil {
-				var stored Like
-				err := likeBucket.One(kv, res.Data, &stored)
+				var like Like
+				err := likeBucket.One(kv, res.Data, &like)
 				assert.Nil(t, err)
-				tc.expected.CreatedAt = stored.CreatedAt
-				assert.Equal(t, tc.expected, &stored)
+				tc.expected.CreatedAt = like.CreatedAt
+				assert.Equal(t, tc.expected, &like)
+
+				// test if articles like count is increased
+				var article Article
+				err = articleBucket.One(kv, existingArticleID, &article)
+				assert.Nil(t, err)
+
+				if article.LikeCount != likeCount+1 {
+					t.Errorf("expected %d but got %d", likeCount+1, article.LikeCount)
+				}
 			}
 		})
 	}
