@@ -8,11 +8,13 @@ import (
 
 const (
 	packageName               = "blog"
-	newUserCost         int64 = 100
-	newBlogCost         int64 = 100
-	changeBlogOwnerCost int64 = 100
-	newArticleCost      int64 = 100
-	newCommentCost      int64 = 100
+	newUserCost         int64 = 1
+	newBlogCost         int64 = 10
+	changeBlogOwnerCost int64 = 5
+
+	newArticleCost  int64 = 1
+	articleCostUnit int64 = 1000 // first 1000 chars are free then pay 1 per mille
+	newCommentCost  int64 = 1
 )
 
 // RegisterQuery registers buckets for querying.
@@ -316,12 +318,15 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CreateArticleHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, _, err := h.validate(ctx, store, tx)
+	msg, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &weave.CheckResult{GasAllocated: newArticleCost}, nil
+	// Calculate gas cost
+	gasCost := int64(len(msg.Content)) * newArticleCost / articleCostUnit
+
+	return &weave.CheckResult{GasAllocated: gasCost}, nil
 }
 
 // Deliver creates an custom state and saves if all preconditions are met
