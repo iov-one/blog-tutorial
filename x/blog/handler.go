@@ -565,23 +565,24 @@ func NewCreateLikeHandler(auth x.Authenticator) weave.Handler {
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CreateLikeHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateLikeMsg, *Like, error) {
+func (h CreateLikeHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CreateLikeMsg, *Like, *Article, error) {
 	var msg CreateLikeMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, nil, errors.Wrap(err, "load msg")
+		return nil, nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	// Check if article exists
-	if err := h.ab.Has(store, msg.ArticleID); err != nil {
-		return nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
+	// Retrieve article
+	var article Article
+	if err := h.ab.One(store, msg.ArticleID, &article); err != nil {
+		return nil, nil, nil, errors.Wrapf(err, "article with id %s does not exist", msg.ArticleID)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 
 	blockTime, err := weave.BlockTime(ctx)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "no block time in header")
+		return nil, nil, nil, errors.Wrap(err, "no block time in header")
 	}
 	now := weave.AsUnixTime(blockTime)
 
@@ -592,13 +593,13 @@ func (h CreateLikeHandler) validate(ctx weave.Context, store weave.KVStore, tx w
 		CreatedAt: now,
 	}
 
-	return &msg, like, nil
+	return &msg, like, &article, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CreateLikeHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, _, err := h.validate(ctx, store, tx)
+	_, _, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -608,14 +609,19 @@ func (h CreateLikeHandler) Check(ctx weave.Context, store weave.KVStore, tx weav
 
 // Deliver creates a like and saves if all preconditions are met
 func (h CreateLikeHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	_, like, err := h.validate(ctx, store, tx)
+	_, like, article, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = h.lb.Put(store, like)
-	if err != nil {
+	if err := h.lb.Put(store, like); err != nil {
 		return nil, errors.Wrap(err, "cannot store like")
+	}
+
+	// increase article like count
+	article.LikeCount++
+	if err = h.ab.Put(store, article); err != nil {
+		return nil, errors.Wrap(err, "cannot store article")
 	}
 
 	// Returns generated like ID as response
