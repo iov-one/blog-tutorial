@@ -202,6 +202,10 @@
                 </li>
               
                 <li>
+                  <a href="#blog.CancelDeleteArticleTaskMsg"><span class="badge">M</span>CancelDeleteArticleTaskMsg</a>
+                </li>
+              
+                <li>
                   <a href="#blog.ChangeBlogOwnerMsg"><span class="badge">M</span>ChangeBlogOwnerMsg</a>
                 </li>
               
@@ -231,6 +235,10 @@
               
                 <li>
                   <a href="#blog.DeleteArticleMsg"><span class="badge">M</span>DeleteArticleMsg</a>
+                </li>
+              
+                <li>
+                  <a href="#blog.DeleteArticleTask"><span class="badge">M</span>DeleteArticleTask</a>
                 </li>
               
                 <li>
@@ -479,6 +487,36 @@ Could be nil if there is not a time of deletion </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>CreatedAt defines creation time of the blog </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="blog.CancelDeleteArticleTaskMsg">CancelDeleteArticleTaskMsg</h3>
+        <p>CancelDeleteArticleTaskMsg message cancelles scheduled article deletion</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>task_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>TaskID is the identifier of the task </p></td>
                 </tr>
               
             </tbody>
@@ -797,6 +835,50 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>ArticleID is the identifier of the article that is desired to be deleted </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="blog.DeleteArticleTask">DeleteArticleTask</h3>
+        <p>DeleteArticleTask is used for representing scheduled task id. Used when deleting the task</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>TaskID is the unique identifier of the task </p></td>
+                </tr>
+              
+                <tr>
+                  <td>article_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>ArticleID is the id of the article that will be deleted </p></td>
+                </tr>
+              
+                <tr>
+                  <td>task_owner</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>TaskOwner is the creator of the task </p></td>
                 </tr>
               
             </tbody>

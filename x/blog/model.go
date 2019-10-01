@@ -168,6 +168,36 @@ func (m *Article) Validate() error {
 	return errs
 }
 
+var _ morm.Model = (*DeleteArticleTask)(nil)
+
+// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+func (m *DeleteArticleTask) SetID(id []byte) error {
+	m.ID = id
+	return nil
+}
+
+// Copy produces a new copy to fulfill the Model interface
+func (m *DeleteArticleTask) Copy() orm.CloneableData {
+	return &DeleteArticleTask{
+		Metadata:  m.Metadata.Copy(),
+		ID:        copyBytes(m.ID),
+		ArticleID: copyBytes(m.ArticleID),
+		TaskOwner: m.TaskOwner.Clone(),
+	}
+}
+
+// Validate validates user's fields
+func (m *DeleteArticleTask) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ID", isGenID(m.ID, false))
+	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+	errs = errors.AppendField(errs, "TaskOwner", m.TaskOwner.Validate())
+
+	return errs
+}
+
 var _ morm.Model = (*Comment)(nil)
 
 // SetID is a minimal implementation, useful when the ID is a separate protobuf field

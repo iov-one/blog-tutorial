@@ -281,6 +281,52 @@ func TestValidateDeleteArticle(t *testing.T) {
 	}
 }
 
+func TestCancelDeleteArticleTask(t *testing.T) {
+	cases := map[string]struct {
+		msg      weave.Msg
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			msg: &CancelDeleteArticleTaskMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				TaskID:   weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"TaskID":   nil,
+			},
+		},
+		// add missing metadata test
+		"failure missing task id": {
+			msg: &CancelDeleteArticleTaskMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"TaskID":   errors.ErrEmpty,
+			},
+		},
+		"failure invalid task id": {
+			msg: &CancelDeleteArticleTaskMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				TaskID:   []byte{0, 0},
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata": nil,
+				"TaskID":   errors.ErrInput,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.msg.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateCreateCommentMsg(t *testing.T) {
 	cases := map[string]struct {
 		msg      weave.Msg

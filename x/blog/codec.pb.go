@@ -320,6 +320,78 @@ func (m *Article) GetDeleteAt() github_com_iov_one_weave.UnixTime {
 	return 0
 }
 
+// DeleteArticleTask is used for representing scheduled task id. Used when deleting the task
+type DeleteArticleTask struct {
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// TaskID is the unique identifier of the task
+	ID []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// ArticleID is the id of the article that will be deleted
+	ArticleID []byte `protobuf:"bytes,3,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"`
+	// TaskOwner is the creator of the task
+	TaskOwner github_com_iov_one_weave.Address `protobuf:"bytes,4,opt,name=task_owner,json=taskOwner,proto3,casttype=github.com/iov-one/weave.Address" json:"task_owner,omitempty"`
+}
+
+func (m *DeleteArticleTask) Reset()         { *m = DeleteArticleTask{} }
+func (m *DeleteArticleTask) String() string { return proto.CompactTextString(m) }
+func (*DeleteArticleTask) ProtoMessage()    {}
+func (*DeleteArticleTask) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{3}
+}
+func (m *DeleteArticleTask) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeleteArticleTask) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeleteArticleTask.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeleteArticleTask) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteArticleTask.Merge(m, src)
+}
+func (m *DeleteArticleTask) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeleteArticleTask) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteArticleTask.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteArticleTask proto.InternalMessageInfo
+
+func (m *DeleteArticleTask) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *DeleteArticleTask) GetID() []byte {
+	if m != nil {
+		return m.ID
+	}
+	return nil
+}
+
+func (m *DeleteArticleTask) GetArticleID() []byte {
+	if m != nil {
+		return m.ArticleID
+	}
+	return nil
+}
+
+func (m *DeleteArticleTask) GetTaskOwner() github_com_iov_one_weave.Address {
+	if m != nil {
+		return m.TaskOwner
+	}
+	return nil
+}
+
 type Comment struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ID is comment's identifier
@@ -338,7 +410,7 @@ func (m *Comment) Reset()         { *m = Comment{} }
 func (m *Comment) String() string { return proto.CompactTextString(m) }
 func (*Comment) ProtoMessage()    {}
 func (*Comment) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{3}
+	return fileDescriptor_87ea59410c2fea68, []int{4}
 }
 func (m *Comment) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -425,7 +497,7 @@ func (m *Like) Reset()         { *m = Like{} }
 func (m *Like) String() string { return proto.CompactTextString(m) }
 func (*Like) ProtoMessage()    {}
 func (*Like) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{4}
+	return fileDescriptor_87ea59410c2fea68, []int{5}
 }
 func (m *Like) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -501,7 +573,7 @@ func (m *CreateUserMsg) Reset()         { *m = CreateUserMsg{} }
 func (m *CreateUserMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateUserMsg) ProtoMessage()    {}
 func (*CreateUserMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{5}
+	return fileDescriptor_87ea59410c2fea68, []int{6}
 }
 func (m *CreateUserMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -563,7 +635,7 @@ func (m *CreateBlogMsg) Reset()         { *m = CreateBlogMsg{} }
 func (m *CreateBlogMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateBlogMsg) ProtoMessage()    {}
 func (*CreateBlogMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{6}
+	return fileDescriptor_87ea59410c2fea68, []int{7}
 }
 func (m *CreateBlogMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -625,7 +697,7 @@ func (m *ChangeBlogOwnerMsg) Reset()         { *m = ChangeBlogOwnerMsg{} }
 func (m *ChangeBlogOwnerMsg) String() string { return proto.CompactTextString(m) }
 func (*ChangeBlogOwnerMsg) ProtoMessage()    {}
 func (*ChangeBlogOwnerMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{7}
+	return fileDescriptor_87ea59410c2fea68, []int{8}
 }
 func (m *ChangeBlogOwnerMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -692,7 +764,7 @@ func (m *CreateArticleMsg) Reset()         { *m = CreateArticleMsg{} }
 func (m *CreateArticleMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateArticleMsg) ProtoMessage()    {}
 func (*CreateArticleMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{8}
+	return fileDescriptor_87ea59410c2fea68, []int{9}
 }
 func (m *CreateArticleMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -767,7 +839,7 @@ func (m *DeleteArticleMsg) Reset()         { *m = DeleteArticleMsg{} }
 func (m *DeleteArticleMsg) String() string { return proto.CompactTextString(m) }
 func (*DeleteArticleMsg) ProtoMessage()    {}
 func (*DeleteArticleMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{9}
+	return fileDescriptor_87ea59410c2fea68, []int{10}
 }
 func (m *DeleteArticleMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -810,6 +882,60 @@ func (m *DeleteArticleMsg) GetArticleID() []byte {
 	return nil
 }
 
+// CancelDeleteArticleTaskMsg message cancelles scheduled article deletion
+type CancelDeleteArticleTaskMsg struct {
+	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// TaskID is the identifier of the task
+	TaskID []byte `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+}
+
+func (m *CancelDeleteArticleTaskMsg) Reset()         { *m = CancelDeleteArticleTaskMsg{} }
+func (m *CancelDeleteArticleTaskMsg) String() string { return proto.CompactTextString(m) }
+func (*CancelDeleteArticleTaskMsg) ProtoMessage()    {}
+func (*CancelDeleteArticleTaskMsg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_87ea59410c2fea68, []int{11}
+}
+func (m *CancelDeleteArticleTaskMsg) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CancelDeleteArticleTaskMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CancelDeleteArticleTaskMsg.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CancelDeleteArticleTaskMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CancelDeleteArticleTaskMsg.Merge(m, src)
+}
+func (m *CancelDeleteArticleTaskMsg) XXX_Size() int {
+	return m.Size()
+}
+func (m *CancelDeleteArticleTaskMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_CancelDeleteArticleTaskMsg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CancelDeleteArticleTaskMsg proto.InternalMessageInfo
+
+func (m *CancelDeleteArticleTaskMsg) GetMetadata() *weave.Metadata {
+	if m != nil {
+		return m.Metadata
+	}
+	return nil
+}
+
+func (m *CancelDeleteArticleTaskMsg) GetTaskID() []byte {
+	if m != nil {
+		return m.TaskID
+	}
+	return nil
+}
+
 type CreateCommentMsg struct {
 	Metadata *weave.Metadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ArticleID is the identifier of the article that is desired to be commented
@@ -822,7 +948,7 @@ func (m *CreateCommentMsg) Reset()         { *m = CreateCommentMsg{} }
 func (m *CreateCommentMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateCommentMsg) ProtoMessage()    {}
 func (*CreateCommentMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{10}
+	return fileDescriptor_87ea59410c2fea68, []int{12}
 }
 func (m *CreateCommentMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -882,7 +1008,7 @@ func (m *CreateLikeMsg) Reset()         { *m = CreateLikeMsg{} }
 func (m *CreateLikeMsg) String() string { return proto.CompactTextString(m) }
 func (*CreateLikeMsg) ProtoMessage()    {}
 func (*CreateLikeMsg) Descriptor() ([]byte, []int) {
-	return fileDescriptor_87ea59410c2fea68, []int{11}
+	return fileDescriptor_87ea59410c2fea68, []int{13}
 }
 func (m *CreateLikeMsg) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -929,6 +1055,7 @@ func init() {
 	proto.RegisterType((*User)(nil), "blog.User")
 	proto.RegisterType((*Blog)(nil), "blog.Blog")
 	proto.RegisterType((*Article)(nil), "blog.Article")
+	proto.RegisterType((*DeleteArticleTask)(nil), "blog.DeleteArticleTask")
 	proto.RegisterType((*Comment)(nil), "blog.Comment")
 	proto.RegisterType((*Like)(nil), "blog.Like")
 	proto.RegisterType((*CreateUserMsg)(nil), "blog.CreateUserMsg")
@@ -936,6 +1063,7 @@ func init() {
 	proto.RegisterType((*ChangeBlogOwnerMsg)(nil), "blog.ChangeBlogOwnerMsg")
 	proto.RegisterType((*CreateArticleMsg)(nil), "blog.CreateArticleMsg")
 	proto.RegisterType((*DeleteArticleMsg)(nil), "blog.DeleteArticleMsg")
+	proto.RegisterType((*CancelDeleteArticleTaskMsg)(nil), "blog.CancelDeleteArticleTaskMsg")
 	proto.RegisterType((*CreateCommentMsg)(nil), "blog.CreateCommentMsg")
 	proto.RegisterType((*CreateLikeMsg)(nil), "blog.CreateLikeMsg")
 }
@@ -943,50 +1071,54 @@ func init() {
 func init() { proto.RegisterFile("x/blog/codec.proto", fileDescriptor_87ea59410c2fea68) }
 
 var fileDescriptor_87ea59410c2fea68 = []byte{
-	// 678 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x96, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0xeb, 0xaf, 0x24, 0x9e, 0x26, 0x22, 0x5a, 0x55, 0xc8, 0xea, 0x21, 0x09, 0x06, 0xa4,
-	0x48, 0x94, 0x44, 0x02, 0x71, 0xe1, 0x96, 0x8f, 0x4b, 0x10, 0x15, 0x92, 0x45, 0xcf, 0x91, 0x63,
-	0x8f, 0xdc, 0xa5, 0xb6, 0xb7, 0xb2, 0xb7, 0x4d, 0x5f, 0x00, 0x71, 0xe5, 0xc8, 0x2b, 0xf0, 0x20,
-	0x48, 0x9c, 0x50, 0x8f, 0x3d, 0x45, 0xc8, 0x7d, 0x8b, 0x72, 0x41, 0x6b, 0xbb, 0xa9, 0x03, 0xb4,
-	0x52, 0xd2, 0xe4, 0xc0, 0x6d, 0x77, 0xec, 0xf1, 0xcc, 0xfc, 0x66, 0xe6, 0x2f, 0x03, 0x39, 0xeb,
-	0x4e, 0x7c, 0xe6, 0x75, 0x1d, 0xe6, 0xa2, 0xd3, 0x39, 0x8e, 0x18, 0x67, 0x44, 0x15, 0x96, 0xdd,
-	0xed, 0x82, 0x69, 0x77, 0xc7, 0x63, 0x1e, 0x4b, 0x8f, 0x5d, 0x71, 0xca, 0xac, 0xe6, 0x37, 0x09,
-	0xd4, 0x83, 0x18, 0x23, 0xf2, 0x0c, 0x2a, 0x01, 0x72, 0xdb, 0xb5, 0xb9, 0x6d, 0x48, 0x2d, 0xa9,
-	0xbd, 0xfd, 0xe2, 0x41, 0x67, 0x8a, 0xf6, 0x29, 0x76, 0xf6, 0x73, 0xb3, 0x35, 0x7f, 0x81, 0x3c,
-	0x04, 0x99, 0xba, 0x86, 0xdc, 0x92, 0xda, 0xd5, 0x7e, 0x29, 0x99, 0x35, 0xe5, 0xd1, 0xd0, 0x92,
-	0xa9, 0x4b, 0x76, 0xa1, 0x72, 0x12, 0x63, 0x14, 0xda, 0x01, 0x1a, 0x4a, 0x4b, 0x6a, 0xeb, 0xd6,
-	0xfc, 0x4e, 0xea, 0xa0, 0x4c, 0x28, 0x33, 0xd4, 0xd4, 0x2c, 0x8e, 0xe4, 0x0d, 0xd4, 0x22, 0xf4,
-	0x68, 0xcc, 0x31, 0x42, 0x77, 0x6c, 0x73, 0x43, 0x6b, 0x49, 0x6d, 0xa5, 0xff, 0xf4, 0x6a, 0xd6,
-	0x7c, 0xe4, 0x51, 0x7e, 0x78, 0x32, 0xe9, 0x38, 0x2c, 0xe8, 0x52, 0x76, 0xfa, 0x9c, 0x85, 0xd8,
-	0xcd, 0xb2, 0x39, 0x08, 0xe9, 0xd9, 0x7b, 0x1a, 0xa0, 0x55, 0xbd, 0xf1, 0xed, 0x71, 0xf3, 0xa3,
-	0x0c, 0x6a, 0xdf, 0x67, 0xde, 0x7a, 0xea, 0x78, 0x0d, 0x1a, 0x9b, 0x86, 0x18, 0xa5, 0x45, 0x54,
-	0xfb, 0x4f, 0xae, 0x66, 0xcd, 0xd6, 0xad, 0x19, 0xf5, 0x5c, 0x37, 0xc2, 0x38, 0xb6, 0x32, 0x17,
-	0xb2, 0x03, 0x1a, 0xa7, 0xdc, 0xc7, 0xbc, 0xd2, 0xec, 0x42, 0x5a, 0xb0, 0xed, 0x62, 0xec, 0x44,
-	0xf4, 0x98, 0x53, 0x16, 0xa6, 0x95, 0xea, 0x56, 0xd1, 0x44, 0x86, 0x00, 0x4e, 0x84, 0x36, 0xcf,
-	0x50, 0x94, 0x96, 0x41, 0xa1, 0xe7, 0x8e, 0x3d, 0x6e, 0xfe, 0x50, 0xa0, 0xdc, 0x8b, 0x38, 0x75,
-	0x7c, 0x5c, 0x0f, 0x8a, 0xc7, 0x50, 0x16, 0xb3, 0x34, 0xa6, 0x6e, 0x0e, 0x03, 0x92, 0x59, 0xb3,
-	0x24, 0x50, 0x8f, 0x86, 0x56, 0x49, 0x3c, 0x1a, 0x15, 0x78, 0xa9, 0xf7, 0xe0, 0xa5, 0x15, 0x79,
-	0x19, 0x50, 0x76, 0x58, 0xc8, 0x31, 0xcc, 0x50, 0xe8, 0xd6, 0xf5, 0x95, 0xbc, 0x82, 0x9a, 0xc3,
-	0x82, 0x00, 0x43, 0x3e, 0x76, 0xd8, 0x49, 0xc8, 0x8d, 0x72, 0x8a, 0xaa, 0x9e, 0xcc, 0x9a, 0xd5,
-	0x41, 0xf6, 0x60, 0x20, 0xec, 0x56, 0xd5, 0x29, 0xdc, 0xc8, 0x1e, 0x80, 0x4f, 0x8f, 0x30, 0xf7,
-	0xa9, 0xa4, 0x3e, 0xb5, 0x64, 0xd6, 0xd4, 0xdf, 0xd2, 0x23, 0xcc, 0x1c, 0x74, 0xff, 0xfa, 0xf8,
-	0x47, 0x33, 0xf4, 0xd5, 0x9a, 0x41, 0xfa, 0xa0, 0xbb, 0xe8, 0x23, 0x47, 0xf1, 0x11, 0x58, 0xe6,
-	0x23, 0x95, 0xcc, 0xaf, 0xc7, 0xcd, 0x2f, 0x32, 0x94, 0xf3, 0xb2, 0xd6, 0xd3, 0xd0, 0x3d, 0x00,
-	0x3b, 0x1b, 0x90, 0x9b, 0x9e, 0xa6, 0x20, 0xf2, 0xb1, 0x19, 0x0d, 0x2d, 0x3d, 0x7f, 0xe1, 0x9e,
-	0x9d, 0x2d, 0xf4, 0x50, 0x5b, 0xec, 0xe1, 0x7a, 0x66, 0xfd, 0x97, 0x04, 0xaa, 0xe8, 0xde, 0xff,
-	0xc6, 0x65, 0xb1, 0x7a, 0x6d, 0xc5, 0xea, 0x3f, 0x40, 0x6d, 0x90, 0x5e, 0x84, 0x7c, 0xef, 0xc7,
-	0x4b, 0x2a, 0x5f, 0x51, 0xa9, 0xe5, 0x7f, 0x2b, 0xb5, 0x32, 0x57, 0x6a, 0x93, 0x5f, 0xc7, 0x12,
-	0x7b, 0xbf, 0x74, 0xac, 0xf9, 0x86, 0xcb, 0x77, 0x28, 0xa2, 0xf2, 0x97, 0x22, 0x9a, 0x5f, 0x25,
-	0x20, 0x83, 0x43, 0x3b, 0xf4, 0xd2, 0xb0, 0xef, 0x04, 0xbb, 0xa5, 0x63, 0x17, 0xe4, 0x4b, 0xbe,
-	0x55, 0xbe, 0x7a, 0xa0, 0x87, 0x38, 0x1d, 0x2f, 0x2f, 0xf9, 0x95, 0x10, 0xa7, 0x69, 0x5e, 0xe6,
-	0x85, 0x04, 0xf5, 0x0c, 0x51, 0x3e, 0x2e, 0x9b, 0xc9, 0x74, 0x8e, 0x52, 0xb9, 0x45, 0x2c, 0xd5,
-	0xc5, 0x45, 0x5b, 0x50, 0x20, 0x6d, 0x35, 0x05, 0x0a, 0xa0, 0x3e, 0xcc, 0xce, 0x2b, 0x56, 0xb6,
-	0xb8, 0x59, 0xf2, 0xdd, 0x9b, 0x65, 0x7e, 0x9a, 0x93, 0xcc, 0x65, 0x6f, 0xb3, 0xf1, 0x8a, 0xf0,
-	0x94, 0x05, 0x78, 0x37, 0x1b, 0x26, 0x44, 0x66, 0xb3, 0x59, 0xf4, 0x8d, 0xef, 0x49, 0x43, 0x3a,
-	0x4f, 0x1a, 0xd2, 0xcf, 0xa4, 0x21, 0x7d, 0xbe, 0x6c, 0x6c, 0x9d, 0x5f, 0x36, 0xb6, 0x2e, 0x2e,
-	0x1b, 0x5b, 0x93, 0x52, 0xfa, 0xa3, 0xf6, 0xf2, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x86, 0x0e,
-	0x59, 0x04, 0xe7, 0x09, 0x00, 0x00,
+	// 737 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0x4f, 0x6b, 0xdb, 0x4a,
+	0x10, 0x8f, 0x24, 0xff, 0xd3, 0xc4, 0xe6, 0xf9, 0x2d, 0xe1, 0x21, 0x7c, 0xb0, 0xfd, 0xf4, 0x5e,
+	0xc1, 0xd0, 0xd4, 0x86, 0x96, 0x5e, 0x7a, 0xf3, 0x9f, 0x8b, 0x4b, 0x43, 0x41, 0x24, 0x67, 0x23,
+	0x4b, 0x83, 0xb3, 0xb5, 0xac, 0x0d, 0xd2, 0x26, 0xce, 0x17, 0x28, 0xbd, 0xf6, 0xd8, 0xaf, 0xd0,
+	0x0f, 0x52, 0x28, 0x14, 0x4a, 0x8e, 0x39, 0x99, 0xe2, 0x7c, 0x8b, 0xf4, 0x52, 0x56, 0xab, 0x38,
+	0x52, 0xd3, 0x04, 0xe4, 0x38, 0x94, 0xde, 0x76, 0x66, 0x35, 0xbb, 0x3b, 0xbf, 0xdf, 0xcc, 0x6f,
+	0x04, 0xe4, 0xb4, 0x33, 0xf6, 0xd8, 0xa4, 0xe3, 0x30, 0x17, 0x9d, 0xf6, 0x51, 0xc0, 0x38, 0x23,
+	0x39, 0xe1, 0xa9, 0x6d, 0x27, 0x5c, 0xb5, 0x9d, 0x09, 0x9b, 0xb0, 0x68, 0xd9, 0x11, 0x2b, 0xe9,
+	0x35, 0x3f, 0x29, 0x90, 0x3b, 0x08, 0x31, 0x20, 0x8f, 0xa1, 0x34, 0x43, 0x6e, 0xbb, 0x36, 0xb7,
+	0x0d, 0xa5, 0xa9, 0xb4, 0xb6, 0x9f, 0xfe, 0xd5, 0x9e, 0xa3, 0x7d, 0x82, 0xed, 0xbd, 0xd8, 0x6d,
+	0xad, 0x3e, 0x20, 0xff, 0x80, 0x4a, 0x5d, 0x43, 0x6d, 0x2a, 0xad, 0x72, 0xaf, 0xb0, 0x5c, 0x34,
+	0xd4, 0xe1, 0xc0, 0x52, 0xa9, 0x4b, 0x6a, 0x50, 0x3a, 0x0e, 0x31, 0xf0, 0xed, 0x19, 0x1a, 0x5a,
+	0x53, 0x69, 0xe9, 0xd6, 0xca, 0x26, 0x55, 0xd0, 0xc6, 0x94, 0x19, 0xb9, 0xc8, 0x2d, 0x96, 0xe4,
+	0x25, 0x54, 0x02, 0x9c, 0xd0, 0x90, 0x63, 0x80, 0xee, 0xc8, 0xe6, 0x46, 0xbe, 0xa9, 0xb4, 0xb4,
+	0xde, 0xa3, 0xcb, 0x45, 0xe3, 0xdf, 0x09, 0xe5, 0x87, 0xc7, 0xe3, 0xb6, 0xc3, 0x66, 0x1d, 0xca,
+	0x4e, 0x9e, 0x30, 0x1f, 0x3b, 0xf2, 0x35, 0x07, 0x3e, 0x3d, 0xdd, 0xa7, 0x33, 0xb4, 0xca, 0xd7,
+	0xb1, 0x5d, 0x6e, 0xbe, 0x55, 0x21, 0xd7, 0xf3, 0xd8, 0x64, 0x33, 0x79, 0xbc, 0x80, 0x3c, 0x9b,
+	0xfb, 0x18, 0x44, 0x49, 0x94, 0x7b, 0xff, 0x5f, 0x2e, 0x1a, 0xcd, 0x5b, 0x5f, 0xd4, 0x75, 0xdd,
+	0x00, 0xc3, 0xd0, 0x92, 0x21, 0x64, 0x07, 0xf2, 0x9c, 0x72, 0x0f, 0xe3, 0x4c, 0xa5, 0x41, 0x9a,
+	0xb0, 0xed, 0x62, 0xe8, 0x04, 0xf4, 0x88, 0x53, 0xe6, 0x47, 0x99, 0xea, 0x56, 0xd2, 0x45, 0x06,
+	0x00, 0x4e, 0x80, 0x36, 0x97, 0x50, 0x14, 0xb2, 0x40, 0xa1, 0xc7, 0x81, 0x5d, 0x6e, 0x7e, 0xd5,
+	0xa0, 0xd8, 0x0d, 0x38, 0x75, 0x3c, 0xdc, 0x0c, 0x14, 0xff, 0x41, 0x51, 0xd4, 0xd2, 0x88, 0xba,
+	0x31, 0x18, 0xb0, 0x5c, 0x34, 0x0a, 0x02, 0xea, 0xe1, 0xc0, 0x2a, 0x88, 0xad, 0x61, 0x02, 0xaf,
+	0xdc, 0x3d, 0xf0, 0xca, 0x27, 0xf1, 0x32, 0xa0, 0xe8, 0x30, 0x9f, 0xa3, 0x2f, 0xa1, 0xd0, 0xad,
+	0x2b, 0x93, 0x3c, 0x87, 0x8a, 0xc3, 0x66, 0x33, 0xf4, 0xf9, 0xc8, 0x61, 0xc7, 0x3e, 0x37, 0x8a,
+	0x11, 0x54, 0xd5, 0xe5, 0xa2, 0x51, 0xee, 0xcb, 0x8d, 0xbe, 0xf0, 0x5b, 0x65, 0x27, 0x61, 0x91,
+	0x5d, 0x00, 0x8f, 0x4e, 0x31, 0x8e, 0x29, 0x45, 0x31, 0x95, 0xe5, 0xa2, 0xa1, 0xbf, 0xa2, 0x53,
+	0x94, 0x01, 0xba, 0x77, 0xb5, 0xfc, 0x89, 0x0c, 0x7d, 0x3d, 0x32, 0x48, 0x0f, 0x74, 0x17, 0x3d,
+	0xe4, 0x28, 0x0e, 0x81, 0x2c, 0x87, 0x94, 0x64, 0x5c, 0x97, 0x9b, 0x5f, 0x14, 0xf8, 0x7b, 0x20,
+	0x0d, 0x49, 0xeb, 0xbe, 0x1d, 0x4e, 0x37, 0x43, 0xed, 0x2e, 0x80, 0x2d, 0xcf, 0xbc, 0x66, 0x37,
+	0x82, 0x24, 0xbe, 0x69, 0x38, 0xb0, 0xf4, 0xf8, 0x83, 0xa1, 0x4b, 0xfa, 0x00, 0xdc, 0x0e, 0xa7,
+	0xa3, 0xec, 0x44, 0xeb, 0x22, 0xee, 0xb5, 0x08, 0x33, 0x3f, 0xa8, 0x50, 0x8c, 0x49, 0xfa, 0x1d,
+	0x39, 0xdc, 0xa7, 0x4e, 0x13, 0x15, 0x99, 0x4f, 0x57, 0xe4, 0x66, 0x3a, 0xf7, 0xbb, 0x02, 0x39,
+	0x51, 0x8b, 0x7f, 0x1a, 0x2e, 0xe9, 0xec, 0xf3, 0x6b, 0x66, 0xff, 0x06, 0x2a, 0xfd, 0xc8, 0x10,
+	0xc3, 0x68, 0x2f, 0xcc, 0xa8, 0xe3, 0xc9, 0xb9, 0xa3, 0xfe, 0x7a, 0xee, 0x68, 0xab, 0xb9, 0x63,
+	0xf2, 0xab, 0xbb, 0x84, 0x8a, 0x65, 0xbe, 0x6b, 0xa5, 0x57, 0xea, 0x1d, 0xfa, 0xae, 0xdd, 0xd0,
+	0x77, 0xf3, 0xa3, 0x02, 0xa4, 0x7f, 0x68, 0xfb, 0x93, 0xe8, 0xda, 0xa8, 0x1d, 0x32, 0xdf, 0x9d,
+	0x10, 0x63, 0xf5, 0x56, 0x31, 0xee, 0x82, 0xee, 0xe3, 0x7c, 0x94, 0x7d, 0x80, 0x95, 0x7c, 0x9c,
+	0xcb, 0x36, 0x3d, 0x57, 0xa0, 0x2a, 0x21, 0x8a, 0xcb, 0xe5, 0x61, 0x5e, 0xba, 0x82, 0x52, 0xbb,
+	0x45, 0xfa, 0x73, 0xe9, 0x46, 0x4b, 0xe9, 0x69, 0x7e, 0x3d, 0x3d, 0x9d, 0x41, 0x35, 0x25, 0xa7,
+	0x99, 0x33, 0x4b, 0x77, 0x96, 0x7a, 0x77, 0x67, 0x99, 0x3e, 0xd4, 0xfa, 0xb6, 0xef, 0xa0, 0x77,
+	0x43, 0xc3, 0xd7, 0x81, 0x34, 0x12, 0xe0, 0x34, 0xa4, 0xe2, 0x28, 0x01, 0xa9, 0xd8, 0x1a, 0xba,
+	0xe6, 0xbb, 0x15, 0x73, 0xb1, 0xcc, 0x3e, 0x6c, 0x7e, 0x49, 0xb2, 0xb4, 0x14, 0x59, 0xd7, 0x1d,
+	0x2d, 0x44, 0xed, 0x61, 0x5f, 0xd1, 0x33, 0x3e, 0x2f, 0xeb, 0xca, 0xd9, 0xb2, 0xae, 0x7c, 0x5b,
+	0xd6, 0x95, 0xf7, 0x17, 0xf5, 0xad, 0xb3, 0x8b, 0xfa, 0xd6, 0xf9, 0x45, 0x7d, 0x6b, 0x5c, 0x88,
+	0x7e, 0x73, 0x9f, 0xfd, 0x08, 0x00, 0x00, 0xff, 0xff, 0x6d, 0x24, 0x2b, 0xbf, 0x25, 0x0b, 0x00,
+	0x00,
 }
 
 func (m *User) Marshal() (dAtA []byte, err error) {
@@ -1175,6 +1307,52 @@ func (m *Article) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *DeleteArticleTask) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeleteArticleTask) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n4, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n4
+	}
+	if len(m.ID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if len(m.ArticleID) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.ArticleID)))
+		i += copy(dAtA[i:], m.ArticleID)
+	}
+	if len(m.TaskOwner) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.TaskOwner)))
+		i += copy(dAtA[i:], m.TaskOwner)
+	}
+	return i, nil
+}
+
 func (m *Comment) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1194,11 +1372,11 @@ func (m *Comment) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n4, err := m.Metadata.MarshalTo(dAtA[i:])
+		n5, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n4
+		i += n5
 	}
 	if len(m.ID) > 0 {
 		dAtA[i] = 0x12
@@ -1251,11 +1429,11 @@ func (m *Like) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n5, err := m.Metadata.MarshalTo(dAtA[i:])
+		n6, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n5
+		i += n6
 	}
 	if len(m.ID) > 0 {
 		dAtA[i] = 0x12
@@ -1302,11 +1480,11 @@ func (m *CreateUserMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n6, err := m.Metadata.MarshalTo(dAtA[i:])
+		n7, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n6
+		i += n7
 	}
 	if len(m.Username) > 0 {
 		dAtA[i] = 0x12
@@ -1342,11 +1520,11 @@ func (m *CreateBlogMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n7, err := m.Metadata.MarshalTo(dAtA[i:])
+		n8, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n7
+		i += n8
 	}
 	if len(m.Title) > 0 {
 		dAtA[i] = 0x12
@@ -1382,11 +1560,11 @@ func (m *ChangeBlogOwnerMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n8, err := m.Metadata.MarshalTo(dAtA[i:])
+		n9, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n8
+		i += n9
 	}
 	if len(m.BlogID) > 0 {
 		dAtA[i] = 0x12
@@ -1422,11 +1600,11 @@ func (m *CreateArticleMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n9, err := m.Metadata.MarshalTo(dAtA[i:])
+		n10, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n9
+		i += n10
 	}
 	if len(m.BlogID) > 0 {
 		dAtA[i] = 0x12
@@ -1473,17 +1651,51 @@ func (m *DeleteArticleMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n10, err := m.Metadata.MarshalTo(dAtA[i:])
+		n11, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n10
+		i += n11
 	}
 	if len(m.ArticleID) > 0 {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(len(m.ArticleID)))
 		i += copy(dAtA[i:], m.ArticleID)
+	}
+	return i, nil
+}
+
+func (m *CancelDeleteArticleTaskMsg) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CancelDeleteArticleTaskMsg) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
+		n12, err := m.Metadata.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n12
+	}
+	if len(m.TaskID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(len(m.TaskID)))
+		i += copy(dAtA[i:], m.TaskID)
 	}
 	return i, nil
 }
@@ -1507,11 +1719,11 @@ func (m *CreateCommentMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n11, err := m.Metadata.MarshalTo(dAtA[i:])
+		n13, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n11
+		i += n13
 	}
 	if len(m.ArticleID) > 0 {
 		dAtA[i] = 0x12
@@ -1547,11 +1759,11 @@ func (m *CreateLikeMsg) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.Metadata.Size()))
-		n12, err := m.Metadata.MarshalTo(dAtA[i:])
+		n14, err := m.Metadata.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n12
+		i += n14
 	}
 	if len(m.ArticleID) > 0 {
 		dAtA[i] = 0x12
@@ -1672,6 +1884,31 @@ func (m *Article) Size() (n int) {
 	}
 	if m.DeleteAt != 0 {
 		n += 1 + sovCodec(uint64(m.DeleteAt))
+	}
+	return n
+}
+
+func (m *DeleteArticleTask) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.ArticleID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.TaskOwner)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
 	}
 	return n
 }
@@ -1838,6 +2075,23 @@ func (m *DeleteArticleMsg) Size() (n int) {
 		n += 1 + l + sovCodec(uint64(l))
 	}
 	l = len(m.ArticleID)
+	if l > 0 {
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+
+func (m *CancelDeleteArticleTaskMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Metadata != nil {
+		l = m.Metadata.Size()
+		n += 1 + l + sovCodec(uint64(l))
+	}
+	l = len(m.TaskID)
 	if l > 0 {
 		n += 1 + l + sovCodec(uint64(l))
 	}
@@ -2648,6 +2902,197 @@ func (m *Article) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeleteArticleTask) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeleteArticleTask: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeleteArticleTask: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = append(m.ID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ID == nil {
+				m.ID = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ArticleID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ArticleID = append(m.ArticleID[:0], dAtA[iNdEx:postIndex]...)
+			if m.ArticleID == nil {
+				m.ArticleID = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TaskOwner", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TaskOwner = append(m.TaskOwner[:0], dAtA[iNdEx:postIndex]...)
+			if m.TaskOwner == nil {
+				m.TaskOwner = []byte{}
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCodec(dAtA[iNdEx:])
@@ -3890,6 +4335,129 @@ func (m *DeleteArticleMsg) Unmarshal(dAtA []byte) error {
 			m.ArticleID = append(m.ArticleID[:0], dAtA[iNdEx:postIndex]...)
 			if m.ArticleID == nil {
 				m.ArticleID = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCodec(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CancelDeleteArticleTaskMsg) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCodec
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CancelDeleteArticleTaskMsg: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CancelDeleteArticleTaskMsg: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Metadata == nil {
+				m.Metadata = &weave.Metadata{}
+			}
+			if err := m.Metadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TaskID", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TaskID = append(m.TaskID[:0], dAtA[iNdEx:postIndex]...)
+			if m.TaskID == nil {
+				m.TaskID = []byte{}
 			}
 			iNdEx = postIndex
 		default:

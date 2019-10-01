@@ -89,7 +89,10 @@ func TestCreateUser(t *testing.T) {
 			auth := &weavetest.Auth{}
 
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 			bucket := NewUserBucket()
 
@@ -242,7 +245,10 @@ func TestCreateBlog(t *testing.T) {
 			}
 
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 			bucket := NewBlogBucket()
 
@@ -413,7 +419,10 @@ func TestChangeOwner(t *testing.T) {
 			}
 
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 			bucket := NewBlogBucket()
 
@@ -470,7 +479,7 @@ func TestCreateArticle(t *testing.T) {
 		Owner:       signer.Address(),
 		Title:       "Best hacker's blog",
 		Description: "Best description ever",
-		CreatedAt:   past,
+		CreatedAt:   now,
 	}
 	notOwnedBlog := &Blog{
 		Metadata:    &weave.Metadata{Schema: 1},
@@ -478,7 +487,7 @@ func TestCreateArticle(t *testing.T) {
 		Owner:       blogOwner.Address(),
 		Title:       "Worst hacker's blog",
 		Description: "Worst description ever",
-		CreatedAt:   past,
+		CreatedAt:   now,
 	}
 
 	cases := map[string]struct {
@@ -785,6 +794,41 @@ func TestCreateArticle(t *testing.T) {
 				"DeleteAt":     nil,
 			},
 		},
+		"failure delete at in the past": {
+			msg: &CreateArticleMsg{
+				Metadata: &weave.Metadata{Schema: 1},
+				BlogID:   ownedBlog.ID,
+				Title:    "insanely good title",
+				Content:  "best content in the existence",
+				DeleteAt: past,
+			},
+			signer:   signer,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":     nil,
+				"ID":           nil,
+				"BlogID":       nil,
+				"Owner":        nil,
+				"Title":        nil,
+				"Content":      nil,
+				"CommentCount": nil,
+				"LikeCount":    nil,
+				"CreatedAt":    nil,
+				"DeleteAt":     nil,
+			},
+		},
 	}
 	for testName, tc := range cases {
 		t.Run(testName, func(t *testing.T) {
@@ -794,7 +838,10 @@ func TestCreateArticle(t *testing.T) {
 
 			// initalize environment
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 
 			// initalize blog bucket and save blogs
@@ -828,7 +875,9 @@ func TestCreateArticle(t *testing.T) {
 			if tc.expected != nil {
 				var stored Article
 				err := articleBucket.One(kv, res.Data, &stored)
-				assert.Nil(t, err)
+				if err != nil {
+					t.Fatalf("unexpected error: %+v", err)
+				}
 
 				// ensure createdAt is after test execution starting time
 				createdAt := stored.CreatedAt
@@ -836,8 +885,6 @@ func TestCreateArticle(t *testing.T) {
 
 				// avoid registered at missing error
 				tc.expected.CreatedAt = createdAt
-
-				assert.Nil(t, err)
 				assert.Equal(t, tc.expected, &stored)
 			}
 		})
@@ -959,7 +1006,10 @@ func TestDeleteArticle(t *testing.T) {
 
 			// initalize environment
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 
 			// initalize article bucket and save articles
@@ -1240,7 +1290,10 @@ func TestCreateComment(t *testing.T) {
 			}
 
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 
 			articleBucket := NewArticleBucket()
@@ -1392,7 +1445,10 @@ func TestCreateLike(t *testing.T) {
 			}
 
 			rt := app.NewRouter()
-			RegisterRoutes(rt, auth)
+
+			scheduler := &weavetest.Cron{}
+			RegisterRoutes(rt, auth, scheduler)
+
 			kv := store.MemStore()
 
 			articleBucket := NewArticleBucket()

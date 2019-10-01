@@ -106,6 +106,76 @@ func TestValidateUser(t *testing.T) {
 	}
 }
 
+func TestDeleteArticleTask(t *testing.T) {
+	cases := map[string]struct {
+		model    orm.Model
+		wantErrs map[string]*errors.Error
+	}{
+		"success": {
+			model: &DeleteArticleTask{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: weavetest.SequenceID(1),
+				TaskOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"TaskOwner": nil,
+			},
+		},
+		// TODO add missing metadata test
+		"failure missing id": {
+			model: &DeleteArticleTask{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ArticleID: weavetest.SequenceID(1),
+				TaskOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        errors.ErrEmpty,
+				"ArticleID": nil,
+				"TaskOwner": nil,
+			},
+		},
+		"failure missing article id": {
+			model: &DeleteArticleTask{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				TaskOwner: weavetest.NewCondition().Address(),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": errors.ErrEmpty,
+				"TaskOwner": nil,
+			},
+		},
+		"failure missing task owner": {
+			model: &DeleteArticleTask{
+				Metadata:  &weave.Metadata{Schema: 1},
+				ID:        weavetest.SequenceID(1),
+				ArticleID: weavetest.SequenceID(1),
+			},
+			wantErrs: map[string]*errors.Error{
+				"Metadata":  nil,
+				"ID":        nil,
+				"ArticleID": nil,
+				"TaskOwner": errors.ErrEmpty,
+			},
+		},
+	}
+	for testName, tc := range cases {
+		t.Run(testName, func(t *testing.T) {
+			err := tc.model.Validate()
+			for field, wantErr := range tc.wantErrs {
+				assert.FieldError(t, err, field, wantErr)
+			}
+		})
+	}
+}
+
 func TestValidateBlog(t *testing.T) {
 	now := weave.AsUnixTime(time.Now())
 
