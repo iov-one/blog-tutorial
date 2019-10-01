@@ -101,6 +101,17 @@ func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 	return res, nil
 }
 
+type DeleteArticleTaskBucket struct {
+	morm.ModelBucket
+}
+
+// NewDeleteArticleTaskBucket returns a new delete article task bucket
+func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
+	return &DeleteArticleTaskBucket{
+		morm.NewModelBucket("deleteart", &DeleteArticleTask{}),
+	}
+}
+
 type CommentBucket struct {
 	morm.ModelBucket
 }
