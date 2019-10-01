@@ -10,11 +10,11 @@ func TestKeygen(t *testing.T) {
 	const mnemonic = `shy else mystery outer define there front bracket dawn honey excuse virus lazy book kiss cannon oven law coconut hedgehog veteran narrow great cage`
 
 	cases := map[string]string{
-		"m/44'/988'/0'": "BLOG1h7rpratsyt7mylq79pakjfdzg839zzqd00zegy",
-		"m/44'/988'/1'": "BLOG13ss78hz4epq88putspwmf5ks9m7g8cv2rqe4ns",
-		"m/44'/988'/2'": "BLOG160jdxeaxyfjrqcfmf5cdzpujyz25nphtvkryv6",
-		"m/44'/988'/3'": "BLOG1x3wpuhvrm5vvex38k43csxdjs7l4n3gwlvj6g4",
-		"m/44'/988'/4'": "BLOG1fm8wddz5mk8xeqcesleysrfd5pg9wg0x6eh89h",
+		"m/44'/988'/0'": "BLOG1h7rpratsyt7mylq79pakjfdzg839zzqdzzmv8l",
+		"m/44'/988'/1'": "BLOG13ss78hz4epq88putspwmf5ks9m7g8cv2wdqqut",
+		"m/44'/988'/2'": "BLOG160jdxeaxyfjrqcfmf5cdzpujyz25nphtpm63rp",
+		"m/44'/988'/3'": "BLOG1x3wpuhvrm5vvex38k43csxdjs7l4n3gwjpt08w",
+		"m/44'/988'/4'": "BLOG1fm8wddz5mk8xeqcesleysrfd5pg9wg0xh5wj2v",
 	}
 
 	for path, bech := range cases {
