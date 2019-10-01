@@ -130,6 +130,23 @@ func (m DeleteArticleMsg) Validate() error {
 	return errs
 }
 
+var _ weave.Msg = (*CancelDeleteArticleTaskMsg)(nil)
+
+// Path returns the routing path for this message.
+func (CancelDeleteArticleTaskMsg) Path() string {
+	return "blog/cancel_delete_article_task"
+}
+
+// Validate ensures the CancelDeleteArticleTaskMsg is valid
+func (m CancelDeleteArticleTaskMsg) Validate() error {
+	var errs error
+
+	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "TaskID", isGenID(m.TaskID, false))
+
+	return errs
+}
+
 var _ weave.Msg = (*CreateCommentMsg)(nil)
 
 // Path returns the routing path for this message.

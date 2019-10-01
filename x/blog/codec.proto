@@ -139,6 +139,13 @@ message DeleteArticleMsg {
   bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
 }
 
+// CancelDeleteArticleTaskMsg message cancelles scheduled article deletion
+message CancelDeleteArticleTaskMsg {
+  weave.Metadata metadata = 1;
+  // TaskID is the identifier of the task
+  bytes task_id = 2 [(gogoproto.customname) = "TaskID"];
+}
+
 message CreateCommentMsg {
   weave.Metadata metadata = 1;
   // ArticleID is the identifier of the article that is desired to be commented

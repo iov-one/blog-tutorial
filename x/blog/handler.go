@@ -29,6 +29,7 @@ func RegisterRoutes(r weave.Registry, auth x.Authenticator, scheduler weave.Sche
 	r.Handle(&ChangeBlogOwnerMsg{}, NewChangeBlogOwnerHandler(auth))
 	r.Handle(&CreateArticleMsg{}, NewCreateArticleHandler(auth, scheduler))
 	r.Handle(&DeleteArticleMsg{}, NewDeleteArticleHandler(auth))
+	r.Handle(&CancelDeleteArticleTaskMsg{}, NewCancelDeleteArticleTaskHandler(auth, scheduler))
 	r.Handle(&CreateCommentMsg{}, NewCreateCommentHandler(auth))
 	r.Handle(&CreateLikeMsg{}, NewCreateLikeHandler(auth))
 }
@@ -440,6 +441,77 @@ func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 	}
 
 	return &weave.DeliverResult{}, nil
+}
+
+// ------------------- CancelDeleteArticleTaskHandler -------------------
+
+// CancelDeleteArticleTaskHandler will handle CancelDeleteArticleTaskMsg
+type CancelDeleteArticleTaskHandler struct {
+	auth      x.Authenticator
+	b         *DeleteArticleTaskBucket
+	scheduler weave.Scheduler
+}
+
+var _ weave.Handler = CancelDeleteArticleTaskHandler{}
+
+// NewCancelDeleteArticleTaskHandler creates a cancel delete article task msg handler
+func NewCancelDeleteArticleTaskHandler(auth x.Authenticator, scheduler weave.Scheduler) weave.Handler {
+	return CancelDeleteArticleTaskHandler{
+		auth:      auth,
+		b:         NewDeleteArticleTaskBucket(),
+		scheduler: scheduler,
+	}
+}
+
+// validate does all common pre-processing between Check and Deliver
+func (h CancelDeleteArticleTaskHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CancelDeleteArticleTaskMsg, error) {
+	var msg CancelDeleteArticleTaskMsg
+
+	if err := weave.LoadMsg(tx, &msg); err != nil {
+		return nil, errors.Wrap(err, "load msg")
+	}
+
+	var task DeleteArticleTask
+	if err := h.b.One(store, msg.TaskID, &task); err != nil {
+		return nil, errors.Wrapf(err, "delete task with id %s not found", msg.TaskID)
+	}
+
+	signer := x.MainSigner(ctx, h.auth).Address()
+	if !task.TaskOwner.Equals(signer) {
+		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to cancel scheduled delete article task with id %s", signer, msg.TaskID)
+	}
+
+	return &msg, nil
+}
+
+// Check just verifies it is properly formed and returns
+// the cost of executing it.
+func (h CancelDeleteArticleTaskHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
+	_, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Cancelling is free of charge
+	return &weave.CheckResult{}, nil
+}
+
+// Deliver cancels delete task if conditions are met
+func (h CancelDeleteArticleTaskHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
+	msg, err := h.validate(ctx, store, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := h.scheduler.Delete(store, msg.TaskID); err != nil {
+		return nil, errors.Wrapf(err, "cannot delete scheduled task with id %s", msg.TaskID)
+	}
+
+	if err := h.b.Delete(store, msg.TaskID); err != nil {
+		return nil, errors.Wrapf(err, "cannot cancel delete task with id %s", msg.TaskID)
+	}
+
+	return &weave.DeliverResult{Data: msg.TaskID}, nil
 }
 
 // ------------------- CronDeleteArticleHandler -------------------
