@@ -1,6 +1,6 @@
 {
   "genesis_time": "2019-03-19T15:32:11.118591Z",
-  "chain_id": "custom-testnet",
+  "chain_id": "blog-testnet",
   "validators": [],
   "consensus_params": {
     "block": {

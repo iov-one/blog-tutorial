@@ -27,7 +27,7 @@ func init() {
 
 func helpMessage() {
 	fmt.Println("blog")
-	fmt.Println("          Custom Blockchain Service node")
+	fmt.Println("          Blog Application Blockchain Service node")
 	fmt.Println("")
 	fmt.Println("help      Print this message")
 	fmt.Println("init      Initialize app options in genesis file")
@@ -43,7 +43,7 @@ func helpMessage() {
 
 func main() {
 	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout)).
-		With("module", "custom")
+		With("module", "blog")
 
 	flag.Parse()
 	if flag.NArg() == 0 {

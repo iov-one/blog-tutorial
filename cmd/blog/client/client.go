@@ -44,37 +44,37 @@ type Client interface {
 	NextNonce(client Client, addr weave.Address) (int64, error)
 }
 
-// CustomClient is a tendermint client wrapped to provide
-// simple access to the data structures used in custom module.
-type CustomClient struct {
+// BlogClient is a tendermint client wrapped to provide
+// simple access to the data structures used in blog module.
+type BlogClient struct {
 	conn client.Client
 	// subscriber is a unique identifier for subscriptions
 	subscriber string
 }
 
-// NewClient wraps a CustomClient around an existing
+// NewClient wraps a BlogClient around an existing
 // tendermint client connection.
-func NewClient(conn client.Client) *CustomClient {
-	return &CustomClient{
+func NewClient(conn client.Client) *BlogClient {
+	return &BlogClient{
 		conn:       conn,
 		subscriber: "tools-client",
 	}
 }
 
 // TendermintClient returns underlying tendermint client
-func (cc *CustomClient) TendermintClient() client.Client {
+func (cc *BlogClient) TendermintClient() client.Client {
 	return cc.conn
 }
 
 //************ generic (weave) functionality *************//
 
 // Status will return the raw status from the node
-func (cc *CustomClient) Status() (*ctypes.ResultStatus, error) {
+func (cc *BlogClient) Status() (*ctypes.ResultStatus, error) {
 	return cc.conn.Status()
 }
 
 // Genesis will return the genesis directly from the node
-func (cc *CustomClient) Genesis() (*tmtypes.GenesisDoc, error) {
+func (cc *BlogClient) Genesis() (*tmtypes.GenesisDoc, error) {
 	gen, err := cc.conn.Genesis()
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (cc *CustomClient) Genesis() (*tmtypes.GenesisDoc, error) {
 }
 
 // ChainID will parse out the chainID from the status result
-func (cc *CustomClient) ChainID() (string, error) {
+func (cc *BlogClient) ChainID() (string, error) {
 	gen, err := cc.Genesis()
 	if err != nil {
 		return "", err
@@ -92,7 +92,7 @@ func (cc *CustomClient) ChainID() (string, error) {
 }
 
 // Height will parse out the Height from the status result
-func (cc *CustomClient) Height() (int64, error) {
+func (cc *BlogClient) Height() (int64, error) {
 	status, err := cc.conn.Status()
 	if err != nil {
 		return -1, err
@@ -113,7 +113,7 @@ type AbciResponse struct {
 // verifies if it is an error or empty, and if there is
 // data pulls out the ResultSets from keys and values into
 // a useful AbciResponse struct
-func (cc *CustomClient) AbciQuery(path string, data []byte) (AbciResponse, error) {
+func (cc *BlogClient) AbciQuery(path string, data []byte) (AbciResponse, error) {
 	var out AbciResponse
 
 	q, err := cc.conn.ABCIQuery(path, data)
@@ -146,7 +146,7 @@ func (cc *CustomClient) AbciQuery(path string, data []byte) (AbciResponse, error
 }
 
 // TxSearch searches transactions using underlying tendermint client
-func (cc *CustomClient) TxSearch(query string, prove bool, page, perPage int) (*ctypes.ResultTxSearch, error) {
+func (cc *BlogClient) TxSearch(query string, prove bool, page, perPage int) (*ctypes.ResultTxSearch, error) {
 	return cc.conn.TxSearch(query, prove, page, perPage)
 }
 
@@ -178,7 +178,7 @@ func (b BroadcastTxResponse) IsError() error {
 // blockchain.
 //
 // If you want high-performance, parallel sending, use BroadcastTxAsync
-func (cc *CustomClient) BroadcastTx(tx weave.Tx) BroadcastTxResponse {
+func (cc *BlogClient) BroadcastTx(tx weave.Tx) BroadcastTxResponse {
 	out := make(chan BroadcastTxResponse, 1)
 	defer close(out)
 	go cc.BroadcastTxAsync(tx, out)
@@ -187,7 +187,7 @@ func (cc *CustomClient) BroadcastTx(tx weave.Tx) BroadcastTxResponse {
 }
 
 // BroadcastTxSync brodcasts transactions synchronously
-func (cc *CustomClient) BroadcastTxSync(tx weave.Tx, timeout time.Duration) BroadcastTxResponse {
+func (cc *BlogClient) BroadcastTxSync(tx weave.Tx, timeout time.Duration) BroadcastTxResponse {
 	data, err := tx.Marshal()
 	if err != nil {
 		return BroadcastTxResponse{Error: err}
@@ -226,7 +226,7 @@ func (cc *CustomClient) BroadcastTxSync(tx weave.Tx, timeout time.Duration) Broa
 }
 
 // WaitForTxEvent listens for and particular event type of evtTyp to be fired
-func (cc *CustomClient) WaitForTxEvent(tx tmtypes.Tx, evtTyp string, timeout time.Duration) (tmtypes.TMEventData, error) {
+func (cc *BlogClient) WaitForTxEvent(tx tmtypes.Tx, evtTyp string, timeout time.Duration) (tmtypes.TMEventData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	query := tmtypes.EventQueryTxFor(tx)
@@ -251,7 +251,7 @@ func (cc *CustomClient) WaitForTxEvent(tx tmtypes.Tx, evtTyp string, timeout tim
 // BroadcastTxAsync can be run in a goroutine and will output
 // the result or error to the given channel.
 // Useful if you want to send many tx in parallel
-func (cc *CustomClient) BroadcastTxAsync(tx weave.Tx, out chan<- BroadcastTxResponse) {
+func (cc *BlogClient) BroadcastTxAsync(tx weave.Tx, out chan<- BroadcastTxResponse) {
 	data, err := tx.Marshal()
 	if err != nil {
 		out <- BroadcastTxResponse{Error: err}
@@ -271,7 +271,7 @@ func (cc *CustomClient) BroadcastTxAsync(tx weave.Tx, out chan<- BroadcastTxResp
 // to typecase the events into Headers. Returns a cancel
 // function. If you don't want the automatic goroutine, use
 // Subscribe(QueryNewBlockHeader, out)
-func (cc *CustomClient) SubscribeHeaders(out chan<- *tmtypes.Header) (func(), error) {
+func (cc *BlogClient) SubscribeHeaders(out chan<- *tmtypes.Header) (func(), error) {
 	query := tmtypes.EventQueryNewBlockHeader
 	pipe, cancel, err := cc.Subscribe(query)
 	if err != nil {
@@ -295,7 +295,7 @@ func (cc *CustomClient) SubscribeHeaders(out chan<- *tmtypes.Header) (func(), er
 // the given channel. If there is no error,
 // returns a cancel function that can be called to cancel
 // the subscription
-func (cc *CustomClient) Subscribe(query tmpubsub.Query) (<-chan ctypes.ResultEvent, func(), error) {
+func (cc *BlogClient) Subscribe(query tmpubsub.Query) (<-chan ctypes.ResultEvent, func(), error) {
 	ctx := context.Background()
 	out, err := cc.conn.Subscribe(ctx, cc.subscriber, query.String())
 	if err != nil {
@@ -308,7 +308,7 @@ func (cc *CustomClient) Subscribe(query tmpubsub.Query) (<-chan ctypes.ResultEve
 }
 
 // UnsubscribeAll cancels all subscriptions
-func (cc *CustomClient) UnsubscribeAll() error {
+func (cc *BlogClient) UnsubscribeAll() error {
 	ctx := context.Background()
 	return cc.conn.UnsubscribeAll(ctx, cc.subscriber)
 }
@@ -316,7 +316,7 @@ func (cc *CustomClient) UnsubscribeAll() error {
 // GetWallet will return a wallet given an address
 // If non wallet is present, it will return (nil, nil)
 // Error codes are used when the query failed on the server
-func (cc *CustomClient) GetWallet(addr weave.Address) (*WalletResponse, error) {
+func (cc *BlogClient) GetWallet(addr weave.Address) (*WalletResponse, error) {
 	// make sure we send a valid address to the server
 	err := addr.Validate()
 	if err != nil {
@@ -366,7 +366,7 @@ type UserResponse struct {
 // for a given address if it was ever used.
 // If it returns (nil, nil), then this address never signed
 // a transaction before (and can use nonce = 0)
-func (cc *CustomClient) GetUser(addr weave.Address) (*UserResponse, error) {
+func (cc *BlogClient) GetUser(addr weave.Address) (*UserResponse, error) {
 	// make sure we send a valid address to the server
 	err := addr.Validate()
 	if err != nil {
@@ -408,7 +408,7 @@ func userKeyToAddr(key []byte) weave.Address {
 
 // NextNonce queries the blockchain for the next nonce
 // returns 0 if the address never used
-func (cc *CustomClient) NextNonce(addr weave.Address) (int64, error) {
+func (cc *BlogClient) NextNonce(addr weave.Address) (int64, error) {
 	user, err := cc.GetUser(addr)
 	if err != nil {
 		return 0, err

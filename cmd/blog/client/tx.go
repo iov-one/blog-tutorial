@@ -1,8 +1,8 @@
 package client
 
 import (
-	"github.com/iov-one/weave"
 	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/crypto"
 	"github.com/iov-one/weave/x/cash"
@@ -41,8 +41,8 @@ func SignTx(tx *blog.Tx, signer *crypto.PrivateKey, chainID string, nonce int64)
 	return nil
 }
 
-// ParseCustomTx will load a serialize tx into a format we can read
-func ParseCustomTx(data []byte) (*blog.Tx, error) {
+// ParseBlogTx will load a serialize tx into a format we can read
+func ParseBlogTx(data []byte) (*blog.Tx, error) {
 	var tx blog.Tx
 	err := tx.Unmarshal(data)
 	if err != nil {

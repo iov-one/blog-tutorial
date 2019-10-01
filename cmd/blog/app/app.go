@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/iov-one/blog-tutorial/x/blog"
 	"github.com/iov-one/weave"
-	"github.com/iov-one/blog-tutorial/x/custom"
 	"github.com/iov-one/weave/app"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/errors"
@@ -62,12 +62,12 @@ func Router(authFn x.Authenticator, issuer weave.Address) *app.Router {
 	multisig.RegisterRoutes(r, authFn)
 	migration.RegisterRoutes(r, authFn)
 	validators.RegisterRoutes(r, authFn)
-	custom.RegisterRoutes(r, authFn, scheduler)
+	blog.RegisterRoutes(r, authFn, scheduler)
 	return r
 }
 
 // QueryRouter returns a default query router,
-// allowing access to "/custom", "/auth", "/contracts", "/wallets", "/validators" and "/"
+// allowing access to "/blog", "/auth", "/contracts", "/wallets", "/validators" and "/"
 func QueryRouter() weave.QueryRouter {
 	r := weave.NewQueryRouter()
 	r.RegisterAll(
@@ -77,7 +77,7 @@ func QueryRouter() weave.QueryRouter {
 		migration.RegisterQuery,
 		orm.RegisterQuery,
 		validators.RegisterQuery,
-		custom.RegisterQuery,
+		blog.RegisterQuery,
 	)
 	return r
 }
@@ -100,7 +100,7 @@ func CronStack() weave.Handler {
 	authFn := cron.Authenticator{}
 
 	// Cron is using custom router as not the same handlers are registered.
-	custom.RegisterCronRoutes(rt, authFn)
+	blog.RegisterCronRoutes(rt, authFn)
 
 	decorators := app.ChainDecorators(
 		utils.NewLogging(),

@@ -5,17 +5,18 @@ package blog
 
 import (
 	fmt "fmt"
+	io "io"
+	math "math"
+
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	custom "github.com/iov-one/blog-tutorial/x/custom"
+	blog "github.com/iov-one/blog-tutorial/x/blog"
 	github_com_iov_one_weave "github.com/iov-one/weave"
 	migration "github.com/iov-one/weave/migration"
 	cash "github.com/iov-one/weave/x/cash"
 	multisig "github.com/iov-one/weave/x/multisig"
 	sigs "github.com/iov-one/weave/x/sigs"
 	validators "github.com/iov-one/weave/x/validators"
-	io "io"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -56,8 +57,14 @@ type Tx struct {
 	//	*Tx_ValidatorsApplyDiffMsg
 	//	*Tx_ExecuteBatchMsg
 	//	*Tx_MigrationUpgradeSchemaMsg
-	//	*Tx_CustomCreateTimedStateMsg
-	//	*Tx_CustomCreateStateMsg
+	//	*Tx_BlogCreateUserMsg
+	//	*Tx_BlogCreateBlogMsg
+	//	*Tx_BlogChangeBlogOwnerMsg
+	//	*Tx_BlogCreateArticleMsg
+	//	*Tx_BlogDeleteArticleMsg
+	//	*Tx_BlogCancelDeleteArticleTaskMsg
+	//	*Tx_BlogCreateCommentMsg
+	//	*Tx_BlogCreateLikeMsg
 	Sum isTx_Sum `protobuf_oneof:"sum"`
 }
 
@@ -118,21 +125,45 @@ type Tx_ExecuteBatchMsg struct {
 type Tx_MigrationUpgradeSchemaMsg struct {
 	MigrationUpgradeSchemaMsg *migration.UpgradeSchemaMsg `protobuf:"bytes,69,opt,name=migration_upgrade_schema_msg,json=migrationUpgradeSchemaMsg,proto3,oneof"`
 }
-type Tx_CustomCreateTimedStateMsg struct {
-	CustomCreateTimedStateMsg *custom.CreateTimedStateMsg `protobuf:"bytes,100,opt,name=custom_create_timed_state_msg,json=customCreateTimedStateMsg,proto3,oneof"`
+type Tx_BlogCreateUserMsg struct {
+	BlogCreateUserMsg *blog.CreateUserMsg `protobuf:"bytes,100,opt,name=blog_create_user_msg,json=blogCreateUserMsg,proto3,oneof"`
 }
-type Tx_CustomCreateStateMsg struct {
-	CustomCreateStateMsg *custom.CreateStateMsg `protobuf:"bytes,102,opt,name=custom_create_state_msg,json=customCreateStateMsg,proto3,oneof"`
+type Tx_BlogCreateBlogMsg struct {
+	BlogCreateBlogMsg *blog.CreateBlogMsg `protobuf:"bytes,101,opt,name=blog_create_blog_msg,json=blogCreateBlogMsg,proto3,oneof"`
+}
+type Tx_BlogChangeBlogOwnerMsg struct {
+	BlogChangeBlogOwnerMsg *blog.ChangeBlogOwnerMsg `protobuf:"bytes,102,opt,name=blog_change_blog_owner_msg,json=blogChangeBlogOwnerMsg,proto3,oneof"`
+}
+type Tx_BlogCreateArticleMsg struct {
+	BlogCreateArticleMsg *blog.CreateArticleMsg `protobuf:"bytes,103,opt,name=blog_create_article_msg,json=blogCreateArticleMsg,proto3,oneof"`
+}
+type Tx_BlogDeleteArticleMsg struct {
+	BlogDeleteArticleMsg *blog.DeleteArticleMsg `protobuf:"bytes,104,opt,name=blog_delete_article_msg,json=blogDeleteArticleMsg,proto3,oneof"`
+}
+type Tx_BlogCancelDeleteArticleTaskMsg struct {
+	BlogCancelDeleteArticleTaskMsg *blog.CancelDeleteArticleTaskMsg `protobuf:"bytes,105,opt,name=blog_cancel_delete_article_task_msg,json=blogCancelDeleteArticleTaskMsg,proto3,oneof"`
+}
+type Tx_BlogCreateCommentMsg struct {
+	BlogCreateCommentMsg *blog.CreateCommentMsg `protobuf:"bytes,106,opt,name=blog_create_comment_msg,json=blogCreateCommentMsg,proto3,oneof"`
+}
+type Tx_BlogCreateLikeMsg struct {
+	BlogCreateLikeMsg *blog.CreateLikeMsg `protobuf:"bytes,107,opt,name=blog_create_like_msg,json=blogCreateLikeMsg,proto3,oneof"`
 }
 
-func (*Tx_CashSendMsg) isTx_Sum()               {}
-func (*Tx_MultisigCreateMsg) isTx_Sum()         {}
-func (*Tx_MultisigUpdateMsg) isTx_Sum()         {}
-func (*Tx_ValidatorsApplyDiffMsg) isTx_Sum()    {}
-func (*Tx_ExecuteBatchMsg) isTx_Sum()           {}
-func (*Tx_MigrationUpgradeSchemaMsg) isTx_Sum() {}
-func (*Tx_CustomCreateTimedStateMsg) isTx_Sum() {}
-func (*Tx_CustomCreateStateMsg) isTx_Sum()      {}
+func (*Tx_CashSendMsg) isTx_Sum()                    {}
+func (*Tx_MultisigCreateMsg) isTx_Sum()              {}
+func (*Tx_MultisigUpdateMsg) isTx_Sum()              {}
+func (*Tx_ValidatorsApplyDiffMsg) isTx_Sum()         {}
+func (*Tx_ExecuteBatchMsg) isTx_Sum()                {}
+func (*Tx_MigrationUpgradeSchemaMsg) isTx_Sum()      {}
+func (*Tx_BlogCreateUserMsg) isTx_Sum()              {}
+func (*Tx_BlogCreateBlogMsg) isTx_Sum()              {}
+func (*Tx_BlogChangeBlogOwnerMsg) isTx_Sum()         {}
+func (*Tx_BlogCreateArticleMsg) isTx_Sum()           {}
+func (*Tx_BlogDeleteArticleMsg) isTx_Sum()           {}
+func (*Tx_BlogCancelDeleteArticleTaskMsg) isTx_Sum() {}
+func (*Tx_BlogCreateCommentMsg) isTx_Sum()           {}
+func (*Tx_BlogCreateLikeMsg) isTx_Sum()              {}
 
 func (m *Tx) GetSum() isTx_Sum {
 	if m != nil {
@@ -204,16 +235,58 @@ func (m *Tx) GetMigrationUpgradeSchemaMsg() *migration.UpgradeSchemaMsg {
 	return nil
 }
 
-func (m *Tx) GetCustomCreateTimedStateMsg() *custom.CreateTimedStateMsg {
-	if x, ok := m.GetSum().(*Tx_CustomCreateTimedStateMsg); ok {
-		return x.CustomCreateTimedStateMsg
+func (m *Tx) GetBlogCreateUserMsg() *blog.CreateUserMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCreateUserMsg); ok {
+		return x.BlogCreateUserMsg
 	}
 	return nil
 }
 
-func (m *Tx) GetCustomCreateStateMsg() *custom.CreateStateMsg {
-	if x, ok := m.GetSum().(*Tx_CustomCreateStateMsg); ok {
-		return x.CustomCreateStateMsg
+func (m *Tx) GetBlogCreateBlogMsg() *blog.CreateBlogMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCreateBlogMsg); ok {
+		return x.BlogCreateBlogMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogChangeBlogOwnerMsg() *blog.ChangeBlogOwnerMsg {
+	if x, ok := m.GetSum().(*Tx_BlogChangeBlogOwnerMsg); ok {
+		return x.BlogChangeBlogOwnerMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogCreateArticleMsg() *blog.CreateArticleMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCreateArticleMsg); ok {
+		return x.BlogCreateArticleMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogDeleteArticleMsg() *blog.DeleteArticleMsg {
+	if x, ok := m.GetSum().(*Tx_BlogDeleteArticleMsg); ok {
+		return x.BlogDeleteArticleMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogCancelDeleteArticleTaskMsg() *blog.CancelDeleteArticleTaskMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCancelDeleteArticleTaskMsg); ok {
+		return x.BlogCancelDeleteArticleTaskMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogCreateCommentMsg() *blog.CreateCommentMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCreateCommentMsg); ok {
+		return x.BlogCreateCommentMsg
+	}
+	return nil
+}
+
+func (m *Tx) GetBlogCreateLikeMsg() *blog.CreateLikeMsg {
+	if x, ok := m.GetSum().(*Tx_BlogCreateLikeMsg); ok {
+		return x.BlogCreateLikeMsg
 	}
 	return nil
 }
@@ -227,8 +300,14 @@ func (*Tx) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, fun
 		(*Tx_ValidatorsApplyDiffMsg)(nil),
 		(*Tx_ExecuteBatchMsg)(nil),
 		(*Tx_MigrationUpgradeSchemaMsg)(nil),
-		(*Tx_CustomCreateTimedStateMsg)(nil),
-		(*Tx_CustomCreateStateMsg)(nil),
+		(*Tx_BlogCreateUserMsg)(nil),
+		(*Tx_BlogCreateBlogMsg)(nil),
+		(*Tx_BlogChangeBlogOwnerMsg)(nil),
+		(*Tx_BlogCreateArticleMsg)(nil),
+		(*Tx_BlogDeleteArticleMsg)(nil),
+		(*Tx_BlogCancelDeleteArticleTaskMsg)(nil),
+		(*Tx_BlogCreateCommentMsg)(nil),
+		(*Tx_BlogCreateLikeMsg)(nil),
 	}
 }
 
@@ -266,14 +345,44 @@ func _Tx_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 		if err := b.EncodeMessage(x.MigrationUpgradeSchemaMsg); err != nil {
 			return err
 		}
-	case *Tx_CustomCreateTimedStateMsg:
+	case *Tx_BlogCreateUserMsg:
 		_ = b.EncodeVarint(100<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.CustomCreateTimedStateMsg); err != nil {
+		if err := b.EncodeMessage(x.BlogCreateUserMsg); err != nil {
 			return err
 		}
-	case *Tx_CustomCreateStateMsg:
+	case *Tx_BlogCreateBlogMsg:
+		_ = b.EncodeVarint(101<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogCreateBlogMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogChangeBlogOwnerMsg:
 		_ = b.EncodeVarint(102<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.CustomCreateStateMsg); err != nil {
+		if err := b.EncodeMessage(x.BlogChangeBlogOwnerMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogCreateArticleMsg:
+		_ = b.EncodeVarint(103<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogCreateArticleMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogDeleteArticleMsg:
+		_ = b.EncodeVarint(104<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogDeleteArticleMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogCancelDeleteArticleTaskMsg:
+		_ = b.EncodeVarint(105<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogCancelDeleteArticleTaskMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogCreateCommentMsg:
+		_ = b.EncodeVarint(106<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogCreateCommentMsg); err != nil {
+			return err
+		}
+	case *Tx_BlogCreateLikeMsg:
+		_ = b.EncodeVarint(107<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogCreateLikeMsg); err != nil {
 			return err
 		}
 	case nil:
@@ -334,21 +443,69 @@ func _Tx_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bo
 		err := b.DecodeMessage(msg)
 		m.Sum = &Tx_MigrationUpgradeSchemaMsg{msg}
 		return true, err
-	case 100: // sum.custom_create_timed_state_msg
+	case 100: // sum.blog_create_user_msg
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(custom.CreateTimedStateMsg)
+		msg := new(blog.CreateUserMsg)
 		err := b.DecodeMessage(msg)
-		m.Sum = &Tx_CustomCreateTimedStateMsg{msg}
+		m.Sum = &Tx_BlogCreateUserMsg{msg}
 		return true, err
-	case 102: // sum.custom_create_state_msg
+	case 101: // sum.blog_create_blog_msg
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(custom.CreateStateMsg)
+		msg := new(blog.CreateBlogMsg)
 		err := b.DecodeMessage(msg)
-		m.Sum = &Tx_CustomCreateStateMsg{msg}
+		m.Sum = &Tx_BlogCreateBlogMsg{msg}
+		return true, err
+	case 102: // sum.blog_change_blog_owner_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.ChangeBlogOwnerMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogChangeBlogOwnerMsg{msg}
+		return true, err
+	case 103: // sum.blog_create_article_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.CreateArticleMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogCreateArticleMsg{msg}
+		return true, err
+	case 104: // sum.blog_delete_article_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.DeleteArticleMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogDeleteArticleMsg{msg}
+		return true, err
+	case 105: // sum.blog_cancel_delete_article_task_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.CancelDeleteArticleTaskMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogCancelDeleteArticleTaskMsg{msg}
+		return true, err
+	case 106: // sum.blog_create_comment_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.CreateCommentMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogCreateCommentMsg{msg}
+		return true, err
+	case 107: // sum.blog_create_like_msg
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(blog.CreateLikeMsg)
+		err := b.DecodeMessage(msg)
+		m.Sum = &Tx_BlogCreateLikeMsg{msg}
 		return true, err
 	default:
 		return false, nil
@@ -389,13 +546,43 @@ func _Tx_OneofSizer(msg proto.Message) (n int) {
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
-	case *Tx_CustomCreateTimedStateMsg:
-		s := proto.Size(x.CustomCreateTimedStateMsg)
+	case *Tx_BlogCreateUserMsg:
+		s := proto.Size(x.BlogCreateUserMsg)
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
-	case *Tx_CustomCreateStateMsg:
-		s := proto.Size(x.CustomCreateStateMsg)
+	case *Tx_BlogCreateBlogMsg:
+		s := proto.Size(x.BlogCreateBlogMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogChangeBlogOwnerMsg:
+		s := proto.Size(x.BlogChangeBlogOwnerMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogCreateArticleMsg:
+		s := proto.Size(x.BlogCreateArticleMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogDeleteArticleMsg:
+		s := proto.Size(x.BlogDeleteArticleMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogCancelDeleteArticleTaskMsg:
+		s := proto.Size(x.BlogCancelDeleteArticleTaskMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogCreateCommentMsg:
+		s := proto.Size(x.BlogCreateCommentMsg)
+		n += 2 // tag and wire
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tx_BlogCreateLikeMsg:
+		s := proto.Size(x.BlogCreateLikeMsg)
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
@@ -652,7 +839,7 @@ type CronTask struct {
 	// Use the same indexes for the messages as the Tx message.
 	//
 	// Types that are valid to be assigned to Sum:
-	//	*CronTask_CustomDeleteTimedStateMsg
+	//	*CronTask_BlogDeleteArticleMsg
 	Sum isCronTask_Sum `protobuf_oneof:"sum"`
 }
 
@@ -695,11 +882,11 @@ type isCronTask_Sum interface {
 	Size() int
 }
 
-type CronTask_CustomDeleteTimedStateMsg struct {
-	CustomDeleteTimedStateMsg *custom.DeleteTimedStateMsg `protobuf:"bytes,101,opt,name=custom_delete_timed_state_msg,json=customDeleteTimedStateMsg,proto3,oneof"`
+type CronTask_BlogDeleteArticleMsg struct {
+	BlogDeleteArticleMsg *blog.DeleteArticleMsg `protobuf:"bytes,120,opt,name=blog_delete_article_msg,json=blogDeleteArticleMsg,proto3,oneof"`
 }
 
-func (*CronTask_CustomDeleteTimedStateMsg) isCronTask_Sum() {}
+func (*CronTask_BlogDeleteArticleMsg) isCronTask_Sum() {}
 
 func (m *CronTask) GetSum() isCronTask_Sum {
 	if m != nil {
@@ -715,9 +902,9 @@ func (m *CronTask) GetAuthenticators() []github_com_iov_one_weave.Condition {
 	return nil
 }
 
-func (m *CronTask) GetCustomDeleteTimedStateMsg() *custom.DeleteTimedStateMsg {
-	if x, ok := m.GetSum().(*CronTask_CustomDeleteTimedStateMsg); ok {
-		return x.CustomDeleteTimedStateMsg
+func (m *CronTask) GetBlogDeleteArticleMsg() *blog.DeleteArticleMsg {
+	if x, ok := m.GetSum().(*CronTask_BlogDeleteArticleMsg); ok {
+		return x.BlogDeleteArticleMsg
 	}
 	return nil
 }
@@ -725,7 +912,7 @@ func (m *CronTask) GetCustomDeleteTimedStateMsg() *custom.DeleteTimedStateMsg {
 // XXX_OneofFuncs is for the internal use of the proto package.
 func (*CronTask) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
 	return _CronTask_OneofMarshaler, _CronTask_OneofUnmarshaler, _CronTask_OneofSizer, []interface{}{
-		(*CronTask_CustomDeleteTimedStateMsg)(nil),
+		(*CronTask_BlogDeleteArticleMsg)(nil),
 	}
 }
 
@@ -733,9 +920,9 @@ func _CronTask_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 	m := msg.(*CronTask)
 	// sum
 	switch x := m.Sum.(type) {
-	case *CronTask_CustomDeleteTimedStateMsg:
-		_ = b.EncodeVarint(101<<3 | proto.WireBytes)
-		if err := b.EncodeMessage(x.CustomDeleteTimedStateMsg); err != nil {
+	case *CronTask_BlogDeleteArticleMsg:
+		_ = b.EncodeVarint(120<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.BlogDeleteArticleMsg); err != nil {
 			return err
 		}
 	case nil:
@@ -748,13 +935,13 @@ func _CronTask_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
 func _CronTask_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
 	m := msg.(*CronTask)
 	switch tag {
-	case 101: // sum.custom_delete_timed_state_msg
+	case 120: // sum.blog_delete_article_msg
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(custom.DeleteTimedStateMsg)
+		msg := new(blog.DeleteArticleMsg)
 		err := b.DecodeMessage(msg)
-		m.Sum = &CronTask_CustomDeleteTimedStateMsg{msg}
+		m.Sum = &CronTask_BlogDeleteArticleMsg{msg}
 		return true, err
 	default:
 		return false, nil
@@ -765,8 +952,8 @@ func _CronTask_OneofSizer(msg proto.Message) (n int) {
 	m := msg.(*CronTask)
 	// sum
 	switch x := m.Sum.(type) {
-	case *CronTask_CustomDeleteTimedStateMsg:
-		s := proto.Size(x.CustomDeleteTimedStateMsg)
+	case *CronTask_BlogDeleteArticleMsg:
+		s := proto.Size(x.BlogDeleteArticleMsg)
 		n += 2 // tag and wire
 		n += proto.SizeVarint(uint64(s))
 		n += s
@@ -787,47 +974,55 @@ func init() {
 func init() { proto.RegisterFile("cmd/blog/app/codec.proto", fileDescriptor_96adc38df3c83d28) }
 
 var fileDescriptor_96adc38df3c83d28 = []byte{
-	// 639 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x94, 0x41, 0x6f, 0xd3, 0x3e,
-	0x18, 0xc6, 0x9b, 0xb5, 0xfb, 0x6b, 0xf2, 0xb6, 0xff, 0x34, 0x6f, 0x8c, 0xac, 0x40, 0x37, 0x76,
-	0x40, 0x93, 0x10, 0x8e, 0xd8, 0x2e, 0x80, 0xe0, 0x40, 0xbb, 0x21, 0x38, 0x00, 0x52, 0xbb, 0x5e,
-	0x89, 0xdc, 0xf8, 0x8d, 0x6b, 0xd1, 0xc4, 0x51, 0xec, 0x8c, 0xf2, 0x2d, 0xf8, 0x10, 0x7c, 0x12,
-	0x4e, 0x3b, 0x8e, 0x1b, 0xa7, 0x09, 0x6d, 0x1f, 0x80, 0x3b, 0x27, 0x14, 0xa7, 0x49, 0x93, 0xaa,
-	0x9b, 0x38, 0x73, 0x8b, 0xdf, 0xe7, 0x79, 0x7f, 0x4e, 0x5e, 0x3f, 0x31, 0xb2, 0xbd, 0x80, 0x39,
-	0x83, 0x91, 0xe4, 0x0e, 0x8d, 0x22, 0xc7, 0x93, 0x0c, 0x3c, 0x12, 0xc5, 0x52, 0x4b, 0xdc, 0x48,
-	0xab, 0x4d, 0xc2, 0x85, 0x1e, 0x26, 0x03, 0xe2, 0xc9, 0xc0, 0x11, 0xf2, 0xf4, 0x91, 0x0c, 0xc1,
-	0xf9, 0x04, 0xf4, 0x14, 0x9c, 0x40, 0xf0, 0x98, 0x6a, 0x21, 0xc3, 0x72, 0x57, 0xf3, 0xe1, 0xb5,
-	0xfe, 0xb1, 0xe3, 0x51, 0x35, 0xac, 0x98, 0x9d, 0x1b, 0xcc, 0x41, 0x32, 0xd2, 0x42, 0x09, 0xfe,
-	0xd7, 0x74, 0x25, 0xb8, 0xaa, 0x98, 0x1f, 0xdf, 0x60, 0x3e, 0xa5, 0x23, 0xc1, 0xa8, 0x96, 0x71,
-	0xb5, 0x65, 0x93, 0x4b, 0x2e, 0xcd, 0xa3, 0x93, 0x3e, 0xe5, 0xd5, 0xb1, 0xe3, 0x25, 0x4a, 0xcb,
-	0xa0, 0xec, 0xdd, 0xfb, 0xb5, 0x88, 0x16, 0x4e, 0xc6, 0xf8, 0x3e, 0x6a, 0xf8, 0x00, 0xca, 0xb6,
-	0x76, 0xad, 0xfd, 0xe5, 0x83, 0x55, 0x92, 0x7e, 0x24, 0x79, 0x05, 0xf0, 0x26, 0xf4, 0x65, 0xd7,
-	0x48, 0xf8, 0x00, 0x21, 0x25, 0x78, 0x48, 0x75, 0x12, 0x83, 0xb2, 0x17, 0x76, 0xeb, 0xfb, 0xcb,
-	0x07, 0x98, 0xa4, 0xef, 0x4b, 0x7a, 0x9a, 0xf5, 0x72, 0xa9, 0x5b, 0x72, 0xe1, 0x26, 0x5a, 0xca,
-	0x27, 0x60, 0x37, 0x76, 0xeb, 0xfb, 0x2b, 0xdd, 0x62, 0x8d, 0x0f, 0xd1, 0x6a, 0xba, 0x8b, 0xab,
-	0x20, 0x64, 0x6e, 0xa0, 0xb8, 0x7d, 0x58, 0xde, 0xbb, 0x07, 0x21, 0x7b, 0xab, 0xf8, 0xeb, 0x5a,
-	0x77, 0x39, 0x5d, 0x4f, 0x96, 0xf8, 0x18, 0x6d, 0xe4, 0x00, 0xd7, 0x8b, 0x81, 0x6a, 0x30, 0xad,
-	0x4f, 0x4c, 0xeb, 0x06, 0xc9, 0x35, 0xd2, 0x31, 0x5a, 0x06, 0x58, 0xcf, 0xab, 0x45, 0xb1, 0x82,
-	0x49, 0x22, 0x96, 0x63, 0x9e, 0xce, 0x62, 0xfa, 0x46, 0x9b, 0xc1, 0x14, 0x45, 0xdc, 0x47, 0xdb,
-	0xd3, 0x23, 0x70, 0x69, 0x14, 0x8d, 0x3e, 0xbb, 0x4c, 0xf8, 0xbe, 0x81, 0x3d, 0x33, 0x30, 0x9b,
-	0x4c, 0x1d, 0xe4, 0x65, 0xea, 0x38, 0x12, 0xbe, 0x9f, 0x11, 0xb7, 0xa6, 0x52, 0x59, 0xc1, 0x1d,
-	0xb4, 0x0e, 0x63, 0xf0, 0x12, 0x0d, 0xee, 0x80, 0x6a, 0x6f, 0x68, 0x70, 0xcf, 0x0d, 0xee, 0x16,
-	0x49, 0xf3, 0x4c, 0x8e, 0x33, 0xb9, 0x9d, 0xaa, 0x19, 0x6b, 0x0d, 0xaa, 0x25, 0xfc, 0x01, 0xdd,
-	0x2d, 0xb2, 0xed, 0x26, 0x11, 0x8f, 0x29, 0x03, 0x57, 0x79, 0x43, 0x08, 0xa8, 0xe1, 0x1d, 0x1b,
-	0xde, 0x1d, 0x52, 0x98, 0x48, 0x3f, 0x33, 0xf5, 0x8c, 0x27, 0xa3, 0x6e, 0x17, 0xea, 0xac, 0x88,
-	0x5d, 0x74, 0x2f, 0x8b, 0x53, 0x7e, 0x0e, 0x5a, 0x04, 0xc0, 0x5c, 0xa5, 0xf3, 0x61, 0xb2, 0xc9,
-	0x06, 0x99, 0x6b, 0x72, 0x22, 0x27, 0xa9, 0xa9, 0xa7, 0x8b, 0xa1, 0x6e, 0x67, 0xea, 0x1c, 0x11,
-	0xbf, 0x47, 0xb7, 0xab, 0x1b, 0x4c, 0xd1, 0xbe, 0x41, 0x6f, 0x55, 0xd1, 0x25, 0xea, 0x66, 0x99,
-	0x9a, 0xd7, 0xdb, 0x8b, 0xa8, 0xae, 0x92, 0x60, 0xef, 0xeb, 0x02, 0x5a, 0x9b, 0x99, 0x1f, 0x7e,
-	0x81, 0x96, 0x02, 0x50, 0x8a, 0x72, 0xf3, 0x0b, 0xd4, 0xcd, 0x7b, 0xcf, 0x1b, 0x34, 0xe9, 0x87,
-	0x42, 0x86, 0xed, 0xc6, 0xd9, 0xc5, 0x4e, 0xad, 0x5b, 0xb4, 0x34, 0xbf, 0x5b, 0x68, 0xd1, 0x28,
-	0xff, 0x40, 0xa8, 0xf3, 0x31, 0x7d, 0xb3, 0xd0, 0x52, 0x27, 0x96, 0xe1, 0x09, 0x55, 0x1f, 0xf1,
-	0x3b, 0xf4, 0x3f, 0x4d, 0xf4, 0x10, 0x42, 0x2d, 0x3c, 0x93, 0x57, 0x33, 0xa5, 0x95, 0xf6, 0x83,
-	0xdf, 0x17, 0x3b, 0x7b, 0xd7, 0x5d, 0x50, 0xa4, 0x23, 0x43, 0x26, 0xd2, 0xf0, 0x74, 0x67, 0xba,
-	0x4b, 0xe1, 0x61, 0x30, 0x82, 0x39, 0xe1, 0x81, 0x6a, 0x78, 0x8e, 0x8c, 0xeb, 0x9a, 0xf0, 0xcc,
-	0x11, 0x27, 0x1f, 0xd1, 0xb6, 0xcf, 0x2e, 0x5b, 0xd6, 0xf9, 0x65, 0xcb, 0xfa, 0x79, 0xd9, 0xb2,
-	0xbe, 0x5c, 0xb5, 0x6a, 0xe7, 0x57, 0xad, 0xda, 0x8f, 0xab, 0x56, 0x6d, 0xf0, 0x9f, 0xb9, 0xfe,
-	0x0e, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x77, 0xe1, 0x1d, 0x3a, 0x06, 0x00, 0x00,
+	// 763 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x95, 0x41, 0x4f, 0xdb, 0x48,
+	0x14, 0xc7, 0x13, 0x12, 0x56, 0xec, 0x00, 0x8b, 0x18, 0x58, 0x36, 0x64, 0x57, 0x21, 0x4b, 0xa5,
+	0x0a, 0xa9, 0xea, 0x58, 0x85, 0x4b, 0x5b, 0xb5, 0x07, 0x12, 0x40, 0xad, 0xd4, 0x16, 0x29, 0x21,
+	0x3d, 0xd6, 0x9a, 0xd8, 0x13, 0x67, 0x1a, 0xdb, 0x13, 0x79, 0x6c, 0x48, 0xbf, 0x45, 0x3f, 0x44,
+	0x3f, 0x41, 0x3f, 0x05, 0x47, 0xb8, 0xf5, 0x84, 0x2a, 0xf8, 0x16, 0x3d, 0x55, 0xf3, 0xc6, 0x76,
+	0x1c, 0xbb, 0xa0, 0xaa, 0xc7, 0xde, 0x3c, 0xef, 0xff, 0x7f, 0xbf, 0x79, 0x7e, 0xf3, 0x3c, 0x46,
+	0x35, 0xcb, 0xb3, 0x8d, 0xbe, 0x2b, 0x1c, 0x83, 0x8e, 0xc7, 0x86, 0x25, 0x6c, 0x66, 0x91, 0x71,
+	0x20, 0x42, 0x81, 0xab, 0x2a, 0x5a, 0x27, 0x0e, 0x0f, 0x87, 0x51, 0x9f, 0x58, 0xc2, 0x33, 0xb8,
+	0x38, 0x7d, 0x28, 0x7c, 0x66, 0x9c, 0x31, 0x7a, 0xca, 0x0c, 0x8f, 0x3b, 0x01, 0x0d, 0xb9, 0xf0,
+	0xb3, 0x59, 0xf5, 0x07, 0xb7, 0xfa, 0x27, 0x86, 0x45, 0xe5, 0x70, 0xc6, 0x6c, 0xdc, 0x61, 0xf6,
+	0x22, 0x37, 0xe4, 0x92, 0x3b, 0x3f, 0x4d, 0x97, 0xdc, 0x91, 0x33, 0xe6, 0x47, 0x77, 0x98, 0x4f,
+	0xa9, 0xcb, 0x6d, 0x1a, 0x8a, 0x60, 0x36, 0x65, 0xdd, 0x11, 0x8e, 0x80, 0x47, 0x43, 0x3d, 0xc5,
+	0x51, 0x3c, 0xd1, 0x1d, 0xca, 0x38, 0xb7, 0x2f, 0xff, 0x44, 0x73, 0x27, 0x13, 0xfc, 0x3f, 0xaa,
+	0x0e, 0x18, 0x93, 0xb5, 0x72, 0xb3, 0xbc, 0xb3, 0xb8, 0xbb, 0x4c, 0xd4, 0x2b, 0x92, 0x23, 0xc6,
+	0x5e, 0xfa, 0x03, 0xd1, 0x01, 0x09, 0xef, 0x22, 0x24, 0xb9, 0xe3, 0xd3, 0x30, 0x0a, 0x98, 0xac,
+	0xcd, 0x35, 0x2b, 0x3b, 0x8b, 0xbb, 0x98, 0xa8, 0x6a, 0x49, 0x37, 0xb4, 0xbb, 0x89, 0xd4, 0xc9,
+	0xb8, 0x70, 0x1d, 0x2d, 0x24, 0xef, 0x5f, 0xab, 0x36, 0x2b, 0x3b, 0x4b, 0x9d, 0x74, 0x8d, 0xf7,
+	0xd0, 0xb2, 0xda, 0xc5, 0x94, 0xcc, 0xb7, 0x4d, 0x4f, 0x3a, 0xb5, 0xbd, 0xec, 0xde, 0x5d, 0xe6,
+	0xdb, 0xaf, 0xa5, 0xf3, 0xa2, 0xd4, 0x59, 0x54, 0xeb, 0x78, 0x89, 0x0f, 0xd1, 0x5a, 0x02, 0x30,
+	0xad, 0x80, 0xd1, 0x90, 0x41, 0xea, 0x63, 0x48, 0x5d, 0x23, 0x89, 0x46, 0xda, 0xa0, 0x69, 0xc0,
+	0x6a, 0x12, 0x4d, 0x83, 0x33, 0x98, 0x68, 0x6c, 0x27, 0x98, 0x27, 0x79, 0x4c, 0x0f, 0xb4, 0x1c,
+	0x26, 0x0d, 0xe2, 0x1e, 0xda, 0x9c, 0x1e, 0x80, 0x49, 0xc7, 0x63, 0xf7, 0x83, 0x69, 0xf3, 0xc1,
+	0x00, 0x60, 0x4f, 0x01, 0x56, 0x23, 0x53, 0x07, 0xd9, 0x57, 0x8e, 0x03, 0x3e, 0x18, 0x68, 0xe2,
+	0xc6, 0x54, 0xca, 0x2a, 0xb8, 0x8d, 0x56, 0xd9, 0x84, 0x59, 0x51, 0xc8, 0xcc, 0x3e, 0x0d, 0xad,
+	0x21, 0xe0, 0x9e, 0x01, 0xee, 0x6f, 0xa2, 0x4e, 0x90, 0x1c, 0x6a, 0xb9, 0xa5, 0x54, 0xcd, 0x5a,
+	0x61, 0xb3, 0x21, 0xfc, 0x0e, 0xfd, 0x97, 0x4e, 0xb6, 0x19, 0x8d, 0x9d, 0x80, 0xda, 0xcc, 0x94,
+	0xd6, 0x90, 0x79, 0x14, 0x78, 0x87, 0xc0, 0xfb, 0x97, 0xa4, 0x26, 0xd2, 0xd3, 0xa6, 0x2e, 0x78,
+	0x34, 0x75, 0x33, 0x55, 0xf3, 0x22, 0x3e, 0x42, 0xeb, 0xaa, 0x94, 0xe4, 0x14, 0x22, 0xc9, 0x02,
+	0xe0, 0xda, 0x71, 0x0f, 0xa1, 0x4e, 0xdd, 0xf1, 0x9e, 0x64, 0x41, 0xdc, 0x43, 0x15, 0x9d, 0x09,
+	0xe6, 0x39, 0xf0, 0xac, 0x38, 0xac, 0xc8, 0x69, 0xb9, 0xc2, 0x29, 0x70, 0xe2, 0x20, 0x7e, 0x8b,
+	0xea, 0x9a, 0x33, 0xa4, 0xbe, 0x13, 0x73, 0xc4, 0x99, 0x1f, 0x57, 0x35, 0x88, 0x0f, 0x43, 0xd3,
+	0xc0, 0xa2, 0x12, 0x8f, 0x95, 0x21, 0x3e, 0x0c, 0x40, 0x16, 0x14, 0x7c, 0x8c, 0xfe, 0xc9, 0xd6,
+	0x47, 0x83, 0x90, 0x5b, 0xae, 0x1e, 0x17, 0x07, 0xa0, 0x1b, 0xd9, 0x12, 0xf7, 0xb5, 0xac, 0x91,
+	0xeb, 0xd3, 0x2a, 0xa7, 0xf1, 0x14, 0x68, 0x33, 0x97, 0xe5, 0x80, 0xc3, 0x2c, 0xf0, 0x00, 0xf4,
+	0x22, 0x30, 0x1f, 0xc7, 0x02, 0xdd, 0xd3, 0x15, 0x52, 0xdf, 0x62, 0x6e, 0x9e, 0x1b, 0x52, 0x39,
+	0x02, 0x38, 0x07, 0x78, 0x33, 0xae, 0x16, 0xbc, 0x33, 0xa8, 0x13, 0x2a, 0x47, 0x7a, 0x9b, 0x06,
+	0xd4, 0x7d, 0xab, 0x23, 0xdf, 0x12, 0x4b, 0x78, 0x1e, 0xf3, 0x43, 0xd8, 0xe4, 0x7d, 0xb1, 0x25,
+	0x6d, 0x2d, 0x17, 0x5a, 0x32, 0x8d, 0xe7, 0x67, 0xc0, 0xe5, 0x23, 0xdd, 0x8f, 0x51, 0x71, 0x06,
+	0x5e, 0xf1, 0x11, 0x2b, 0xcc, 0x40, 0x1c, 0x6c, 0xcd, 0xa3, 0x8a, 0x8c, 0xbc, 0xed, 0x4f, 0x73,
+	0x68, 0x25, 0xf7, 0x85, 0xe0, 0xe7, 0x68, 0xc1, 0x63, 0x52, 0x52, 0x07, 0x2e, 0xb9, 0x0a, 0x8c,
+	0xfe, 0x8f, 0x3e, 0x25, 0xd2, 0xf3, 0xb9, 0xf0, 0x5b, 0xd5, 0xf3, 0xab, 0xad, 0x52, 0x27, 0x4d,
+	0xa9, 0x5f, 0x96, 0xd1, 0x3c, 0x28, 0xbf, 0xc1, 0xb5, 0x95, 0xb4, 0xe9, 0x73, 0x19, 0x2d, 0xb4,
+	0x03, 0xe1, 0xab, 0x63, 0xc5, 0x6f, 0xd0, 0x5f, 0x34, 0x0a, 0x87, 0xcc, 0x0f, 0xb9, 0x05, 0x37,
+	0x12, 0x74, 0x69, 0xa9, 0x75, 0xff, 0xdb, 0xd5, 0xd6, 0xf6, 0x6d, 0x3f, 0x20, 0xd2, 0x16, 0xbe,
+	0xcd, 0xd5, 0xf5, 0xd0, 0xc9, 0x65, 0xdf, 0x35, 0xe5, 0x93, 0x5f, 0x99, 0xf2, 0xb8, 0xe8, 0x56,
+	0xed, 0xfc, 0xba, 0x51, 0xbe, 0xb8, 0x6e, 0x94, 0xbf, 0x5e, 0x37, 0xca, 0x1f, 0x6f, 0x1a, 0xa5,
+	0x8b, 0x9b, 0x46, 0xe9, 0xcb, 0x4d, 0xa3, 0xd4, 0xff, 0x03, 0x7e, 0x68, 0x7b, 0xdf, 0x03, 0x00,
+	0x00, 0xff, 0xff, 0x50, 0x3a, 0xa9, 0x24, 0x0a, 0x08, 0x00, 0x00,
 }
 
 func (m *Tx) Marshal() (dAtA []byte, err error) {
@@ -981,15 +1176,15 @@ func (m *Tx_MigrationUpgradeSchemaMsg) MarshalTo(dAtA []byte) (int, error) {
 	}
 	return i, nil
 }
-func (m *Tx_CustomCreateTimedStateMsg) MarshalTo(dAtA []byte) (int, error) {
+func (m *Tx_BlogCreateUserMsg) MarshalTo(dAtA []byte) (int, error) {
 	i := 0
-	if m.CustomCreateTimedStateMsg != nil {
+	if m.BlogCreateUserMsg != nil {
 		dAtA[i] = 0xa2
 		i++
 		dAtA[i] = 0x6
 		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.CustomCreateTimedStateMsg.Size()))
-		n9, err := m.CustomCreateTimedStateMsg.MarshalTo(dAtA[i:])
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCreateUserMsg.Size()))
+		n9, err := m.BlogCreateUserMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -997,19 +1192,115 @@ func (m *Tx_CustomCreateTimedStateMsg) MarshalTo(dAtA []byte) (int, error) {
 	}
 	return i, nil
 }
-func (m *Tx_CustomCreateStateMsg) MarshalTo(dAtA []byte) (int, error) {
+func (m *Tx_BlogCreateBlogMsg) MarshalTo(dAtA []byte) (int, error) {
 	i := 0
-	if m.CustomCreateStateMsg != nil {
-		dAtA[i] = 0xb2
+	if m.BlogCreateBlogMsg != nil {
+		dAtA[i] = 0xaa
 		i++
 		dAtA[i] = 0x6
 		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.CustomCreateStateMsg.Size()))
-		n10, err := m.CustomCreateStateMsg.MarshalTo(dAtA[i:])
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCreateBlogMsg.Size()))
+		n10, err := m.BlogCreateBlogMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n10
+	}
+	return i, nil
+}
+func (m *Tx_BlogChangeBlogOwnerMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogChangeBlogOwnerMsg != nil {
+		dAtA[i] = 0xb2
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogChangeBlogOwnerMsg.Size()))
+		n11, err := m.BlogChangeBlogOwnerMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n11
+	}
+	return i, nil
+}
+func (m *Tx_BlogCreateArticleMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogCreateArticleMsg != nil {
+		dAtA[i] = 0xba
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCreateArticleMsg.Size()))
+		n12, err := m.BlogCreateArticleMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n12
+	}
+	return i, nil
+}
+func (m *Tx_BlogDeleteArticleMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogDeleteArticleMsg != nil {
+		dAtA[i] = 0xc2
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogDeleteArticleMsg.Size()))
+		n13, err := m.BlogDeleteArticleMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n13
+	}
+	return i, nil
+}
+func (m *Tx_BlogCancelDeleteArticleTaskMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogCancelDeleteArticleTaskMsg != nil {
+		dAtA[i] = 0xca
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCancelDeleteArticleTaskMsg.Size()))
+		n14, err := m.BlogCancelDeleteArticleTaskMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n14
+	}
+	return i, nil
+}
+func (m *Tx_BlogCreateCommentMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogCreateCommentMsg != nil {
+		dAtA[i] = 0xd2
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCreateCommentMsg.Size()))
+		n15, err := m.BlogCreateCommentMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n15
+	}
+	return i, nil
+}
+func (m *Tx_BlogCreateLikeMsg) MarshalTo(dAtA []byte) (int, error) {
+	i := 0
+	if m.BlogCreateLikeMsg != nil {
+		dAtA[i] = 0xda
+		i++
+		dAtA[i] = 0x6
+		i++
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogCreateLikeMsg.Size()))
+		n16, err := m.BlogCreateLikeMsg.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n16
 	}
 	return i, nil
 }
@@ -1059,11 +1350,11 @@ func (m *ExecuteBatchMsg_Union) MarshalTo(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if m.Sum != nil {
-		nn11, err := m.Sum.MarshalTo(dAtA[i:])
+		nn17, err := m.Sum.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += nn11
+		i += nn17
 	}
 	return i, nil
 }
@@ -1076,11 +1367,11 @@ func (m *ExecuteBatchMsg_Union_CashSendMsg) MarshalTo(dAtA []byte) (int, error) 
 		dAtA[i] = 0x3
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.CashSendMsg.Size()))
-		n12, err := m.CashSendMsg.MarshalTo(dAtA[i:])
+		n18, err := m.CashSendMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n12
+		i += n18
 	}
 	return i, nil
 }
@@ -1092,11 +1383,11 @@ func (m *ExecuteBatchMsg_Union_MultisigCreateMsg) MarshalTo(dAtA []byte) (int, e
 		dAtA[i] = 0x3
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.MultisigCreateMsg.Size()))
-		n13, err := m.MultisigCreateMsg.MarshalTo(dAtA[i:])
+		n19, err := m.MultisigCreateMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n13
+		i += n19
 	}
 	return i, nil
 }
@@ -1108,11 +1399,11 @@ func (m *ExecuteBatchMsg_Union_MultisigUpdateMsg) MarshalTo(dAtA []byte) (int, e
 		dAtA[i] = 0x3
 		i++
 		i = encodeVarintCodec(dAtA, i, uint64(m.MultisigUpdateMsg.Size()))
-		n14, err := m.MultisigUpdateMsg.MarshalTo(dAtA[i:])
+		n20, err := m.MultisigUpdateMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n14
+		i += n20
 	}
 	return i, nil
 }
@@ -1140,28 +1431,28 @@ func (m *CronTask) MarshalTo(dAtA []byte) (int, error) {
 		}
 	}
 	if m.Sum != nil {
-		nn15, err := m.Sum.MarshalTo(dAtA[i:])
+		nn21, err := m.Sum.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += nn15
+		i += nn21
 	}
 	return i, nil
 }
 
-func (m *CronTask_CustomDeleteTimedStateMsg) MarshalTo(dAtA []byte) (int, error) {
+func (m *CronTask_BlogDeleteArticleMsg) MarshalTo(dAtA []byte) (int, error) {
 	i := 0
-	if m.CustomDeleteTimedStateMsg != nil {
-		dAtA[i] = 0xaa
+	if m.BlogDeleteArticleMsg != nil {
+		dAtA[i] = 0xc2
 		i++
-		dAtA[i] = 0x6
+		dAtA[i] = 0x7
 		i++
-		i = encodeVarintCodec(dAtA, i, uint64(m.CustomDeleteTimedStateMsg.Size()))
-		n16, err := m.CustomDeleteTimedStateMsg.MarshalTo(dAtA[i:])
+		i = encodeVarintCodec(dAtA, i, uint64(m.BlogDeleteArticleMsg.Size()))
+		n22, err := m.BlogDeleteArticleMsg.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n16
+		i += n22
 	}
 	return i, nil
 }
@@ -1274,26 +1565,98 @@ func (m *Tx_MigrationUpgradeSchemaMsg) Size() (n int) {
 	}
 	return n
 }
-func (m *Tx_CustomCreateTimedStateMsg) Size() (n int) {
+func (m *Tx_BlogCreateUserMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.CustomCreateTimedStateMsg != nil {
-		l = m.CustomCreateTimedStateMsg.Size()
+	if m.BlogCreateUserMsg != nil {
+		l = m.BlogCreateUserMsg.Size()
 		n += 2 + l + sovCodec(uint64(l))
 	}
 	return n
 }
-func (m *Tx_CustomCreateStateMsg) Size() (n int) {
+func (m *Tx_BlogCreateBlogMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.CustomCreateStateMsg != nil {
-		l = m.CustomCreateStateMsg.Size()
+	if m.BlogCreateBlogMsg != nil {
+		l = m.BlogCreateBlogMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogChangeBlogOwnerMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogChangeBlogOwnerMsg != nil {
+		l = m.BlogChangeBlogOwnerMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogCreateArticleMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogCreateArticleMsg != nil {
+		l = m.BlogCreateArticleMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogDeleteArticleMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogDeleteArticleMsg != nil {
+		l = m.BlogDeleteArticleMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogCancelDeleteArticleTaskMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogCancelDeleteArticleTaskMsg != nil {
+		l = m.BlogCancelDeleteArticleTaskMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogCreateCommentMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogCreateCommentMsg != nil {
+		l = m.BlogCreateCommentMsg.Size()
+		n += 2 + l + sovCodec(uint64(l))
+	}
+	return n
+}
+func (m *Tx_BlogCreateLikeMsg) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BlogCreateLikeMsg != nil {
+		l = m.BlogCreateLikeMsg.Size()
 		n += 2 + l + sovCodec(uint64(l))
 	}
 	return n
@@ -1379,14 +1742,14 @@ func (m *CronTask) Size() (n int) {
 	return n
 }
 
-func (m *CronTask_CustomDeleteTimedStateMsg) Size() (n int) {
+func (m *CronTask_BlogDeleteArticleMsg) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.CustomDeleteTimedStateMsg != nil {
-		l = m.CustomDeleteTimedStateMsg.Size()
+	if m.BlogDeleteArticleMsg != nil {
+		l = m.BlogDeleteArticleMsg.Size()
 		n += 2 + l + sovCodec(uint64(l))
 	}
 	return n
@@ -1748,7 +2111,7 @@ func (m *Tx) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 100:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustomCreateTimedStateMsg", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCreateUserMsg", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1775,15 +2138,50 @@ func (m *Tx) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &custom.CreateTimedStateMsg{}
+			v := &blog.CreateUserMsg{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Sum = &Tx_CustomCreateTimedStateMsg{v}
+			m.Sum = &Tx_BlogCreateUserMsg{v}
+			iNdEx = postIndex
+		case 101:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCreateBlogMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.CreateBlogMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogCreateBlogMsg{v}
 			iNdEx = postIndex
 		case 102:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustomCreateStateMsg", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogChangeBlogOwnerMsg", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1810,11 +2208,186 @@ func (m *Tx) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &custom.CreateStateMsg{}
+			v := &blog.ChangeBlogOwnerMsg{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Sum = &Tx_CustomCreateStateMsg{v}
+			m.Sum = &Tx_BlogChangeBlogOwnerMsg{v}
+			iNdEx = postIndex
+		case 103:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCreateArticleMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.CreateArticleMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogCreateArticleMsg{v}
+			iNdEx = postIndex
+		case 104:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogDeleteArticleMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.DeleteArticleMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogDeleteArticleMsg{v}
+			iNdEx = postIndex
+		case 105:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCancelDeleteArticleTaskMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.CancelDeleteArticleTaskMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogCancelDeleteArticleTaskMsg{v}
+			iNdEx = postIndex
+		case 106:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCreateCommentMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.CreateCommentMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogCreateCommentMsg{v}
+			iNdEx = postIndex
+		case 107:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogCreateLikeMsg", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCodec
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCodec
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCodec
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &blog.CreateLikeMsg{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Sum = &Tx_BlogCreateLikeMsg{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2146,9 +2719,9 @@ func (m *CronTask) Unmarshal(dAtA []byte) error {
 			m.Authenticators = append(m.Authenticators, make([]byte, postIndex-iNdEx))
 			copy(m.Authenticators[len(m.Authenticators)-1], dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 101:
+		case 120:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CustomDeleteTimedStateMsg", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlogDeleteArticleMsg", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2175,11 +2748,11 @@ func (m *CronTask) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &custom.DeleteTimedStateMsg{}
+			v := &blog.DeleteArticleMsg{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Sum = &CronTask_CustomDeleteTimedStateMsg{v}
+			m.Sum = &CronTask_BlogDeleteArticleMsg{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -8,7 +8,7 @@ import "github.com/iov-one/weave/x/multisig/codec.proto";
 import "github.com/iov-one/weave/x/sigs/codec.proto";
 import "github.com/iov-one/weave/x/validators/codec.proto";
 import "gogoproto/gogo.proto";
-import "x/custom/codec.proto";
+import "x/blog/codec.proto";
 
 // Tx contains the message
 // When extending Tx, follow the rules:
@@ -36,8 +36,14 @@ message Tx {
     validators.ApplyDiffMsg validators_apply_diff_msg = 58;
     ExecuteBatchMsg execute_batch_msg = 60;
     migration.UpgradeSchemaMsg migration_upgrade_schema_msg = 69;
-    custom.CreateTimedStateMsg custom_create_timed_state_msg = 100;
-    custom.CreateStateMsg custom_create_state_msg = 102;
+    blog.CreateUserMsg blog_create_user_msg = 100;
+    blog.CreateBlogMsg blog_create_blog_msg = 101;
+    blog.ChangeBlogOwnerMsg blog_change_blog_owner_msg = 102;
+    blog.CreateArticleMsg blog_create_article_msg = 103;
+    blog.DeleteArticleMsg blog_delete_article_msg = 104;
+    blog.CancelDeleteArticleTaskMsg blog_cancel_delete_article_task_msg = 105;
+    blog.CreateCommentMsg blog_create_comment_msg = 106;
+    blog.CreateLikeMsg blog_create_like_msg = 107;
   }
 }
 
@@ -70,6 +76,6 @@ message CronTask {
   repeated bytes authenticators = 1 [(gogoproto.casttype) = "github.com/iov-one/weave.Condition"];
   // Use the same indexes for the messages as the Tx message.
   oneof sum {
-    custom.DeleteTimedStateMsg custom_delete_timed_state_msg = 101;
+    blog.DeleteArticleMsg blog_delete_article_msg = 120;
   }
 }
