@@ -57,12 +57,12 @@ cover:
 	@# TODO write github.com/iov-one/blog-tutorial/cmd/bnsd/client when implemented
 	@go test -mod=readonly -covermode=$(MODE) \
 		-coverpkg=github.com/iov-one/blog-tutorial/cmd/blog/app, \
-		-coverprofile=coverage/customd_app.out \
+		-coverprofile=coverage/blogd_app.out \
 		github.com/iov-one/blog-tutorial/cmd/blog/app
 		cat coverage/*.out > coverage/coverage.txt
 	@go test -mod=readonly -covermode=$(MODE) \
 		-coverpkg=github.com/iov-one/blog-tutorial/cmd/blog/app,github.com/iov-one/blog-tutorial/cmd/blog/client \
-		-coverprofile=coverage/customd_client.out \
+		-coverprofile=coverage/blogd_client.out \
 		github.com/iov-one/blog-tutorial/cmd/blog/client
 
 novendor:
