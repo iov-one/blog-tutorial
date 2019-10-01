@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/iov-one/weave"
 	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/weavetest"
 	"github.com/iov-one/weave/weavetest/assert"
@@ -24,7 +24,7 @@ func TestCmdSubmitTxHappyPath(t *testing.T) {
 				Destination: fromHex(t, addr),
 				Amount: &coin.Coin{
 					Whole:  5,
-					Ticker: "CSTM",
+					Ticker: "BLOG",
 				},
 			},
 		},

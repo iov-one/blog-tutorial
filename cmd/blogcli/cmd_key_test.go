@@ -10,11 +10,11 @@ func TestKeygen(t *testing.T) {
 	const mnemonic = `shy else mystery outer define there front bracket dawn honey excuse virus lazy book kiss cannon oven law coconut hedgehog veteran narrow great cage`
 
 	cases := map[string]string{
-		"m/44'/988'/0'": "cstm1h7rpratsyt7mylq79pakjfdzg839zzqd00zegy",
-		"m/44'/988'/1'": "cstm13ss78hz4epq88putspwmf5ks9m7g8cv2rqe4ns",
-		"m/44'/988'/2'": "cstm160jdxeaxyfjrqcfmf5cdzpujyz25nphtvkryv6",
-		"m/44'/988'/3'": "cstm1x3wpuhvrm5vvex38k43csxdjs7l4n3gwlvj6g4",
-		"m/44'/988'/4'": "cstm1fm8wddz5mk8xeqcesleysrfd5pg9wg0x6eh89h",
+		"m/44'/988'/0'": "BLOG1h7rpratsyt7mylq79pakjfdzg839zzqd00zegy",
+		"m/44'/988'/1'": "BLOG13ss78hz4epq88putspwmf5ks9m7g8cv2rqe4ns",
+		"m/44'/988'/2'": "BLOG160jdxeaxyfjrqcfmf5cdzpujyz25nphtvkryv6",
+		"m/44'/988'/3'": "BLOG1x3wpuhvrm5vvex38k43csxdjs7l4n3gwlvj6g4",
+		"m/44'/988'/4'": "BLOG1fm8wddz5mk8xeqcesleysrfd5pg9wg0x6eh89h",
 	}
 
 	for path, bech := range cases {
@@ -23,7 +23,7 @@ func TestKeygen(t *testing.T) {
 			if err != nil {
 				t.Fatalf("cannot generate key: %s", err)
 			}
-			b, err := toBech32("cstm", priv.Public().(ed25519.PublicKey))
+			b, err := toBech32("BLOG", priv.Public().(ed25519.PublicKey))
 			if err != nil {
 				t.Fatalf("cannot serialize to bech32: %s", err)
 			}

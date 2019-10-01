@@ -8,7 +8,7 @@
 			"destination": "0792118D318D358B21F2A2B8DE6606AF001C60FB",
 			"amount": {
 				"whole": 4,
-				"ticker": "CSTM"
+				"ticker": "BLOG"
 			},
 			"memo": "blogcli test"
 		}

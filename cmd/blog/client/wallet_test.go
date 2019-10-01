@@ -12,7 +12,7 @@ import (
 )
 
 var defaults = coin.Coin{
-	Ticker:     "CSTM",
+	Ticker:     "BLOG",
 	Whole:      123456789,
 	Fractional: 5555555,
 }
@@ -79,7 +79,7 @@ func TestMergeWalletStore(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      123456789,
 							Fractional: 5555555,
 						},
@@ -91,7 +91,7 @@ func TestMergeWalletStore(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      987654321,
 							Fractional: 5555555,
 						},
@@ -103,7 +103,7 @@ func TestMergeWalletStore(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      987654321,
 							Fractional: 5555555,
 						},
@@ -115,7 +115,7 @@ func TestMergeWalletStore(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      123456789,
 							Fractional: 5555555,
 						},
@@ -127,7 +127,7 @@ func TestMergeWalletStore(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      123456789,
 							Fractional: 5555555,
 						},
@@ -154,7 +154,7 @@ func TestMergeWithEmptyWallet(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      123456789,
 							Fractional: 5555555,
 						},
@@ -166,7 +166,7 @@ func TestMergeWithEmptyWallet(t *testing.T) {
 				Set: cash.Set{
 					Coins: []*coin.Coin{
 						{
-							Ticker:     "CSTM",
+							Ticker:     "BLOG",
 							Whole:      123456789,
 							Fractional: 5555555,
 						},

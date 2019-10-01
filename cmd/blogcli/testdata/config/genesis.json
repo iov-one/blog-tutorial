@@ -7,7 +7,7 @@
         "coins": [
           {
             "whole": 123456789,
-            "ticker": "CSTM"
+            "ticker": "BLOG"
           }
         ]
       },
@@ -16,14 +16,14 @@
         "coins": [
           {
             "whole": 123456789,
-            "ticker": "CSTM"
+            "ticker": "BLOG"
           }
         ]
       }
     ],
 		"currencies": [
 			{
-				"ticker": "CSTM",
+				"ticker": "BLOG",
 				"name":   "Main token of this chain"
 			}
     ],
@@ -36,7 +36,7 @@
 		"conf": {
 			"cash": {
 				"collector_address": "seq:dist/revenue/1",
-				"minimal_fee": "0 CSTM"
+				"minimal_fee": "0 BLOG"
 			},
 			"migration": {
 				"admin": "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"

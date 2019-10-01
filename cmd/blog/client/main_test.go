@@ -25,7 +25,7 @@ import (
 // configuration for genesis
 var initBalance = coin.Coin{
 	Whole:  100200300,
-	Ticker: "CSTM",
+	Ticker: "BLOG",
 }
 
 // adjust this to get debug output

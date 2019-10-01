@@ -24,7 +24,7 @@ destination account.
 	var (
 		srcFl    = flAddress(fl, "src", "", "A source account address that the founds are send from.")
 		dstFl    = flAddress(fl, "dst", "", "A destination account address that the founds are send to.")
-		amountFl = flCoin(fl, "amount", "1 CSTM", "An amount that is to be transferred between the source to the destination accounts.")
+		amountFl = flCoin(fl, "amount", "1 BLOG", "An amount that is to be transferred between the source to the destination accounts.")
 		memoFl   = fl.String("memo", "", "A short message attached to the transfer operation.")
 	)
 	fl.Parse(args)

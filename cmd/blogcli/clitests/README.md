@@ -23,7 +23,7 @@ and then ignore repeating the flag on all these commands.
 
 ```sh
 cat unsigned_tx.bin \
-    | blogcli with-fee [-amount="0.1 CSTM"] \
+    | blogcli with-fee [-amount="0.1 BLOG"] \
     | blogcli sign [-key $keyfile] \
     | blogcli submit
 ```

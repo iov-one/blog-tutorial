@@ -10,8 +10,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/iov-one/weave"
 	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/app"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/migration"
@@ -25,7 +25,7 @@ func TestCmdSendTokensHappyPath(t *testing.T) {
 	args := []string{
 		"-src", "b1ca7e78f74423ae01da3b51e676934d9105f282",
 		"-dst", "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0",
-		"-amount", "5 CSTM",
+		"-amount", "5 BLOG",
 		"-memo", "a memo",
 	}
 	if err := cmdSendTokens(nil, &output, args); err != nil {
@@ -46,7 +46,7 @@ func TestCmdSendTokensHappyPath(t *testing.T) {
 	assert.Equal(t, fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"), []byte(msg.Source))
 	assert.Equal(t, fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"), []byte(msg.Destination))
 	assert.Equal(t, "a memo", msg.Memo)
-	assert.Equal(t, coin.NewCoinp(5, 0, "CSTM"), msg.Amount)
+	assert.Equal(t, coin.NewCoinp(5, 0, "BLOG"), msg.Amount)
 }
 
 func TestCmdWithFeeHappyPath(t *testing.T) {
@@ -54,7 +54,7 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 		Metadata:    &weave.Metadata{Schema: 1},
 		Source:      fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"),
 		Destination: fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"),
-		Amount:      coin.NewCoinp(5, 0, "CSTM"),
+		Amount:      coin.NewCoinp(5, 0, "BLOG"),
 		Memo:        "a memo",
 	}
 	sendTx := &blog.Tx{
@@ -70,7 +70,7 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 	var output bytes.Buffer
 	args := []string{
 		"-payer", "b1ca7e78f74423ae01da3b51e676934d9105f282",
-		"-amount", "5 CSTM",
+		"-amount", "5 BLOG",
 	}
 	if err := cmdWithFee(&input, &output, args); err != nil {
 		t.Fatalf("cannot attach a fee to transaction: %s", err)
@@ -81,7 +81,7 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 		t.Fatalf("cannot unmarshal created transaction: %s", err)
 	}
 	assert.Equal(t, fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"), []byte(tx.Fees.Payer))
-	assert.Equal(t, coin.NewCoinp(5, 0, "CSTM"), tx.Fees.Fees)
+	assert.Equal(t, coin.NewCoinp(5, 0, "BLOG"), tx.Fees.Fees)
 
 	txmsg, err := tx.GetMsg()
 	if err != nil {
@@ -96,7 +96,7 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 		Metadata:    &weave.Metadata{Schema: 1},
 		Source:      fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"),
 		Destination: fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"),
-		Amount:      coin.NewCoinp(5, 0, "CSTM"),
+		Amount:      coin.NewCoinp(5, 0, "BLOG"),
 		Memo:        "a memo",
 	}
 	sendTx := &blog.Tx{
@@ -113,10 +113,10 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 		"only minimal fee": {
 			Conf: cash.Configuration{
 				Metadata:   &weave.Metadata{Schema: 1},
-				MinimalFee: coin.NewCoin(4, 0, "CSTM"),
+				MinimalFee: coin.NewCoin(4, 0, "BLOG"),
 			},
 			Fees:    nil,
-			WantFee: coin.NewCoinp(4, 0, "CSTM"),
+			WantFee: coin.NewCoinp(4, 0, "BLOG"),
 		},
 		"only message fee": {
 			Conf: cash.Configuration{
@@ -124,19 +124,19 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 				MinimalFee: coin.NewCoin(0, 0, ""),
 			},
 			Fees: map[string]coin.Coin{
-				sendMsg.Path(): coin.NewCoin(17, 0, "CSTM"),
+				sendMsg.Path(): coin.NewCoin(17, 0, "BLOG"),
 			},
-			WantFee: coin.NewCoinp(17, 0, "CSTM"),
+			WantFee: coin.NewCoinp(17, 0, "BLOG"),
 		},
 		"custom message fee is more important than global setting": {
 			Conf: cash.Configuration{
 				Metadata:   &weave.Metadata{Schema: 1},
-				MinimalFee: coin.NewCoin(123, 0, "CSTM"),
+				MinimalFee: coin.NewCoin(123, 0, "BLOG"),
 			},
 			Fees: map[string]coin.Coin{
-				sendMsg.Path(): coin.NewCoin(11, 0, "CSTM"),
+				sendMsg.Path(): coin.NewCoin(11, 0, "BLOG"),
 			},
-			WantFee: coin.NewCoinp(11, 0, "CSTM"),
+			WantFee: coin.NewCoinp(11, 0, "BLOG"),
 		},
 	}
 

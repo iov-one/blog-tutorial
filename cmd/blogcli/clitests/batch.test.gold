@@ -12,9 +12,9 @@
 							"destination": "81AA88837537FADD60A54F647402D3CBD87AB59B",
 							"amount": {
 								"whole": 2,
-								"ticker": "CSTM"
+								"ticker": "BLOG"
 							},
-							"memo": "sending 2 CSTM"
+							"memo": "sending 2 BLOG"
 						}
 					}
 				},
@@ -28,9 +28,9 @@
 							"destination": "E4053248CE6566868644B043E13292A7F65BFDE5",
 							"amount": {
 								"whole": 9,
-								"ticker": "CSTM"
+								"ticker": "BLOG"
 							},
-							"memo": "sending 9 CSTM"
+							"memo": "sending 9 BLOG"
 						}
 					}
 				},
@@ -44,9 +44,9 @@
 							"destination": "8118ECF9F29485ED2C9CB5A62E2625E86D55583B",
 							"amount": {
 								"whole": 7,
-								"ticker": "CSTM"
+								"ticker": "BLOG"
 							},
-							"memo": "sending 7 CSTM"
+							"memo": "sending 7 BLOG"
 						}
 					}
 				}

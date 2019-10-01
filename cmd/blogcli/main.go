@@ -29,7 +29,7 @@ import (
 // transaction, signing and submitting. They can be combined into a single
 // pipeline line:
 //
-//   $ blogcli create-custom-state --inner-state 1 --address cstm1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
+//   $ blogcli create-custom-state --inner-state 1 --address BLOG1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
 //       | blogcli sign \
 //       | blogcli submit
 //
