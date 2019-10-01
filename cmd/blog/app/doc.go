@@ -8,6 +8,6 @@ App uses weave modules defined below:
   - multisig
   - migration
   - validators
-  - custom
+  - blog
 */
 package blog

@@ -24,7 +24,7 @@ import (
 // account, to use for dev mode
 func GenInitOptions(args []string) (json.RawMessage, error) {
 	// Your coins ticker code
-	ticker := "CSTM"
+	ticker := "BLOG"
 	if len(args) > 0 {
 		ticker = args[0]
 		if !coin.IsCC(ticker) {
@@ -80,7 +80,7 @@ func GenInitOptions(args []string) (json.RawMessage, error) {
 		},
 		"initialize_schema": []dict{
 			{"pkg": "migration", "ver": 1},
-			{"pkg": "custom", "ver": 1},
+			// TODO add blog when migration is implemented
 			{"pkg": "cash", "ver": 1},
 			{"pkg": "sigs", "ver": 1},
 			{"pkg": "multisig", "ver": 1},
@@ -95,7 +95,7 @@ func GenerateApp(options *server.Options) (abci.Application, error) {
 	// db goes in a subdir, but "" -> "" for memdb
 	var dbPath string
 	if options.Home != "" {
-		dbPath = filepath.Join(options.Home, "custom.db")
+		dbPath = filepath.Join(options.Home, "blog.db")
 	}
 
 	stack := Stack(nil, options.MinFee)

@@ -1,6 +1,6 @@
 {
   "genesis_time": "2019-03-19T15:32:11.118591Z",
-  "chain_id": "custom-testnet",
+  "chain_id": "blog-testnet",
   "validators": [],
   "consensus_params": {
     "block": {
@@ -25,7 +25,7 @@
           {
             "whole": 123456789,
             "fractional": 5555555,
-            "ticker": "CSTM"
+            "ticker": "BLOG"
           }
         ]
       },
@@ -36,7 +36,7 @@
           {
             "whole": 987654321,
             "fractional": 5555555,
-            "ticker": "CSTM"
+            "ticker": "BLOG"
           }
         ]
       },
@@ -47,14 +47,14 @@
           {
             "whole": 987654321,
             "fractional": 5555555,
-            "ticker": "CSTM"
+            "ticker": "BLOG"
           }
         ]
       }
     ],
     "currencies": [
       {
-        "ticker": "CSTM",
+        "ticker": "BLOG",
         "name": "Main token of this chain"
       }
     ],
@@ -74,8 +74,8 @@
       "cash:collector_address": "cond:dist/revenue/0000000000000001",
       "cash:minimal_fee": {
         "fractional": 100000000,
-        "ticker": "CSTM",
-        "//amount": "0.1CSTM"
+        "ticker": "BLOG",
+        "//amount": "0.1BLOG"
       }
     }
   }

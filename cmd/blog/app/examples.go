@@ -3,14 +3,17 @@ package blog
 import (
 	"encoding/hex"
 	"strings"
+	"time"
 
+	"github.com/iov-one/blog-tutorial/x/blog"
 	"github.com/iov-one/weave"
-	"github.com/iov-one/blog-tutorial/x/custom"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/commands"
 	"github.com/iov-one/weave/crypto"
 	"github.com/iov-one/weave/x/cash"
 	"github.com/iov-one/weave/x/sigs"
+
+	"github.com/iov-one/weave/weavetest"
 )
 
 // we fix the private keys here for deterministic output with the same encoding
@@ -39,7 +42,7 @@ func makePrivKey(seed string) *crypto.PrivateKey {
 
 // Examples generates some example structs to dump out with testgen
 func Examples() []commands.Example {
-	ticker := "CSTM"
+	ticker := "BLOG"
 	wallet := &cash.Set{
 		Metadata: &weave.Metadata{Schema: 1},
 		Coins: []*coin.Coin{
@@ -74,17 +77,50 @@ func Examples() []commands.Example {
 	}
 	tx.Signatures = []*sigs.StdSignature{sig}
 
-	createTimedStateMsg := &custom.CreateTimedStateMsg{
-		Metadata:       &weave.Metadata{Schema: 1},
-		InnerStateEnum: custom.InnerStateEnum_CaseOne,
-		Str:            "cstm_str",
-		Byte:           []byte{0, 1},
+	createUserMsg := &blog.CreateUserMsg{
+		Metadata: &weave.Metadata{Schema: 1},
+		Username: "Crpto0X",
+		Bio:      "Best hacker in the universe",
+	}
+	createBlogMsg := &blog.CreateBlogMsg{
+		Metadata:    &weave.Metadata{Schema: 1},
+		Title:       "insanely good title",
+		Description: "best description in the existence",
 	}
 
-	createStateMsg := &custom.CreateStateMsg{
-		Metadata:   &weave.Metadata{Schema: 1},
-		InnerState: &custom.InnerState{St1: 1, St2: 1},
-		Address:    randomAddr,
+	blogID := weavetest.SequenceID(1)
+
+	changeOwnerMsg := &blog.ChangeBlogOwnerMsg{
+		Metadata: &weave.Metadata{Schema: 1},
+		BlogID:   blogID,
+		NewOwner: weavetest.NewCondition().Address(),
+	}
+
+	now := weave.AsUnixTime(time.Now())
+	future := now.Add(time.Hour)
+
+	createArticleMsg := &blog.CreateArticleMsg{
+		Metadata: &weave.Metadata{Schema: 1},
+		BlogID:   blogID,
+		Title:    "insanely good title",
+		Content:  "best content in the existence",
+		DeleteAt: future,
+	}
+	articleID := weavetest.SequenceID(1)
+	deleteArticleMsg := &blog.DeleteArticleMsg{
+		Metadata:  &weave.Metadata{Schema: 1},
+		ArticleID: articleID,
+	}
+
+	createCommentMsg := &blog.CreateCommentMsg{
+		Metadata:  &weave.Metadata{Schema: 1},
+		ArticleID: articleID,
+		Content:   "best content in the existence",
+	}
+
+	createLikeMsg := &blog.CreateLikeMsg{
+		Metadata:  &weave.Metadata{Schema: 1},
+		ArticleID: articleID,
 	}
 
 	return []commands.Example{
@@ -95,7 +131,12 @@ func Examples() []commands.Example {
 		{Filename: "send_msg", Obj: msg},
 		{Filename: "unsigned_tx", Obj: &unsigned},
 		{Filename: "signed_tx", Obj: &tx},
-		{Filename: "custom_create_timed_state_msg", Obj: createTimedStateMsg},
-		{Filename: "custom_create_state_msg", Obj: createStateMsg},
+		{Filename: "blog_create_user_msg", Obj: createUserMsg},
+		{Filename: "blog_create_blog_msg", Obj: createBlogMsg},
+		{Filename: "blog_create_article_msg", Obj: createArticleMsg},
+		{Filename: "blog_delete_article_msg", Obj: deleteArticleMsg},
+		{Filename: "blog_change_blog_owner_msg", Obj: changeOwnerMsg},
+		{Filename: "blog_create_comment_msg", Obj: createCommentMsg},
+		{Filename: "blog_create_like_msg", Obj: createLikeMsg},
 	}
 }

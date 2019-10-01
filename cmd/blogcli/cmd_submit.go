@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/iov-one/weave"
 	"github.com/iov-one/blog-tutorial/cmd/blog/client"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/x/batch"
 )
 
@@ -25,8 +25,8 @@ Make sure to collect enough signatures before submitting the transaction.
 		fl.PrintDefaults()
 	}
 	var (
-		tmAddrFl = fl.String("tm", env("CUSTOMCLI_TM_ADDR", "https://custom.NETWORK.iov.one:443"),
-			"Tendermint node address. Use proper NETWORK name. You can use CUSTOMCLI_TM_ADDR environment variable to set it.")
+		tmAddrFl = fl.String("tm", env("BLOGCLI_TM_ADDR", "https://BLOG.NETWORK.iov.one:443"),
+			"Tendermint node address. Use proper NETWORK name. You can use BLOGCLI_TM_ADDR environment variable to set it.")
 	)
 	fl.Parse(args)
 
@@ -35,9 +35,9 @@ Make sure to collect enough signatures before submitting the transaction.
 		return fmt.Errorf("cannot read transaction from input: %s", err)
 	}
 
-	customClient := client.NewClient(client.NewHTTPConnection(*tmAddrFl))
+	BlogClient := client.NewClient(client.NewHTTPConnection(*tmAddrFl))
 
-	resp := customClient.BroadcastTx(tx)
+	resp := BlogClient.BroadcastTx(tx)
 	if resp.IsError(); err != nil {
 		return fmt.Errorf("cannot broadcast transaction: %s", err)
 	}

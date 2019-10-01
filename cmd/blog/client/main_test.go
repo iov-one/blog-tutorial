@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/iov-one/weave"
 	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	"github.com/iov-one/weave"
 	weaveClient "github.com/iov-one/weave/client"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/commands/server"
@@ -25,7 +25,7 @@ import (
 // configuration for genesis
 var initBalance = coin.Coin{
 	Whole:  100200300,
-	Ticker: "CSTM",
+	Ticker: "BLOG",
 }
 
 // adjust this to get debug output
@@ -99,7 +99,6 @@ func initGenesis(filename string, addr weave.Address) error {
 		},
 		"initialize_schema": []dict{
 			{"pkg": "migration", "ver": 1},
-			{"pkg": "custom", "ver": 1},
 			{"pkg": "cash", "ver": 1},
 			{"pkg": "sigs", "ver": 1},
 			{"pkg": "multisig", "ver": 1},

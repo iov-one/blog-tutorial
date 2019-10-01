@@ -8,7 +8,7 @@ echo -n 'neutral abandon month park disease forum engage dutch coconut base morn
 # Use a custom key path just in case the host is using original one.
 tempdir=$(mktemp -d)
 keypath=$tempdir/key.priv
-export CUSTOMCLI_PRIV_KEY=$keypath
+export BLOGCLI_PRIV_KEY=$keypath
 
 blogcli keygen <$mnemonic
 rm $mnemonic

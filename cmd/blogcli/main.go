@@ -29,7 +29,7 @@ import (
 // transaction, signing and submitting. They can be combined into a single
 // pipeline line:
 //
-//   $ blogcli create-custom-state --inner-state 1 --address cstm1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
+//   $ blogcli create-custom-state --inner-state 1 --address BLOG1hx6vjcmsgj7wgu64ajdglrhpusl3fmercl8mxe \
 //       | blogcli sign \
 //       | blogcli submit
 //
@@ -57,7 +57,7 @@ var commands = map[string]func(input io.Reader, output io.Writer, args []string)
 
 func main() {
 	if len(os.Args) == 1 {
-		fmt.Fprintf(os.Stderr, "%s is a command line client for the CUSTOM application.\n\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "%s is a command line client for the BLOG application.\n\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "Usage: %s <command> [<flags>]\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "\nAvailable commands are:\n\t%s\n", strings.Join(availableCmds(), "\n\t"))
 		fmt.Fprintf(os.Stderr, "Run '%s <command> -help' to learn more about each command.\n", os.Args[0])

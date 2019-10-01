@@ -35,7 +35,7 @@ func runTestMain(m *testing.M) int {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	RunCustomd(ctx, t, home)
+	RunBlogd(ctx, t, home)
 	tmtest.RunTendermint(ctx, t, home)
 
 	return m.Run()
