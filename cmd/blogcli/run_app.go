@@ -9,9 +9,9 @@ import (
 	tmtest "github.com/iov-one/weave/tmtest"
 )
 
-// RunCustomd is like RunTendermint, just executes the blog executable, assuming a prepared home directory
+// RunBlogd is like RunTendermint, just executes the blog executable, assuming a prepared home directory
 // This package will be removed with weave 0.22.0 since it is a copy-paste from the repo
-func RunCustomd(ctx context.Context, t tmtest.TestReporter, home string) (cleanup func()) {
+func RunBlogd(ctx context.Context, t tmtest.TestReporter, home string) (cleanup func()) {
 	t.Helper()
 
 	appPath, err := exec.LookPath("blog")

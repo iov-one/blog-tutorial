@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/iov-one/weave"
 	"github.com/iov-one/blog-tutorial/cmd/blog/client"
-	"github.com/iov-one/blog-tutorial/x/custom"
+	"github.com/iov-one/blog-tutorial/x/blog"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/orm"
 	"github.com/iov-one/weave/x/cash"
 	"github.com/iov-one/weave/x/multisig"
@@ -29,8 +29,8 @@ Execute a ABCI query and print JSON encoded result.
 		fl.PrintDefaults()
 	}
 	var (
-		tmAddrFl = fl.String("tm", env("CUSTOMCLI_TM_ADDR", "https://custom.NETWORK:443"),
-			"Tendermint node address. Use proper NETWORK name. You can use CUSTOMCLI_TM_ADDR environment variable to set it.")
+		tmAddrFl = fl.String("tm", env("BLOGCLI_TM_ADDR", "https://blog.NETWORK:443"),
+			"Tendermint node address. Use proper NETWORK name. You can use BLOGCLI_TM_ADDR environment variable to set it.")
 		pathFl        = fl.String("path", "", "Path to be queried. Must be one of the supported.")
 		dataFl        = fl.String("data", "", "individual query data. Format depends on the queried entity. Use 'id/version' for electoraterules, electorates")
 		prefixQueryFl = fl.Bool("prefix", false, "If true, use prefix queries instead of the exact match with provided data.")
@@ -58,8 +58,8 @@ Execute a ABCI query and print JSON encoded result.
 		queryPath += "?" + weave.PrefixQueryMod
 	}
 
-	customClient := client.NewClient(client.NewHTTPConnection(*tmAddrFl))
-	resp, err := customClient.AbciQuery(queryPath, data)
+	BlogClient := client.NewClient(client.NewHTTPConnection(*tmAddrFl))
+	resp, err := BlogClient.AbciQuery(queryPath, data)
 	if err != nil {
 		return fmt.Errorf("failed to run query: %s", err)
 	}
@@ -103,13 +103,28 @@ var queries = map[string]struct {
 	// from decKey if we use secondary index for matching.
 	encID func(string) ([]byte, error)
 }{
-	"/customTimedStates": {
-		newObj: func() model { return &custom.TimedState{} },
+	"/blogUsers": {
+		newObj: func() model { return &blog.User{} },
 		decKey: sequenceKey,
 		encID:  numericID,
 	},
-	"/customStates": {
-		newObj: func() model { return &custom.State{} },
+	"/blogs": {
+		newObj: func() model { return &blog.Blog{} },
+		decKey: sequenceKey,
+		encID:  numericID,
+	},
+	"/articles": {
+		newObj: func() model { return &blog.Article{} },
+		decKey: sequenceKey,
+		encID:  numericID,
+	},
+	"/comments": {
+		newObj: func() model { return &blog.Comment{} },
+		decKey: sequenceKey,
+		encID:  numericID,
+	},
+	"/likes": {
+		newObj: func() model { return &blog.Like{} },
 		decKey: sequenceKey,
 		encID:  numericID,
 	},

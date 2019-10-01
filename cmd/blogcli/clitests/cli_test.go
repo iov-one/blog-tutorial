@@ -15,7 +15,7 @@ import (
 var goldFl = flag.Bool("gold", false, "If true, write result to golden files instead of comparing with them.")
 
 func TestAll(t *testing.T) {
-	ensureCustomcliBinary(t)
+	ensureBlogCLIBinary(t)
 
 	testFiles, err := filepath.Glob("./*.test")
 	if err != nil {
@@ -30,8 +30,8 @@ func TestAll(t *testing.T) {
 			cmd := exec.Command("/bin/bash", tf)
 
 			// we don't support any remote servers in shell tests (those are in blogcli unit tests)
-			// CUSTOMCLI_TM_ADDR must be unset
-			cmd.Env = append(os.Environ(), "CUSTOMCLI_TM_ADDR=")
+			// BLOGCLI_TM_ADDR must be unset
+			cmd.Env = append(os.Environ(), "BLOGCLI_TM_ADDR=")
 
 			out, err := cmd.Output()
 			if err != nil {
@@ -70,7 +70,7 @@ func TestAll(t *testing.T) {
 	}
 }
 
-func ensureCustomcliBinary(t testing.TB) {
+func ensureBlogCLIBinary(t testing.TB) {
 	t.Helper()
 
 	if cmd := exec.Command("blogcli", "version"); cmd.Run() != nil {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/iov-one/weave"
 	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/gconf"
 	"github.com/iov-one/weave/x/cash"
@@ -57,8 +57,8 @@ already has a fee set, overwrite it with a new value.
 	var (
 		payerFl  = flHex(fl, "payer", "", "Optional address of a payer. If not provided the main signer will be used.")
 		amountFl = flCoin(fl, "amount", "", "Fee value that should be attached to the transaction. If not provided, default minimal fee is used.")
-		tmAddrFl = fl.String("tm", env("CUSTOMCLI_TM_ADDR", "https://custom.NETWORK.iov.one:443"),
-			"Tendermint node address. Use proper NETWORK name. You can use CUSTOMCLI_TM_ADDR environment variable to set it.")
+		tmAddrFl = fl.String("tm", env("BLOGCLI_TM_ADDR", "https://blog.NETWORK.iov.one:443"),
+			"Tendermint node address. Use proper NETWORK name. You can use BLOGCLI_TM_ADDR environment variable to set it.")
 	)
 	fl.Parse(args)
 

@@ -16,9 +16,9 @@ transactions. These can be seen below:
 
 After creating a transaction with any of the previous manners, you need to
 prepare it for submission. All of the following commands take a
-`-tm=https://custom.NETWORK.iov.one:443` like argument to point to the proper
+`-tm=https://blog.NETWORK.iov.one:443` like argument to point to the proper
 network, where we want to query fee info, nonce, or submit it.
-It is usually easier to just `export CUSTOMCLI_TM_URL=https://custom.NETWORK.iov.one:443`
+It is usually easier to just `export BLOGCLI_TM_URL=https://blog.NETWORK.iov.one:443`
 and then ignore repeating the flag on all these commands.
 
 ```sh
