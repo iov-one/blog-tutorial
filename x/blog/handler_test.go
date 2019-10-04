@@ -517,6 +517,7 @@ func TestCreateArticle(t *testing.T) {
 				LikeCount:    0,
 				CreatedAt:    now,
 				DeleteAt:     future,
+				DeleteTaskID: nil, // task id is generated randomly by scheduler.
 			},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -529,6 +530,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -541,6 +543,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"success no delete at": {
@@ -585,6 +588,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure signer not authorized": {
@@ -620,6 +624,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		// TODO add metadata test
@@ -655,6 +660,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure missing title": {
@@ -689,6 +695,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure missing content": {
@@ -723,6 +730,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure blog is not owned by signer": {
@@ -746,6 +754,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -758,6 +767,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure missing signer": {
@@ -780,6 +790,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":     nil,
@@ -792,6 +803,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 		"failure delete at in the past": {
@@ -827,6 +839,7 @@ func TestCreateArticle(t *testing.T) {
 				"LikeCount":    nil,
 				"CreatedAt":    nil,
 				"DeleteAt":     nil,
+				"DeleteTaskID": nil,
 			},
 		},
 	}
@@ -880,12 +893,21 @@ func TestCreateArticle(t *testing.T) {
 				}
 
 				// ensure createdAt is after test execution starting time
-				createdAt := stored.CreatedAt
-				weave.InTheFuture(ctx, createdAt.Time())
 
-				// avoid registered at missing error
-				tc.expected.CreatedAt = createdAt
+				assert.Equal(t, false, weave.InTheFuture(ctx, stored.CreatedAt.Time()))
+
+				// avoid createdAt missing error
+				tc.expected.CreatedAt = stored.CreatedAt
+				// avoid deleteTaskID missing error
+				tc.expected.DeleteTaskID = stored.DeleteTaskID
 				assert.Equal(t, tc.expected, &stored)
+
+				// test if deletion task is scheduled
+				if stored.DeleteTaskID != nil {
+					if err := scheduler.Delete(kv, stored.DeleteTaskID); err != nil {
+						t.Fatalf("task with id %X is not scheduled", stored.DeleteTaskID)
+					}
+				}
 			}
 		})
 	}

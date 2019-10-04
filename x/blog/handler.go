@@ -263,7 +263,6 @@ type CreateArticleHandler struct {
 	auth      x.Authenticator
 	ab        *ArticleBucket
 	bb        *BlogBucket
-	dtb       *DeleteArticleTaskBucket
 	scheduler weave.Scheduler
 }
 
@@ -275,7 +274,6 @@ func NewCreateArticleHandler(auth x.Authenticator, scheduler weave.Scheduler) we
 		auth:      auth,
 		ab:        NewArticleBucket(),
 		bb:        NewBlogBucket(),
-		dtb:       NewDeleteArticleTaskBucket(),
 		scheduler: scheduler,
 	}
 }
@@ -319,6 +317,7 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 		LikeCount:    0,
 		CreatedAt:    now,
 		DeleteAt:     msg.DeleteAt,
+		DeleteTaskID: nil, // will be set on deliver
 	}
 
 	return &msg, article, nil
@@ -362,15 +361,10 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 			return nil, errors.Wrap(err, "cannot schedule deletion task")
 		}
 
-		// save delete article task so it could be cancelled later
-		deleteArticleTask := &DeleteArticleTask{
-			Metadata:  deleteArticleMsg.Metadata,
-			ID:        taskID,
-			ArticleID: article.ID,
-			TaskOwner: x.MainSigner(ctx, h.auth).Address(),
-		}
-		if err := h.dtb.Put(store, deleteArticleTask); err != nil {
-			return nil, errors.Wrap(err, "cannot store delete article task")
+		// update the article with task id
+		article.DeleteTaskID = taskID
+		if err := h.ab.Put(store, article); err != nil {
+			return nil, errors.Wrap(err, "cannot store article")
 		}
 	}
 
@@ -448,7 +442,7 @@ func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 // CancelDeleteArticleTaskHandler will handle CancelDeleteArticleTaskMsg
 type CancelDeleteArticleTaskHandler struct {
 	auth      x.Authenticator
-	b         *DeleteArticleTaskBucket
+	b         *ArticleBucket
 	scheduler weave.Scheduler
 }
 
@@ -458,7 +452,7 @@ var _ weave.Handler = CancelDeleteArticleTaskHandler{}
 func NewCancelDeleteArticleTaskHandler(auth x.Authenticator, scheduler weave.Scheduler) weave.Handler {
 	return CancelDeleteArticleTaskHandler{
 		auth:      auth,
-		b:         NewDeleteArticleTaskBucket(),
+		b:         NewArticleBucket(),
 		scheduler: scheduler,
 	}
 }
@@ -471,13 +465,16 @@ func (h CancelDeleteArticleTaskHandler) validate(ctx weave.Context, store weave.
 		return nil, errors.Wrap(err, "load msg")
 	}
 
-	var task DeleteArticleTask
-	if err := h.b.One(store, msg.TaskID, &task); err != nil {
+	var destSlice []Article
+	if err := h.b.ByIndex(store, "task", msg.TaskID, destSlice); err != nil {
 		return nil, errors.Wrapf(err, "delete task with id %s not found", msg.TaskID)
 	}
 
+	// we presume only one task indexed to the article
+	dest := destSlice[0]
+
 	signer := x.MainSigner(ctx, h.auth).Address()
-	if !task.TaskOwner.Equals(signer) {
+	if !dest.Owner.Equals(signer) {
 		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to cancel scheduled delete article task with id %s", signer, msg.TaskID)
 	}
 
