@@ -54,17 +54,9 @@ message Article {
   // DeleteAt defines deletion time of the article.
   // Could be nil if there is not a time of deletion
   int64 delete_at = 10 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
-}
-
-// DeleteArticleTask is used for representing scheduled task id. Used when deleting the task
-message DeleteArticleTask {
-  weave.Metadata metadata = 1;
-  // TaskID is the unique identifier of the task
-  bytes id = 2 [(gogoproto.customname) = "ID"];
-  // ArticleID is the id of the article that will be deleted
-  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
-  // TaskOwner is the creator of the task
-  bytes task_owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // DeleteTaskID is the id of the scheduled deletion task
+  // Useful when cancelling a task
+  bytes delete_task_id = 11 [(gogoproto.customname) = "DeleteTaskID"];
 }
 
 message Comment {
