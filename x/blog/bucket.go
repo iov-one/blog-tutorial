@@ -53,7 +53,8 @@ func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
 		morm.NewModelBucket("article", &Article{},
 			morm.WithIndex("blog", articleBlogIDIndexer, false),
-			morm.WithIndex("timedBlog", blogTimedIndexer, false)),
+			morm.WithIndex("timedBlog", blogTimedIndexer, false),
+			morm.WithIndex("task", deleteTaskIndexer, false)),
 	}
 }
 
@@ -101,15 +102,22 @@ func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 	return res, nil
 }
 
-type DeleteArticleTaskBucket struct {
-	morm.ModelBucket
+func deleteTaskIndexer(obj orm.Object) ([]byte, error) {
+	if obj == nil || obj.Value() == nil {
+		return nil, nil
+	}
+	article, ok := obj.Value().(*Article)
+	if !ok {
+		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
+	}
+
+	return BuildDeleteTaskIndex(article)
 }
 
-// NewDeleteArticleTaskBucket returns a new delete article task bucket
-func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
-	return &DeleteArticleTaskBucket{
-		morm.NewModelBucket("deleteart", &DeleteArticleTask{}),
-	}
+func BuildDeleteTaskIndex(article *Article) ([]byte, error) {
+	res := make([]byte, 8)
+	copy(res, article.DeleteTaskID)
+	return res, nil
 }
 
 type CommentBucket struct {
