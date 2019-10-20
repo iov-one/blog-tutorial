@@ -210,23 +210,11 @@
                 </li>
               
                 <li>
-                  <a href="#blog.Comment"><span class="badge">M</span>Comment</a>
-                </li>
-              
-                <li>
                   <a href="#blog.CreateArticleMsg"><span class="badge">M</span>CreateArticleMsg</a>
                 </li>
               
                 <li>
                   <a href="#blog.CreateBlogMsg"><span class="badge">M</span>CreateBlogMsg</a>
-                </li>
-              
-                <li>
-                  <a href="#blog.CreateCommentMsg"><span class="badge">M</span>CreateCommentMsg</a>
-                </li>
-              
-                <li>
-                  <a href="#blog.CreateLikeMsg"><span class="badge">M</span>CreateLikeMsg</a>
                 </li>
               
                 <li>
@@ -239,10 +227,6 @@
               
                 <li>
                   <a href="#blog.DeleteArticleTask"><span class="badge">M</span>DeleteArticleTask</a>
-                </li>
-              
-                <li>
-                  <a href="#blog.Like"><span class="badge">M</span>Like</a>
                 </li>
               
                 <li>
@@ -523,64 +507,6 @@ Could be nil if there is not a time of deletion </p></td>
 
         
       
-        <h3 id="blog.Comment">Comment</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ID is comment&#39;s identifier </p></td>
-                </tr>
-              
-                <tr>
-                  <td>article_id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ArticleID identifies article that comment is posted to </p></td>
-                </tr>
-              
-                <tr>
-                  <td>owner</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Owner is the owner address of the comment </p></td>
-                </tr>
-              
-                <tr>
-                  <td>content</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Content is content of the comment </p></td>
-                </tr>
-              
-                <tr>
-                  <td>created_at</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>CreatedAt defines creation time of the comment </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
         <h3 id="blog.CreateArticleMsg">CreateArticleMsg</h3>
         <p></p>
 
@@ -662,73 +588,6 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Description is description section of the blog </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-        <h3 id="blog.CreateCommentMsg">CreateCommentMsg</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>article_id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ArticleID is the identifier of the article that is desired to be commented </p></td>
-                </tr>
-              
-                <tr>
-                  <td>content</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Content is the comment&#39;s content </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-        <h3 id="blog.CreateLikeMsg">CreateLikeMsg</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>article_id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ArticleID is the identifier of the article that is desired to be liked </p></td>
                 </tr>
               
             </tbody>
@@ -840,57 +699,6 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>TaskOwner is the creator of the task </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-        <h3 id="blog.Like">Like</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ID is like&#39;s identifier </p></td>
-                </tr>
-              
-                <tr>
-                  <td>article_id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ArticleID identifies article that like is posted to </p></td>
-                </tr>
-              
-                <tr>
-                  <td>owner</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Owner is the owner address of the like </p></td>
-                </tr>
-              
-                <tr>
-                  <td>created_at</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>CreatedAt defines creation time of the like </p></td>
                 </tr>
               
             </tbody>

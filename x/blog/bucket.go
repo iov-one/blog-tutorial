@@ -1,7 +1,6 @@
 package blog
 
 import (
-	"bytes"
 	"encoding/binary"
 
 	"github.com/iov-one/blog-tutorial/morm"
@@ -110,87 +109,4 @@ func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
 	return &DeleteArticleTaskBucket{
 		morm.NewModelBucket("deleteart", &DeleteArticleTask{}),
 	}
-}
-
-type CommentBucket struct {
-	morm.ModelBucket
-}
-
-// NewCommentBucket returns a new comment bucket
-func NewCommentBucket() *CommentBucket {
-	return &CommentBucket{
-		morm.NewModelBucket("comment", &Comment{},
-			morm.WithIndex("article", commentArticleIDIndexer, false),
-			morm.WithIndex("user", commentUserIDIndexer, false),
-			morm.WithIndex("articleuser", articleUserIndexer, false)),
-	}
-}
-
-// commentArticleIDIndexer enables querying comment by article ID
-func commentArticleIDIndexer(obj orm.Object) ([]byte, error) {
-	if obj == nil || obj.Value() == nil {
-		return nil, nil
-	}
-	comment, ok := obj.Value().(*Comment)
-	if !ok {
-		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
-	}
-	return comment.ArticleID, nil
-}
-
-// commentUserIDIndexer enables querying comment by user ID
-func commentUserIDIndexer(obj orm.Object) ([]byte, error) {
-	if obj == nil || obj.Value() == nil {
-		return nil, nil
-	}
-	comment, ok := obj.Value().(*Comment)
-	if !ok {
-		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
-	}
-	return comment.Owner, nil
-}
-
-// articleUserIndexer produces in SQL parlance, a compound index.
-// Used for returning users all comments on an article
-// (articleID, userID) -> index
-func articleUserIndexer(obj orm.Object) ([]byte, error) {
-	if obj == nil || obj.Value() == nil {
-		return nil, nil
-	}
-	comment, ok := obj.Value().(*Comment)
-
-	if !ok {
-		return nil, errors.Wrapf(errors.ErrState, "expected comment, got %T", obj.Value())
-	}
-
-	return BuildArticleUserIndex(comment), nil
-}
-
-// BuildArticleUserIndex indexByteSize = 8(ArticleID) + 8(UserID)
-func BuildArticleUserIndex(comment *Comment) []byte {
-	return bytes.Join([][]byte{comment.ArticleID, comment.Owner}, nil)
-}
-
-type LikeBucket struct {
-	morm.ModelBucket
-}
-
-// NewLikeBucket returns a new like bucket
-func NewLikeBucket() *LikeBucket {
-	return &LikeBucket{
-		morm.NewModelBucket("like", &Like{},
-			morm.WithIndex("article", likeArticleIDIndexer, false)),
-	}
-}
-
-// likeArticleIDIndexer enables querying comment by user ID
-func likeArticleIDIndexer(obj orm.Object) ([]byte, error) {
-	if obj == nil || obj.Value() == nil {
-		return nil, nil
-	}
-	like, ok := obj.Value().(*Like)
-	if !ok {
-		return nil, errors.Wrapf(errors.ErrState, "expected like, got %T", obj.Value())
-	}
-	return like.ArticleID, nil
 }

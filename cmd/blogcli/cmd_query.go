@@ -118,16 +118,6 @@ var queries = map[string]struct {
 		decKey: sequenceKey,
 		encID:  numericID,
 	},
-	"/comments": {
-		newObj: func() model { return &blog.Comment{} },
-		decKey: sequenceKey,
-		encID:  numericID,
-	},
-	"/likes": {
-		newObj: func() model { return &blog.Like{} },
-		decKey: sequenceKey,
-		encID:  numericID,
-	},
 	"/wallets": {
 		newObj: func() model { return &cash.Set{} },
 		decKey: rawKey,

@@ -12,8 +12,6 @@ func init() {
 	migration.MustRegister(1, &ChangeBlogOwnerMsg{}, migration.NoModification)
 	migration.MustRegister(1, &CreateArticleMsg{}, migration.NoModification)
 	migration.MustRegister(1, &DeleteArticleMsg{}, migration.NoModification)
-	migration.MustRegister(1, &CreateCommentMsg{}, migration.NoModification)
-	migration.MustRegister(1, &CreateLikeMsg{}, migration.NoModification)
 }
 
 var _ weave.Msg = (*CreateUserMsg)(nil)
@@ -143,44 +141,6 @@ func (m CancelDeleteArticleTaskMsg) Validate() error {
 
 	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	errs = errors.AppendField(errs, "TaskID", isGenID(m.TaskID, false))
-
-	return errs
-}
-
-var _ weave.Msg = (*CreateCommentMsg)(nil)
-
-// Path returns the routing path for this message.
-func (CreateCommentMsg) Path() string {
-	return "blog/create_comment"
-}
-
-// Validate ensures the CreateCommentMsg is valid
-func (m CreateCommentMsg) Validate() error {
-	var errs error
-
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
-
-	if !validArticleContent(m.Content) {
-		errs = errors.AppendField(errs, "Content", errors.ErrModel)
-	}
-
-	return errs
-}
-
-var _ weave.Msg = (*CreateLikeMsg)(nil)
-
-// Path returns the routing path for this message.
-func (CreateLikeMsg) Path() string {
-	return "blog/create_like"
-}
-
-// Validate ensures the CreateLikeMsg is valid
-func (m CreateLikeMsg) Validate() error {
-	var errs error
-
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
 
 	return errs
 }

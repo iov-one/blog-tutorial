@@ -262,7 +262,7 @@ func TestValidateDeleteArticle(t *testing.T) {
 		},
 		// add missing metadata test
 		"failure missing article id": {
-			msg: &CreateLikeMsg{
+			msg: &DeleteArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
 			},
 			wantErrs: map[string]*errors.Error{
@@ -314,93 +314,6 @@ func TestCancelDeleteArticleTask(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
 				"TaskID":   errors.ErrInput,
-			},
-		},
-	}
-	for testName, tc := range cases {
-		t.Run(testName, func(t *testing.T) {
-			err := tc.msg.Validate()
-			for field, wantErr := range tc.wantErrs {
-				assert.FieldError(t, err, field, wantErr)
-			}
-		})
-	}
-}
-
-func TestValidateCreateCommentMsg(t *testing.T) {
-	cases := map[string]struct {
-		msg      weave.Msg
-		wantErrs map[string]*errors.Error
-	}{
-		"success": {
-			msg: &CreateCommentMsg{
-				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: weavetest.SequenceID(1),
-				Content:   "best content in the existence",
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": nil,
-				"Content":   nil,
-			},
-		},
-		// add missing metadata test
-		"failure missing article id": {
-			msg: &CreateCommentMsg{
-				Metadata: &weave.Metadata{Schema: 1},
-				Content:  "best content in the existence",
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": errors.ErrEmpty,
-				"Content":   nil,
-			},
-		},
-		"failure missing content": {
-			msg: &CreateCommentMsg{
-				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: weavetest.SequenceID(1),
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": nil,
-				"Content":   errors.ErrModel,
-			},
-		},
-	}
-	for testName, tc := range cases {
-		t.Run(testName, func(t *testing.T) {
-			err := tc.msg.Validate()
-			for field, wantErr := range tc.wantErrs {
-				assert.FieldError(t, err, field, wantErr)
-			}
-		})
-	}
-}
-
-func TestValidateCreateLikeMsg(t *testing.T) {
-	cases := map[string]struct {
-		msg      weave.Msg
-		wantErrs map[string]*errors.Error
-	}{
-		"success": {
-			msg: &CreateLikeMsg{
-				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: weavetest.SequenceID(1),
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": nil,
-			},
-		},
-		// add missing metadata test
-		"failure missing article id": {
-			msg: &CreateLikeMsg{
-				Metadata: &weave.Metadata{Schema: 1},
-			},
-			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": errors.ErrEmpty,
 			},
 		},
 	}

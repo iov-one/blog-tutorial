@@ -67,32 +67,6 @@ message DeleteArticleTask {
   bytes task_owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
 }
 
-message Comment {
-  weave.Metadata metadata = 1;
-  // ID is comment's identifier
-  bytes id = 2 [(gogoproto.customname) = "ID"];
-  // ArticleID identifies article that comment is posted to
-  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
-  // Owner is the owner address of the comment
-  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
-  // Content is content of the comment
-  string content = 5;
-  // CreatedAt defines creation time of the comment
-  int64 created_at = 6 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
-}
-
-message Like {
-  weave.Metadata metadata = 1;
-  // ID is like's identifier
-  bytes id = 2 [(gogoproto.customname) = "ID"];
-  // ArticleID identifies article that like is posted to
-  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
-  // Owner is the owner address of the like
-  bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
-  // CreatedAt defines creation time of the like
-  int64 created_at = 5 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
-}
-
 // ---------- MESSAGES -----------
 
 message CreateUserMsg {
@@ -144,18 +118,4 @@ message CancelDeleteArticleTaskMsg {
   weave.Metadata metadata = 1;
   // TaskID is the identifier of the task
   bytes task_id = 2 [(gogoproto.customname) = "TaskID"];
-}
-
-message CreateCommentMsg {
-  weave.Metadata metadata = 1;
-  // ArticleID is the identifier of the article that is desired to be commented
-  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
-  // Content is the comment's content
-  string content = 3;
-}
-
-message CreateLikeMsg {
-  weave.Metadata metadata = 1;
-  // ArticleID is the identifier of the article that is desired to be liked
-  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
 }
