@@ -112,17 +112,6 @@ func Examples() []commands.Example {
 		ArticleID: articleID,
 	}
 
-	createCommentMsg := &blog.CreateCommentMsg{
-		Metadata:  &weave.Metadata{Schema: 1},
-		ArticleID: articleID,
-		Content:   "best content in the existence",
-	}
-
-	createLikeMsg := &blog.CreateLikeMsg{
-		Metadata:  &weave.Metadata{Schema: 1},
-		ArticleID: articleID,
-	}
-
 	return []commands.Example{
 		{Filename: "wallet", Obj: wallet},
 		{Filename: "priv_key", Obj: source},
@@ -136,7 +125,5 @@ func Examples() []commands.Example {
 		{Filename: "blog_create_article_msg", Obj: createArticleMsg},
 		{Filename: "blog_delete_article_msg", Obj: deleteArticleMsg},
 		{Filename: "blog_change_blog_owner_msg", Obj: changeOwnerMsg},
-		{Filename: "blog_create_comment_msg", Obj: createCommentMsg},
-		{Filename: "blog_create_like_msg", Obj: createLikeMsg},
 	}
 }

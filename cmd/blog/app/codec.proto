@@ -42,8 +42,6 @@ message Tx {
     blog.CreateArticleMsg blog_create_article_msg = 103;
     blog.DeleteArticleMsg blog_delete_article_msg = 104;
     blog.CancelDeleteArticleTaskMsg blog_cancel_delete_article_task_msg = 105;
-    blog.CreateCommentMsg blog_create_comment_msg = 106;
-    blog.CreateLikeMsg blog_create_like_msg = 107;
   }
 }
 
