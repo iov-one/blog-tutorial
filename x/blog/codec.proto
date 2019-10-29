@@ -45,10 +45,6 @@ message Article {
   string title = 5;
   // Content is content of the blog
   string content = 6;
-  // CommentCount is total number of comments posted under article
-  int64 comment_count = 7 [(gogoproto.customname) = "CommentCount"];
-  // LikeCount is total number of likes posted under article
-  int64 like_count = 8 [(gogoproto.customname) = "LikeCount"];
   // CreatedAt defines creation time of the article
   int64 created_at = 9 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
   // DeleteAt defines deletion time of the article.

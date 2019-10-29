@@ -69,8 +69,6 @@ func TestArticleBlogIDIndexer(t *testing.T) {
 		BlogID:       blogID,
 		Title:        "Best hacker's blog",
 		Content:      "Best description ever",
-		CommentCount: 1,
-		LikeCount:    2,
 		CreatedAt:    now,
 		DeleteAt:     future,
 	}
@@ -122,8 +120,6 @@ func TestBlogTimedIndexer(t *testing.T) {
 		BlogID:       blogID,
 		Title:        "Best hacker's blog",
 		Content:      "Best description ever",
-		CommentCount: 1,
-		LikeCount:    2,
 		CreatedAt:    now,
 		DeleteAt:     future,
 	}
@@ -134,8 +130,6 @@ func TestBlogTimedIndexer(t *testing.T) {
 		BlogID:       blogID,
 		Title:        "Best hacker's blog",
 		Content:      "Best description ever",
-		CommentCount: 1,
-		LikeCount:    2,
 		CreatedAt:    invalidTime,
 		DeleteAt:     future,
 	}
