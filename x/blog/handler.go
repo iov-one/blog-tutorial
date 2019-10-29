@@ -313,8 +313,6 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 		Owner:        signer,
 		Title:        msg.Title,
 		Content:      msg.Content,
-		CommentCount: 0,
-		LikeCount:    0,
 		CreatedAt:    now,
 		DeleteAt:     msg.DeleteAt,
 	}

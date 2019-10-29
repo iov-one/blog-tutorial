@@ -120,8 +120,6 @@ func (m *Article) Copy() orm.CloneableData {
 		Owner:        m.Owner.Clone(),
 		Title:        m.Title,
 		Content:      m.Content,
-		CommentCount: m.CommentCount,
-		LikeCount:    m.LikeCount,
 		CreatedAt:    m.CreatedAt,
 		DeleteAt:     m.DeleteAt,
 	}
@@ -144,13 +142,6 @@ func (m *Article) Validate() error {
 	}
 	if !validBlogDescription(m.Content) {
 		errs = errors.AppendField(errs, "Content", errors.ErrModel)
-	}
-
-	if m.CommentCount < 0 {
-		errs = errors.AppendField(errs, "CommentCount", errors.ErrModel)
-	}
-	if m.LikeCount < 0 {
-		errs = errors.AppendField(errs, "LikeCount", errors.ErrModel)
 	}
 
 	if err := m.CreatedAt.Validate(); err != nil {
