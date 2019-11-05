@@ -6,7 +6,6 @@ import (
 
 	"github.com/iov-one/blog-tutorial/morm"
 
-	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
