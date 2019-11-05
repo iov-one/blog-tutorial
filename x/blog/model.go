@@ -2,14 +2,20 @@ package blog
 
 import (
 	"regexp"
+	"time"
 
 	"github.com/iov-one/blog-tutorial/morm"
 
+	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
 
 var _ morm.Model = (*User)(nil)
+
+func (u *User) IsRegisteredAfterDate(date time.Time) bool {
+	return u.RegisteredAt.Time().After(date)
+}
 
 // SetID is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *User) SetID(id []byte) error {
