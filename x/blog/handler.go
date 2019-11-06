@@ -19,6 +19,9 @@ const (
 
 // RegisterQuery registers buckets for querying.
 func RegisterQuery(qr weave.QueryRouter) {
+	NewUserBucket().Register("users", qr)
+	NewBlogBucket().Register("blogs", qr)
+	NewArticleBucket().Register("articles", qr)
 }
 
 // RegisterRoutes registers handlers for message processing.
