@@ -77,7 +77,7 @@ func (h CreateUserHandler) validate(ctx weave.Context, store weave.KVStore, tx w
 	now := weave.AsUnixTime(blockTime)
 
 	user := &User{
-		Metadata:     msg.Metadata,
+		Metadata:     &weave.Metadata{Schema: 1},
 		Username:     msg.Username,
 		Bio:          msg.Bio,
 		RegisteredAt: now,
@@ -146,7 +146,7 @@ func (h CreateBlogHandler) validate(ctx weave.Context, store weave.KVStore, tx w
 	now := weave.AsUnixTime(blockTime)
 
 	blog := &Blog{
-		Metadata:    msg.Metadata,
+		Metadata:    &weave.Metadata{Schema: 1},
 		Owner:       x.MainSigner(ctx, h.auth).Address(),
 		Title:       msg.Title,
 		Description: msg.Description,
@@ -311,7 +311,7 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 	now := weave.AsUnixTime(blockTime)
 
 	article := &Article{
-		Metadata:     msg.Metadata,
+		Metadata:     &weave.Metadata{Schema: 1},
 		BlogID:       msg.BlogID,
 		Owner:        signer,
 		Title:        msg.Title,
@@ -351,7 +351,7 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 	// schedule delete task
 	if msg.DeleteAt != 0 {
 		deleteArticleMsg := &DeleteArticleMsg{
-			Metadata:  msg.Metadata,
+			Metadata:  &weave.Metadata{Schema: 1},
 			ArticleID: article.ID,
 		}
 
