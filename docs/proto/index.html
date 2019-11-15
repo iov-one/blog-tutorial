@@ -175,21 +175,6 @@
         
           
           <li>
-            <a href="#morm%2fcodec.proto">morm/codec.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#morm.Counter"><span class="badge">M</span>Counter</a>
-                </li>
-              
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
             <a href="#x%2fblog%2fcodec.proto">x/blog/codec.proto</a>
             <ul>
               
@@ -246,50 +231,6 @@
     
       
       <div class="file-heading">
-        <h2 id="morm/codec.proto">morm/codec.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="morm.Counter">Counter</h3>
-        <p>Counter could be used for sequence, but mainly just for test</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>count</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
         <h2 id="x/blog/codec.proto">x/blog/codec.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
@@ -313,10 +254,10 @@
                 </tr>
               
                 <tr>
-                  <td>id</td>
+                  <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ID is article&#39;s identifier </p></td>
+                  <td><p>PrimaryKey is article&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
@@ -386,10 +327,10 @@ Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
+                  <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ID is blog&#39;s identifier </p></td>
+                  <td><p>PrimaryKey is blog&#39;s identifier </p></td>
                 </tr>
               
                 <tr>
@@ -477,7 +418,7 @@ Could be nil if there is not a time of deletion </p></td>
                   <td>blog_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ID of the blog that is desired to change owner </p></td>
+                  <td><p>PrimaryKey of the blog that is desired to change owner </p></td>
                 </tr>
               
                 <tr>
@@ -650,7 +591,7 @@ Could be nil if there is not a time of deletion, or in future </p></td>
         
       
         <h3 id="blog.DeleteArticleTask">DeleteArticleTask</h3>
-        <p>DeleteArticleTask is used for representing scheduled task id. Used when deleting the task</p>
+        <p>DeleteArticleTask is used for representing scheduled task pk. Used when deleting the task</p>
 
         
           <table class="field-table">
@@ -667,7 +608,7 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
+                  <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>TaskID is the unique identifier of the task </p></td>
@@ -677,7 +618,7 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td>article_id</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ArticleID is the id of the article that will be deleted </p></td>
+                  <td><p>ArticleID is the pk of the article that will be deleted </p></td>
                 </tr>
               
                 <tr>
@@ -711,10 +652,10 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
+                  <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ID is users identifier </p></td>
+                  <td><p>PrimaryKey is users identifier </p></td>
                 </tr>
               
                 <tr>

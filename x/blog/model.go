@@ -4,34 +4,22 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/iov-one/blog-tutorial/morm"
-
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
 
-var _ morm.Model = (*User)(nil)
+var _ orm.SerialModel= (*User)(nil)
 
 func (u *User) IsRegisteredAfterDate(date time.Time) bool {
 	return u.RegisteredAt.Time().After(date)
 }
 
-// SetID is a minimal implementation, useful when the ID is a separate protobuf field
-func (m *User) SetID(id []byte) error {
+// SetPrimaryKey is a minimal implementation, useful when the ID is a separate protobuf field
+func (m *User) SetPrimaryKey(id []byte) error {
 	m.ID = id
 	return nil
 }
 
-// Copy produces a new copy to fulfill the Model interface
-func (m *User) Copy() orm.CloneableData {
-	return &User{
-		Metadata:     m.Metadata.Copy(),
-		ID:           copyBytes(m.ID),
-		Username:     m.Username,
-		Bio:          m.Bio,
-		RegisteredAt: m.RegisteredAt,
-	}
-}
 
 var validUsername = regexp.MustCompile(`^[a-zA-Z0-9_.-]{4,16}$`).MatchString
 var validBio = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,200}$`).MatchString
@@ -62,7 +50,7 @@ func (m *User) Validate() error {
 
 var _ morm.Model = (*Blog)(nil)
 
-// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+// SetPrimaryKey is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *Blog) SetID(id []byte) error {
 	m.ID = id
 	return nil
@@ -109,7 +97,7 @@ func (m *Blog) Validate() error {
 
 var _ morm.Model = (*Blog)(nil)
 
-// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+// SetPrimaryKey is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *Article) SetID(id []byte) error {
 	m.ID = id
 	return nil
@@ -166,7 +154,7 @@ func (m *Article) Validate() error {
 
 var _ morm.Model = (*DeleteArticleTask)(nil)
 
-// SetID is a minimal implementation, useful when the ID is a separate protobuf field
+// SetPrimaryKey is a minimal implementation, useful when the ID is a separate protobuf field
 func (m *DeleteArticleTask) SetID(id []byte) error {
 	m.ID = id
 	return nil

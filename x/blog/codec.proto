@@ -9,8 +9,8 @@ import "gogoproto/gogo.proto";
 
 message User {
   weave.Metadata metadata = 1;
-  // ID is users identifier
-  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // PrimaryKey is users identifier
+  bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
   // Username is user's alias
   string username = 3;
   // Bio is user information
@@ -21,8 +21,8 @@ message User {
 
 message Blog {
   weave.Metadata metadata = 1;
-  // ID is blog's identifier
-  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // PrimaryKey is blog's identifier
+  bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
   // Owner is the owner address of the blog
   bytes owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
   // Title is title of the blog
@@ -35,8 +35,8 @@ message Blog {
 
 message Article {
   weave.Metadata metadata = 1;
-  // ID is article's identifier
-  bytes id = 2 [(gogoproto.customname) = "ID"];
+  // PrimaryKey is article's identifier
+  bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
   // BlogID identifies blog that article is posted to
   bytes blog_id = 3 [(gogoproto.customname) = "BlogID"];
   // Owner is the owner address of the blog
@@ -52,12 +52,12 @@ message Article {
   int64 delete_at = 10 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
 }
 
-// DeleteArticleTask is used for representing scheduled task id. Used when deleting the task
+// DeleteArticleTask is used for representing scheduled task pk. Used when deleting the task
 message DeleteArticleTask {
   weave.Metadata metadata = 1;
   // TaskID is the unique identifier of the task
-  bytes id = 2 [(gogoproto.customname) = "ID"];
-  // ArticleID is the id of the article that will be deleted
+  bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
+  // ArticleID is the pk of the article that will be deleted
   bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
   // TaskOwner is the creator of the task
   bytes task_owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
@@ -83,7 +83,7 @@ message CreateBlogMsg {
 
 message ChangeBlogOwnerMsg {
   weave.Metadata metadata = 1;
-  // ID of the blog that is desired to change owner
+  // PrimaryKey of the blog that is desired to change owner
   bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
   // Address of the new owner
   bytes new_owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
