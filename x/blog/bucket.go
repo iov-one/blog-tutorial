@@ -3,31 +3,30 @@ package blog
 import (
 	"encoding/binary"
 
-	"github.com/iov-one/blog-tutorial/morm"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
 
 type UserBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewUserBucket returns a new user bucket
 func NewUserBucket() *UserBucket {
 	return &UserBucket{
-		morm.NewModelBucket("user", &User{}),
+		orm.NewSerialModelBucket("user", &User{}),
 	}
 }
 
 type BlogBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewBlogBucket returns a new blog bucket
 func NewBlogBucket() *BlogBucket {
 	return &BlogBucket{
-		morm.NewModelBucket("blog", &Blog{},
-			morm.WithIndex("user", blogUserIDIndexer, false)),
+		orm.NewSerialModelBucket("blog", &Blog{},
+			orm.WithIndexSerial("user", blogUserIDIndexer, false)),
 	}
 }
 
@@ -44,15 +43,15 @@ func blogUserIDIndexer(obj orm.Object) ([]byte, error) {
 }
 
 type ArticleBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewArticleBucket returns a new article bucket
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
-		morm.NewModelBucket("article", &Article{},
-			morm.WithIndex("blog", articleBlogIDIndexer, false),
-			morm.WithIndex("timedBlog", blogTimedIndexer, false)),
+		orm.NewSerialModelBucket("article", &Article{},
+			orm.WithIndexSerial("blog", articleBlogIDIndexer, false),
+			orm.WithIndexSerial("timedBlog", blogTimedIndexer, false)),
 	}
 }
 
@@ -101,12 +100,12 @@ func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 }
 
 type DeleteArticleTaskBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewDeleteArticleTaskBucket returns a new delete article task bucket
 func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
 	return &DeleteArticleTaskBucket{
-		morm.NewModelBucket("deleteart", &DeleteArticleTask{}),
+		orm.NewSerialModelBucket("deleteart", &DeleteArticleTask{}),
 	}
 }
