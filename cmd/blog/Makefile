@@ -1,7 +1,7 @@
 .PHONY: all build test image tf protoc clean dist
 
 BUILD_VERSION ?= $(shell git describe --tags)
-BUILD_FLAGS := -mod=readonly -ldflags "-X github.com/iov-one/blog-tutorial/blog.Version=${BUILD_VERSION}"
+BUILD_FLAGS := -mod=readonly -ldflags "-X github.com/iov-one/blog-tutorial.Version=${BUILD_VERSION}"
 DOCKER_BUILD_FLAGS := -a -installsuffix cgo
 BUILDOUT ?= blog
 IMAGE_NAME = "iov1/blog:${BUILD_VERSION}"
