@@ -261,10 +261,10 @@
                 </tr>
               
                 <tr>
-                  <td>blog_id</td>
+                  <td>blog_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>BlogID identifies blog that article is posted to </p></td>
+                  <td><p>BlogKey identifies blog that article is posted to </p></td>
                 </tr>
               
                 <tr>
@@ -368,7 +368,7 @@ Could be nil if there is not a time of deletion </p></td>
         
       
         <h3 id="blog.CancelDeleteArticleTaskMsg">CancelDeleteArticleTaskMsg</h3>
-        <p>CancelDeleteArticleTaskMsg message cancelles scheduled article deletion</p>
+        <p>CancelDeleteArticleTaskMsg message cancels scheduled article deletion</p>
 
         
           <table class="field-table">
@@ -415,10 +415,10 @@ Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
                 <tr>
-                  <td>blog_id</td>
+                  <td>blog_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>PrimaryKey of the blog that is desired to change owner </p></td>
+                  <td><p>BlogKey is the blog&#39;s primary key that is desired to change owner </p></td>
                 </tr>
               
                 <tr>
@@ -452,10 +452,10 @@ Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
                 <tr>
-                  <td>blog_id</td>
+                  <td>blog_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>BlogID identifies blog that article is posted to </p></td>
+                  <td><p>BlogKey identifies blog that article is posted to </p></td>
                 </tr>
               
                 <tr>
@@ -578,10 +578,10 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                 </tr>
               
                 <tr>
-                  <td>article_id</td>
+                  <td>article_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ArticleID is the identifier of the article that is desired to be deleted </p></td>
+                  <td><p>ArticleKey is the identifier of the article that is desired to be deleted </p></td>
                 </tr>
               
             </tbody>
@@ -611,14 +611,14 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td>pk</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>TaskID is the unique identifier of the task </p></td>
+                  <td><p>PrimaryKey is the unique identifier of the task </p></td>
                 </tr>
               
                 <tr>
-                  <td>article_id</td>
+                  <td>article_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>ArticleID is the pk of the article that will be deleted </p></td>
+                  <td><p>ArticleKey is the pk of the article that will be deleted </p></td>
                 </tr>
               
                 <tr>
