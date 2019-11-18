@@ -66,7 +66,7 @@ func TestArticleBlogIDIndexer(t *testing.T) {
 	article := &Article{
 		Metadata:   &weave.Metadata{Schema: 1},
 		PrimaryKey: weavetest.SequenceID(1),
-		BlogID:     blogID,
+		BlogKey:     blogID,
 		Title:      "Best hacker's blog",
 		Content:    "Best description ever",
 		CreatedAt:  now,
@@ -117,7 +117,7 @@ func TestBlogTimedIndexer(t *testing.T) {
 	article := &Article{
 		Metadata:   &weave.Metadata{Schema: 1},
 		PrimaryKey: weavetest.SequenceID(1),
-		BlogID:     blogID,
+		BlogKey:     blogID,
 		Title:      "Best hacker's blog",
 		Content:    "Best description ever",
 		CreatedAt:  now,
@@ -127,7 +127,7 @@ func TestBlogTimedIndexer(t *testing.T) {
 	invalidArticle := &Article{
 		Metadata:   &weave.Metadata{Schema: 1},
 		PrimaryKey: weavetest.SequenceID(1),
-		BlogID:     blogID,
+		BlogKey:     blogID,
 		Title:      "Best hacker's blog",
 		Content:    "Best description ever",
 		CreatedAt:  invalidTime,

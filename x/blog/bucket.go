@@ -64,7 +64,7 @@ func articleBlogIDIndexer(obj orm.Object) ([]byte, error) {
 	if !ok {
 		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
 	}
-	return article.BlogID, nil
+	return article.BlogKey, nil
 
 }
 
@@ -85,12 +85,12 @@ func blogTimedIndexer(obj orm.Object) ([]byte, error) {
 	return BuildBlogTimedIndex(article)
 }
 
-// BuildBlogTimedIndex produces 8 bytes BlogID || big-endian createdAt
+// BuildBlogTimedIndex produces 8 bytes BlogKey || big-endian createdAt
 // This allows lexographical searches over the time ranges (or earliest or latest)
 // of all articles within one blog
 func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 	res := make([]byte, 16)
-	copy(res, article.BlogID)
+	copy(res, article.BlogKey)
 	// this would violate lexographical ordering as negatives would be highest
 	if article.CreatedAt < 0 {
 		return nil, errors.Wrap(errors.ErrState, "cannot index negative creation times")
