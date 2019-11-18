@@ -104,13 +104,13 @@ func (h CreateUserHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 		return nil, err
 	}
 
-	err = h.b.Put(store, user)
+	err = h.b.Save(store, user)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot store user")
 	}
 
-	// Returns generated user ID as response
-	return &weave.DeliverResult{Data: user.ID}, nil
+	// Returns generated user PrimaryKey as response
+	return &weave.DeliverResult{Data: user.PrimaryKey}, nil
 }
 
 // ------------------- CreateBlogHandler -------------------
@@ -174,13 +174,13 @@ func (h CreateBlogHandler) Deliver(ctx weave.Context, store weave.KVStore, tx we
 		return nil, err
 	}
 
-	err = h.b.Put(store, blog)
+	err = h.b.Save(store, blog)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot store blog")
 	}
 
-	// Returns generated blog ID as response
-	return &weave.DeliverResult{Data: blog.ID}, nil
+	// Returns generated blog PrimaryKey as response
+	return &weave.DeliverResult{Data: blog.PrimaryKey}, nil
 }
 
 // ------------------- ChangeBlogOwnerHandler -------------------
@@ -210,13 +210,13 @@ func (h ChangeBlogOwnerHandler) validate(ctx weave.Context, store weave.KVStore,
 	}
 
 	var blog Blog
-	if err := h.b.One(store, msg.BlogID, &blog); err != nil {
-		return nil, nil, errors.Wrapf(err, "cannot retrieve blog with id %s from database", msg.BlogID)
+	if err := h.b.ByID(store, msg.BlogKey, &blog); err != nil {
+		return nil, nil, errors.Wrapf(err, "cannot retrieve blog with id %s from database", msg.BlogKey)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 	if !blog.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to change the owner of the blog with ID %s", signer, blog.ID)
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to change the owner of the blog with PrimaryKey %s", signer, blog.PrimaryKey)
 	}
 
 	newBlog := &Blog{
@@ -248,13 +248,13 @@ func (h ChangeBlogOwnerHandler) Deliver(ctx weave.Context, store weave.KVStore, 
 		return nil, err
 	}
 
-	err = h.b.Put(store, blog)
+	err = h.b.Save(store, blog)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot update blog")
 	}
 
-	// Returns generated blog ID as response
-	return &weave.DeliverResult{Data: blog.ID}, nil
+	// Returns generated blog PrimaryKey as response
+	return &weave.DeliverResult{Data: blog.PrimaryKey}, nil
 }
 
 // ------------------- CreateArticleHandler -------------------
@@ -290,13 +290,13 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 	}
 
 	var blog Blog
-	if err := h.bb.One(store, msg.BlogID, &blog); err != nil {
-		return nil, nil, errors.Wrapf(err, "blog id with %s does not exist", msg.BlogID)
+	if err := h.bb.ByID(store, msg.BlogKey, &blog); err != nil {
+		return nil, nil, errors.Wrapf(err, "blog id with %s does not exist", msg.BlogKey)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 	if !blog.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with ID %s", signer, blog.ID)
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with PrimaryKey %s", signer, blog.PrimaryKey)
 	}
 
 	blockTime, err := weave.BlockTime(ctx)
@@ -311,13 +311,13 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 	now := weave.AsUnixTime(blockTime)
 
 	article := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		BlogID:       msg.BlogID,
-		Owner:        signer,
-		Title:        msg.Title,
-		Content:      msg.Content,
-		CreatedAt:    now,
-		DeleteAt:     msg.DeleteAt,
+		Metadata:  &weave.Metadata{Schema: 1},
+		BlogKey:   msg.BlogKey,
+		Owner:     signer,
+		Title:     msg.Title,
+		Content:   msg.Content,
+		CreatedAt: now,
+		DeleteAt:  msg.DeleteAt,
 	}
 
 	return &msg, article, nil
@@ -344,15 +344,15 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 		return nil, err
 	}
 
-	if err := h.ab.Put(store, article); err != nil {
+	if err := h.ab.Save(store, article); err != nil {
 		return nil, errors.Wrap(err, "cannot store article")
 	}
 
 	// schedule delete task
 	if msg.DeleteAt != 0 {
 		deleteArticleMsg := &DeleteArticleMsg{
-			Metadata:  &weave.Metadata{Schema: 1},
-			ArticleID: article.ID,
+			Metadata:   &weave.Metadata{Schema: 1},
+			ArticleKey: article.PrimaryKey,
 		}
 
 		var taskID []byte
@@ -363,18 +363,18 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 
 		// save delete article task so it could be cancelled later
 		deleteArticleTask := &DeleteArticleTask{
-			Metadata:  deleteArticleMsg.Metadata,
-			ID:        taskID,
-			ArticleID: article.ID,
-			TaskOwner: x.MainSigner(ctx, h.auth).Address(),
+			Metadata:   deleteArticleMsg.Metadata,
+			PrimaryKey: taskID,
+			ArticleKey: article.PrimaryKey,
+			TaskOwner:  x.MainSigner(ctx, h.auth).Address(),
 		}
-		if err := h.dtb.Put(store, deleteArticleTask); err != nil {
+		if err := h.dtb.Save(store, deleteArticleTask); err != nil {
 			return nil, errors.Wrap(err, "cannot store delete article task")
 		}
 	}
 
-	// Returns generated article ID as response
-	return &weave.DeliverResult{Data: article.ID}, nil
+	// Returns generated article PrimaryKey as response
+	return &weave.DeliverResult{Data: article.PrimaryKey}, nil
 }
 
 // ------------------- DeleteArticleHandler -------------------
@@ -404,13 +404,13 @@ func (h DeleteArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 	}
 
 	var article Article
-	if err := h.b.One(store, msg.ArticleID, &article); err != nil {
-		return nil, nil, errors.Wrapf(err, "cannot retrieve article with ID %s", msg.ArticleID)
+	if err := h.b.ByID(store, msg.ArticleKey, &article); err != nil {
+		return nil, nil, errors.Wrapf(err, "cannot retrieve article with PrimaryKey %s", msg.ArticleKey)
 	}
 
 	signer := x.MainSigner(ctx, h.auth).Address()
 	if !article.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with ID %s", signer, article.ID)
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with PrimaryKey %s", signer, article.PrimaryKey)
 	}
 
 	return &msg, &article, nil
@@ -435,8 +435,8 @@ func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 		return nil, err
 	}
 
-	if err := h.b.Delete(store, article.ID); err != nil {
-		return nil, errors.Wrapf(err, "cannot delete article with ID %s", article.ID)
+	if err := h.b.Delete(store, article.PrimaryKey); err != nil {
+		return nil, errors.Wrapf(err, "cannot delete article with PrimaryKey %s", article.PrimaryKey)
 	}
 
 	return &weave.DeliverResult{}, nil
@@ -471,7 +471,7 @@ func (h CancelDeleteArticleTaskHandler) validate(ctx weave.Context, store weave.
 	}
 
 	var task DeleteArticleTask
-	if err := h.b.One(store, msg.TaskID, &task); err != nil {
+	if err := h.b.ByID(store, msg.TaskID, &task); err != nil {
 		return nil, errors.Wrapf(err, "delete task with id %s not found", msg.TaskID)
 	}
 
@@ -561,8 +561,8 @@ func (h CronDeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore
 		return nil, err
 	}
 
-	if err := h.b.Delete(store, msg.ArticleID); err != nil {
-		return nil, errors.Wrapf(err, "cannot delete article with ID %s", msg.ArticleID)
+	if err := h.b.Delete(store, msg.ArticleKey); err != nil {
+		return nil, errors.Wrapf(err, "cannot delete article with PrimaryKey %s", msg.ArticleKey)
 	}
 
 	return &weave.DeliverResult{}, nil

@@ -28,10 +28,10 @@ func TestCreateUser(t *testing.T) {
 				Bio:      "Best hacker in the universe",
 			},
 			expected: &User{
-				Metadata: &weave.Metadata{Schema: 1},
-				ID:       weavetest.SequenceID(1),
-				Username: "Crpto0X",
-				Bio:      "Best hacker in the universe",
+				Metadata:   &weave.Metadata{Schema: 1},
+				PrimaryKey: weavetest.SequenceID(1),
+				Username:   "Crpto0X",
+				Bio:        "Best hacker in the universe",
 			},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
@@ -50,9 +50,9 @@ func TestCreateUser(t *testing.T) {
 				Username: "Crpto0X",
 			},
 			expected: &User{
-				Metadata: &weave.Metadata{Schema: 1},
-				ID:       weavetest.SequenceID(1),
-				Username: "Crpto0X",
+				Metadata:   &weave.Metadata{Schema: 1},
+				PrimaryKey: weavetest.SequenceID(1),
+				Username:   "Crpto0X",
 			},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
@@ -65,7 +65,22 @@ func TestCreateUser(t *testing.T) {
 				"Bio":      nil,
 			},
 		},
-		// TODO add missing metadata test
+		"failure missing metadata": {
+			msg: &CreateUserMsg{
+				Username: "Crpto0X",
+			},
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": errors.ErrMetadata,
+				"Username": nil,
+				"Bio":      nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": errors.ErrMetadata,
+				"Username": nil,
+				"Bio":      nil,
+			},
+		},
 		"failure missing username": {
 			msg: &CreateUserMsg{
 				Metadata: &weave.Metadata{Schema: 1},
@@ -114,9 +129,14 @@ func TestCreateUser(t *testing.T) {
 			}
 
 			if tc.expected != nil {
+				if res.Data == nil {
+					t.Fatalf("no data")
+				}
 				var stored User
-				err := bucket.One(kv, res.Data, &stored)
-				assert.Nil(t, err)
+				err := bucket.ByID(kv, res.Data, &stored)
+				if err != nil {
+					t.Fatalf("unexpected error: %+v", err)
+				}
 
 				// ensure registeredAt is after test creation time
 				registeredAt := stored.RegisteredAt
@@ -151,27 +171,48 @@ func TestCreateBlog(t *testing.T) {
 			owner: owner,
 			expected: &Blog{
 				Metadata:    &weave.Metadata{Schema: 1},
-				ID:          weavetest.SequenceID(1),
+				PrimaryKey:  weavetest.SequenceID(1),
 				Owner:       owner.Address(),
 				Title:       "insanely good title",
 				Description: "best description in the existence",
 			},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       nil,
 				"Description": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       nil,
 				"Description": nil,
 			},
 		},
-		// TODO add metadata test
+		"failure missing metadata": {
+			msg: &CreateBlogMsg{
+				Metadata:    &weave.Metadata{Schema: 1},
+				Title:       "insanely good title",
+				Description: "best description in the existence",
+			},
+			owner: owner,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":    errors.ErrMetadata,
+				"PrimaryKey":  nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":    errors.ErrMetadata,
+				"PrimaryKey":  nil,
+				"Owner":       nil,
+				"Title":       nil,
+				"Description": nil,
+			},
+		},
 		"failure no signer": {
 			msg: &CreateBlogMsg{
 				Metadata:    &weave.Metadata{Schema: 1},
@@ -181,14 +222,14 @@ func TestCreateBlog(t *testing.T) {
 			owner: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       errors.ErrEmpty,
 				"Title":       nil,
 				"Description": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       errors.ErrEmpty,
 				"Title":       nil,
 				"Description": nil,
@@ -202,14 +243,14 @@ func TestCreateBlog(t *testing.T) {
 			owner: owner,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       errors.ErrModel,
 				"Description": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       errors.ErrModel,
 				"Description": nil,
@@ -224,14 +265,14 @@ func TestCreateBlog(t *testing.T) {
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       nil,
 				"Description": errors.ErrModel,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":    nil,
-				"ID":          nil,
+				"PrimaryKey":  nil,
 				"Owner":       nil,
 				"Title":       nil,
 				"Description": errors.ErrModel,
@@ -271,7 +312,7 @@ func TestCreateBlog(t *testing.T) {
 
 			if tc.expected != nil {
 				var stored Blog
-				err := bucket.One(kv, res.Data, &stored)
+				err := bucket.ByID(kv, res.Data, &stored)
 				assert.Nil(t, err)
 
 				// ensure createdAt is after test execution starting time
@@ -296,7 +337,7 @@ func TestChangeOwner(t *testing.T) {
 
 	blog := &Blog{
 		Metadata:    &weave.Metadata{Schema: 1},
-		ID:          blogID,
+		PrimaryKey:  blogID,
 		Owner:       owner.Address(),
 		Title:       "insanely good title",
 		Description: "best description in the existence",
@@ -313,64 +354,81 @@ func TestChangeOwner(t *testing.T) {
 		"success": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   blogID,
+				BlogKey:   blogID,
 				NewOwner: newOwner.Address(),
 			},
 			owner: owner,
 			expected: &Blog{
 				Metadata:    &weave.Metadata{Schema: 1},
-				ID:          blogID,
+				PrimaryKey:  blogID,
 				Owner:       newOwner.Address(),
 				Title:       "insanely good title",
 				Description: "best description in the existence",
 			},
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": nil,
 			},
 		},
-		// TODO add metadata test
+		"failure missing metadata": {
+			msg: &ChangeBlogOwnerMsg{
+				BlogKey:   blogID,
+				NewOwner: newOwner.Address(),
+			},
+			owner:    owner,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata": errors.ErrMetadata,
+				"BlogKey":   nil,
+				"NewOwner": nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata": errors.ErrMetadata,
+				"BlogKey":   nil,
+				"NewOwner": nil,
+			},
+		},
 		"failure signer does not own the blog": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   blogID,
+				BlogKey:   blogID,
 				NewOwner: newOwner.Address(),
 			},
 			owner:    weavetest.NewCondition(),
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": nil,
 			},
 		},
 		"failure invalid owner": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   blogID,
+				BlogKey:   blogID,
 				NewOwner: []byte{0, 0},
 			},
 			owner:    owner,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": errors.ErrInput,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":   nil,
 				"NewOwner": errors.ErrInput,
 			},
 		},
@@ -383,31 +441,31 @@ func TestChangeOwner(t *testing.T) {
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrEmpty,
+				"BlogKey":   errors.ErrEmpty,
 				"NewOwner": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrEmpty,
+				"BlogKey":   errors.ErrEmpty,
 				"NewOwner": nil,
 			},
 		},
 		"failure invalid blog id": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   []byte{0, 0},
+				BlogKey:   []byte{0, 0},
 				NewOwner: newOwner.Address(),
 			},
 			owner:    owner,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrInput,
+				"BlogKey":   errors.ErrInput,
 				"NewOwner": nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrInput,
+				"BlogKey":   errors.ErrInput,
 				"NewOwner": nil,
 			},
 		},
@@ -426,7 +484,7 @@ func TestChangeOwner(t *testing.T) {
 			kv := store.MemStore()
 			bucket := NewBlogBucket()
 
-			err := bucket.Put(kv, blog)
+			err := bucket.Save(kv, blog)
 			assert.Nil(t, err)
 
 			tx := &weavetest.Tx{Msg: tc.msg}
@@ -448,7 +506,7 @@ func TestChangeOwner(t *testing.T) {
 
 			if tc.expected != nil {
 				var stored Blog
-				err := bucket.One(kv, res.Data, &stored)
+				err := bucket.ByID(kv, res.Data, &stored)
 				assert.Nil(t, err)
 
 				// ensure createdAt is after test execution starting time
@@ -475,7 +533,7 @@ func TestCreateArticle(t *testing.T) {
 
 	ownedBlog := &Blog{
 		Metadata:    &weave.Metadata{Schema: 1},
-		ID:          weavetest.SequenceID(1),
+		PrimaryKey:  weavetest.SequenceID(1),
 		Owner:       signer.Address(),
 		Title:       "Best hacker's blog",
 		Description: "Best description ever",
@@ -483,7 +541,7 @@ func TestCreateArticle(t *testing.T) {
 	}
 	notOwnedBlog := &Blog{
 		Metadata:    &weave.Metadata{Schema: 1},
-		ID:          weavetest.SequenceID(2),
+		PrimaryKey:  weavetest.SequenceID(2),
 		Owner:       blogOwner.Address(),
 		Title:       "Worst hacker's blog",
 		Description: "Worst description ever",
@@ -500,85 +558,115 @@ func TestCreateArticle(t *testing.T) {
 		"success": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 				DeleteAt: future,
 			},
 			signer: signer,
 			expected: &Article{
-				Metadata:     &weave.Metadata{Schema: 1},
-				ID:           weavetest.SequenceID(1),
-				BlogID:       ownedBlog.ID,
-				Owner:        signer.Address(),
-				Title:        "insanely good title",
-				Content:      "best content in the existence",
-				CreatedAt:    now,
-				DeleteAt:     future,
+				Metadata:   &weave.Metadata{Schema: 1},
+				PrimaryKey: weavetest.SequenceID(1),
+				BlogKey:     ownedBlog.PrimaryKey,
+				Owner:      signer.Address(),
+				Title:      "insanely good title",
+				Content:    "best content in the existence",
+				CreatedAt:  now,
+				DeleteAt:   future,
 			},
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"success no delete at": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 			},
 			signer: signer,
 			expected: &Article{
-				Metadata:     &weave.Metadata{Schema: 1},
-				ID:           weavetest.SequenceID(1),
-				BlogID:       ownedBlog.ID,
-				Owner:        signer.Address(),
-				Title:        "insanely good title",
-				Content:      "best content in the existence",
-				CreatedAt:    now,
+				Metadata:   &weave.Metadata{Schema: 1},
+				PrimaryKey: weavetest.SequenceID(1),
+				BlogKey:     ownedBlog.PrimaryKey,
+				Owner:      signer.Address(),
+				Title:      "insanely good title",
+				Content:    "best content in the existence",
+				CreatedAt:  now,
 			},
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+		},
+		"failure missing metadata": {
+			msg: &CreateArticleMsg{
+				BlogKey:   ownedBlog.PrimaryKey,
+				Title:    "insanely good title",
+				Content:  "best content in the existence",
+				DeleteAt: future,
+			},
+			signer:   signer,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure signer not authorized": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 				DeleteAt: future,
@@ -586,27 +674,26 @@ func TestCreateArticle(t *testing.T) {
 			signer:   weavetest.NewCondition(),
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
-		// TODO add metadata test
 		"failure missing blog id": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
@@ -617,79 +704,79 @@ func TestCreateArticle(t *testing.T) {
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       errors.ErrEmpty,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     errors.ErrEmpty,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       errors.ErrEmpty,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     errors.ErrEmpty,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure missing title": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Content:  "best content in the existence",
 				DeleteAt: future,
 			},
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        errors.ErrModel,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      errors.ErrModel,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        errors.ErrModel,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      errors.ErrModel,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure missing content": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				DeleteAt: future,
 			},
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      errors.ErrModel,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    errors.ErrModel,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
 				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
+				"PrimaryKey":   nil,
+				"BlogKey":       nil,
 				"Owner":        nil,
 				"Title":        nil,
 				"Content":      errors.ErrModel,
@@ -702,7 +789,7 @@ func TestCreateArticle(t *testing.T) {
 		"failure blog is not owned by signer": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   notOwnedBlog.ID,
+				BlogKey:   notOwnedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 				DeleteAt: future,
@@ -710,60 +797,60 @@ func TestCreateArticle(t *testing.T) {
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure missing signer": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 				DeleteAt: future,
 			},
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure delete at in the past": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   ownedBlog.ID,
+				BlogKey:   ownedBlog.PrimaryKey,
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 				DeleteAt: past,
@@ -771,24 +858,24 @@ func TestCreateArticle(t *testing.T) {
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 	}
@@ -808,10 +895,10 @@ func TestCreateArticle(t *testing.T) {
 
 			// initalize blog bucket and save blogs
 			blogBucket := NewBlogBucket()
-			err := blogBucket.Put(kv, ownedBlog)
+			err := blogBucket.Save(kv, ownedBlog)
 			assert.Nil(t, err)
 
-			err = blogBucket.Put(kv, notOwnedBlog)
+			err = blogBucket.Save(kv, notOwnedBlog)
 			assert.Nil(t, err)
 
 			// initialize article bucket
@@ -836,7 +923,7 @@ func TestCreateArticle(t *testing.T) {
 
 			if tc.expected != nil {
 				var stored Article
-				err := articleBucket.One(kv, res.Data, &stored)
+				err := articleBucket.ByID(kv, res.Data, &stored)
 				if err != nil {
 					t.Fatalf("unexpected error: %+v", err)
 				}
@@ -862,26 +949,26 @@ func TestDeleteArticle(t *testing.T) {
 
 	ownedArticleID := weavetest.SequenceID(1)
 	ownedArticle := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           ownedArticleID,
-		BlogID:       weavetest.SequenceID(1),
-		Owner:        signer.Address(),
-		Title:        "Best hacker's blog",
-		Content:      "Best description ever",
-		CreatedAt:    now,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: ownedArticleID,
+		BlogKey:     weavetest.SequenceID(1),
+		Owner:      signer.Address(),
+		Title:      "Best hacker's blog",
+		Content:    "Best description ever",
+		CreatedAt:  now,
+		DeleteAt:   future,
 	}
 
 	notOwnedArticleID := weavetest.SequenceID(2)
 	notOwnedArticle := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           notOwnedArticleID,
-		BlogID:       weavetest.SequenceID(2),
-		Owner:        bob.Address(),
-		Title:        "Worst hacker's blog",
-		Content:      "Worst description ever",
-		CreatedAt:    now,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: notOwnedArticleID,
+		BlogKey:     weavetest.SequenceID(2),
+		Owner:      bob.Address(),
+		Title:      "Worst hacker's blog",
+		Content:    "Worst description ever",
+		CreatedAt:  now,
+		DeleteAt:   future,
 	}
 
 	cases := map[string]struct {
@@ -894,57 +981,84 @@ func TestDeleteArticle(t *testing.T) {
 		"success": {
 			msg: &DeleteArticleMsg{
 				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: ownedArticleID,
+				ArticleKey: ownedArticleID,
 			},
 			signer:   signer,
 			expected: ownedArticle,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+		},
+		"failure missing metadata": {
+			msg: &DeleteArticleMsg{
+				ArticleKey: notOwnedArticleID,
+			},
+			signer:   signer,
+			expected: nil,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"failure unauthorized": {
 			msg: &DeleteArticleMsg{
 				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: notOwnedArticleID,
+				ArticleKey: notOwnedArticleID,
 			},
 			signer:   signer,
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 	}
@@ -964,10 +1078,10 @@ func TestDeleteArticle(t *testing.T) {
 
 			// initalize article bucket and save articles
 			articleBucket := NewArticleBucket()
-			err := articleBucket.Put(kv, ownedArticle)
+			err := articleBucket.Save(kv, ownedArticle)
 			assert.Nil(t, err)
 
-			err = articleBucket.Put(kv, notOwnedArticle)
+			err = articleBucket.Save(kv, notOwnedArticle)
 			assert.Nil(t, err)
 
 			tx := &weavetest.Tx{Msg: tc.msg}
@@ -988,7 +1102,7 @@ func TestDeleteArticle(t *testing.T) {
 			}
 
 			if tc.expected != nil {
-				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleID); err == nil {
+				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleKey); err == nil {
 					t.Fatalf("got %+v", err)
 				}
 			}
@@ -1002,14 +1116,14 @@ func TestCronDeleteArticle(t *testing.T) {
 
 	articleID := weavetest.SequenceID(1)
 	article := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           articleID,
-		BlogID:       weavetest.SequenceID(1),
-		Owner:        weavetest.NewCondition().Address(),
-		Title:        "Best hacker's blog",
-		Content:      "Best description ever",
-		CreatedAt:    now,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: articleID,
+		BlogKey:     weavetest.SequenceID(1),
+		Owner:      weavetest.NewCondition().Address(),
+		Title:      "Best hacker's blog",
+		Content:    "Best description ever",
+		CreatedAt:  now,
+		DeleteAt:   future,
 	}
 
 	notExistingArticleID := weavetest.SequenceID(2)
@@ -1023,55 +1137,81 @@ func TestCronDeleteArticle(t *testing.T) {
 		"success": {
 			msg: &DeleteArticleMsg{
 				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: articleID,
+				ArticleKey: articleID,
 			},
 			expected: article,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+		},
+		"failure missing metadata": {
+			msg: &DeleteArticleMsg{
+				ArticleKey: articleID,
+			},
+			expected: article,
+			wantCheckErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
+			},
+			wantDeliverErrs: map[string]*errors.Error{
+				"Metadata":   errors.ErrMetadata,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 		"success article already deleted": {
 			msg: &DeleteArticleMsg{
 				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: notExistingArticleID,
+				ArticleKey: notExistingArticleID,
 			},
 			expected: nil,
 			wantCheckErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 			wantDeliverErrs: map[string]*errors.Error{
-				"Metadata":     nil,
-				"ID":           nil,
-				"BlogID":       nil,
-				"Owner":        nil,
-				"Title":        nil,
-				"Content":      nil,
-				"CreatedAt":    nil,
-				"DeleteAt":     nil,
+				"Metadata":   nil,
+				"PrimaryKey": nil,
+				"BlogKey":     nil,
+				"Owner":      nil,
+				"Title":      nil,
+				"Content":    nil,
+				"CreatedAt":  nil,
+				"DeleteAt":   nil,
 			},
 		},
 	}
@@ -1086,7 +1226,7 @@ func TestCronDeleteArticle(t *testing.T) {
 
 			// initalize article bucket and save articles
 			articleBucket := NewArticleBucket()
-			err := articleBucket.Put(kv, article)
+			err := articleBucket.Save(kv, article)
 			assert.Nil(t, err)
 
 			tx := &weavetest.Tx{Msg: tc.msg}
@@ -1107,7 +1247,7 @@ func TestCronDeleteArticle(t *testing.T) {
 			}
 
 			if tc.expected != nil {
-				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleID); err != nil && !errors.ErrNotFound.Is(err) {
+				if err := articleBucket.Has(kv, tc.msg.(*DeleteArticleMsg).ArticleKey); err != nil && !errors.ErrNotFound.Is(err) {
 					t.Fatal("article still exists")
 				}
 			}
