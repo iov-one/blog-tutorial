@@ -4,6 +4,7 @@ import (
 	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/migration"
+	"github.com/iov-one/weave/orm"
 )
 
 func init() {
@@ -25,7 +26,7 @@ func (CreateUserMsg) Path() string {
 func (m CreateUserMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	if !validUsername(m.Username) {
 		errs = errors.AppendField(errs, "Username", errors.ErrModel)
 	}
@@ -48,8 +49,7 @@ func (CreateBlogMsg) Path() string {
 func (m CreateBlogMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
 	if !validBlogTitle(m.Title) {
 		errs = errors.AppendField(errs, "Title", errors.ErrModel)
 	}
@@ -71,8 +71,8 @@ func (ChangeBlogOwnerMsg) Path() string {
 func (m ChangeBlogOwnerMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "BlogKey", orm.ValidateSequence(m.BlogKey))
 
 	if err := m.NewOwner.Validate(); err != nil {
 		errs = errors.AppendField(errs, "NewOwner", errors.ErrInput)
@@ -92,8 +92,8 @@ func (CreateArticleMsg) Path() string {
 func (m CreateArticleMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "BlogKey", orm.ValidateSequence(m.BlogKey))
 
 	if !validBlogTitle(m.Title) {
 		errs = errors.AppendField(errs, "Title", errors.ErrModel)
@@ -122,8 +122,8 @@ func (DeleteArticleMsg) Path() string {
 func (m DeleteArticleMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "ArticleKey", orm.ValidateSequence(m.ArticleKey))
 
 	return errs
 }
@@ -139,8 +139,8 @@ func (CancelDeleteArticleTaskMsg) Path() string {
 func (m CancelDeleteArticleTaskMsg) Validate() error {
 	var errs error
 
-	//errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "TaskID", isGenID(m.TaskID, false))
+	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
+	errs = errors.AppendField(errs, "TaskID", orm.ValidateSequence(m.TaskID))
 
 	return errs
 }
