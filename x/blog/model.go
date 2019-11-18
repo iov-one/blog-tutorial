@@ -28,7 +28,7 @@ func (m *User) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "PrimaryKey", isGenID(m.PrimaryKey, false))
+	errs = errors.AppendField(errs, "PrimaryKey", orm.ValidateSequence(m.PrimaryKey))
 
 	if !validUsername(m.Username) {
 		errs = errors.AppendField(errs, "Username", errors.ErrModel)
@@ -55,18 +55,6 @@ func (m *Blog) SetPrimaryKey(pk []byte) error {
 	return nil
 }
 
-// Copy produces a new copy to fulfill the Model interface
-func (m *Blog) Copy() orm.CloneableData {
-	return &Blog{
-		Metadata:    m.Metadata.Copy(),
-		PrimaryKey:  copyBytes(m.PrimaryKey),
-		Owner:       m.Owner.Clone(),
-		Title:       m.Title,
-		Description: m.Description,
-		CreatedAt:   m.CreatedAt,
-	}
-}
-
 var validBlogTitle = regexp.MustCompile(`^[a-zA-Z0-9$@$!%*?&#'^;-_. +]{4,32}$`).MatchString
 var validBlogDescription = regexp.MustCompile(`^[a-zA-Z0-9$@$!%*?&#'^;-_. +]{4,1000}$`).MatchString
 
@@ -75,7 +63,7 @@ func (m *Blog) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "PrimaryKey", isGenID(m.PrimaryKey, false))
+	errs = errors.AppendField(errs, "PrimaryKey", orm.ValidateSequence(m.PrimaryKey))
 	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
 
 	if !validBlogTitle(m.Title) {
@@ -102,21 +90,6 @@ func (m *Article) SetPrimaryKey(pk []byte) error {
 	return nil
 }
 
-// Copy produces a new copy to fulfill the Model interface
-// TODO remove after weave 0.22.0 is released
-func (m *Article) Copy() orm.CloneableData {
-	return &Article{
-		Metadata:   m.Metadata.Copy(),
-		PrimaryKey: copyBytes(m.PrimaryKey),
-		BlogID:     copyBytes(m.BlogID),
-		Owner:      m.Owner.Clone(),
-		Title:      m.Title,
-		Content:    m.Content,
-		CreatedAt:  m.CreatedAt,
-		DeleteAt:   m.DeleteAt,
-	}
-}
-
 var validArticleTitle = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,32}$`).MatchString
 var validArticleContent = regexp.MustCompile(`^[a-zA-Z0-9_ ]{4,1000}$`).MatchString
 
@@ -125,8 +98,8 @@ func (m *Article) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "PrimaryKey", isGenID(m.PrimaryKey, false))
-	errs = errors.AppendField(errs, "BlogID", isGenID(m.BlogID, false))
+	errs = errors.AppendField(errs, "PrimaryKey", orm.ValidateSequence(m.PrimaryKey))
+	errs = errors.AppendField(errs, "BlogKey", orm.ValidateSequence(m.BlogKey))
 	errs = errors.AppendField(errs, "Owner", m.Owner.Validate())
 
 	if !validBlogTitle(m.Title) {
@@ -159,49 +132,14 @@ func (m *DeleteArticleTask) SetPrimaryKey(pk []byte) error {
 	return nil
 }
 
-// Copy produces a new copy to fulfill the Model interface
-func (m *DeleteArticleTask) Copy() orm.CloneableData {
-	return &DeleteArticleTask{
-		Metadata:   m.Metadata.Copy(),
-		PrimaryKey: copyBytes(m.PrimaryKey),
-		ArticleID:  copyBytes(m.ArticleID),
-		TaskOwner:  m.TaskOwner.Clone(),
-	}
-}
-
 // Validate validates user's fields
 func (m *DeleteArticleTask) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "PrimaryKey", isGenID(m.PrimaryKey, false))
-	errs = errors.AppendField(errs, "ArticleID", isGenID(m.ArticleID, false))
+	errs = errors.AppendField(errs, "PrimaryKey", orm.ValidateSequence(m.PrimaryKey))
+	errs = errors.AppendField(errs, "ArticleKey", orm.ValidateSequence(m.ArticleKey))
 	errs = errors.AppendField(errs, "TaskOwner", m.TaskOwner.Validate())
 
 	return errs
-}
-
-func copyBytes(in []byte) []byte {
-	if in == nil {
-		return nil
-	}
-	cpy := make([]byte, len(in))
-	copy(cpy, in)
-	return cpy
-}
-
-// isGenID ensures that the PrimaryKey is 8 byte input.
-// if allowEmpty is set, we also allow empty
-// TODO change with validateSequence when weave 0.22.0 is released
-func isGenID(id []byte, allowEmpty bool) error {
-	if len(id) == 0 {
-		if allowEmpty {
-			return nil
-		}
-		return errors.Wrap(errors.ErrEmpty, "missing id")
-	}
-	if len(id) != 8 {
-		return errors.Wrap(errors.ErrInput, "id must be 8 bytes")
-	}
-	return nil
 }

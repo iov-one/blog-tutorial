@@ -129,39 +129,39 @@ func TestDeleteArticleTask(t *testing.T) {
 			model: &DeleteArticleTask{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				ArticleID:  weavetest.SequenceID(1),
+				ArticleKey: weavetest.SequenceID(1),
 				TaskOwner:  weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"ArticleID":  nil,
+				"ArticleKey": nil,
 				"TaskOwner":  nil,
 			},
 		},
 		"failure missing metadata": {
 			model: &DeleteArticleTask{
 				PrimaryKey: weavetest.SequenceID(1),
-				ArticleID:  weavetest.SequenceID(1),
+				ArticleKey: weavetest.SequenceID(1),
 				TaskOwner:  weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   errors.ErrMetadata,
 				"PrimaryKey": nil,
-				"ArticleID":  nil,
+				"ArticleKey": nil,
 				"TaskOwner":  nil,
 			},
 		},
 		"failure missing id": {
 			model: &DeleteArticleTask{
-				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: weavetest.SequenceID(1),
-				TaskOwner: weavetest.NewCondition().Address(),
+				Metadata:   &weave.Metadata{Schema: 1},
+				ArticleKey: weavetest.SequenceID(1),
+				TaskOwner:  weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": errors.ErrEmpty,
-				"ArticleID":  nil,
+				"ArticleKey": nil,
 				"TaskOwner":  nil,
 			},
 		},
@@ -174,7 +174,7 @@ func TestDeleteArticleTask(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"ArticleID":  errors.ErrEmpty,
+				"ArticleKey": errors.ErrEmpty,
 				"TaskOwner":  nil,
 			},
 		},
@@ -182,12 +182,12 @@ func TestDeleteArticleTask(t *testing.T) {
 			model: &DeleteArticleTask{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				ArticleID:  weavetest.SequenceID(1),
+				ArticleKey: weavetest.SequenceID(1),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"ArticleID":  nil,
+				"ArticleKey": nil,
 				"TaskOwner":  errors.ErrEmpty,
 			},
 		},
@@ -352,7 +352,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Title:      "Best hacker's blog",
 				Content:    "Best description ever",
@@ -362,7 +362,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
@@ -374,7 +374,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Title:      "Best hacker's blog",
 				Content:    "Best description ever",
@@ -383,7 +383,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
@@ -394,7 +394,7 @@ func TestValidateArticle(t *testing.T) {
 		"failure missing metadata": {
 			model: &Article{
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Title:      "Best hacker's blog",
 				Content:    "Best description ever",
@@ -404,7 +404,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   errors.ErrMetadata,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
@@ -415,7 +415,7 @@ func TestValidateArticle(t *testing.T) {
 		"failure missing PrimaryKey": {
 			model: &Article{
 				Metadata:  &weave.Metadata{Schema: 1},
-				BlogID:    weavetest.SequenceID(1),
+				BlogKey:   weavetest.SequenceID(1),
 				Owner:     weavetest.NewCondition().Address(),
 				Title:     "Best hacker's blog",
 				Content:   "Best description ever",
@@ -425,7 +425,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": errors.ErrEmpty,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
@@ -437,7 +437,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Title:      "Best hacker's blog",
 				Content:    "Best description ever",
 				CreatedAt:  now,
@@ -446,7 +446,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      errors.ErrEmpty,
 				"Title":      nil,
 				"Content":    nil,
@@ -467,7 +467,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     errors.ErrEmpty,
+				"BlogKey":    errors.ErrEmpty,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
@@ -479,7 +479,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Content:    "Best description ever",
 				CreatedAt:  now,
@@ -488,7 +488,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      errors.ErrModel,
 				"Content":    nil,
@@ -500,7 +500,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Title:      "Best hacker's blog",
 				CreatedAt:  now,
@@ -509,7 +509,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    errors.ErrModel,
@@ -520,7 +520,7 @@ func TestValidateArticle(t *testing.T) {
 			model: &Article{
 				Metadata:   &weave.Metadata{Schema: 1},
 				PrimaryKey: weavetest.SequenceID(1),
-				BlogID:     weavetest.SequenceID(1),
+				BlogKey:    weavetest.SequenceID(1),
 				Owner:      weavetest.NewCondition().Address(),
 				Title:      "Best hacker's blog",
 				Content:    "Best description ever",
@@ -529,7 +529,7 @@ func TestValidateArticle(t *testing.T) {
 			wantErrs: map[string]*errors.Error{
 				"Metadata":   nil,
 				"PrimaryKey": nil,
-				"BlogID":     nil,
+				"BlogKey":    nil,
 				"Owner":      nil,
 				"Title":      nil,
 				"Content":    nil,
