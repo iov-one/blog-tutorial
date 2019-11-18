@@ -92,7 +92,7 @@ func Examples() []commands.Example {
 
 	changeOwnerMsg := &blog.ChangeBlogOwnerMsg{
 		Metadata: &weave.Metadata{Schema: 1},
-		BlogID:   blogID,
+		BlogKey:   blogID,
 		NewOwner: weavetest.NewCondition().Address(),
 	}
 
@@ -101,7 +101,7 @@ func Examples() []commands.Example {
 
 	createArticleMsg := &blog.CreateArticleMsg{
 		Metadata: &weave.Metadata{Schema: 1},
-		BlogID:   blogID,
+		BlogKey:   blogID,
 		Title:    "insanely good title",
 		Content:  "best content in the existence",
 		DeleteAt: future,
@@ -109,7 +109,7 @@ func Examples() []commands.Example {
 	articleID := weavetest.SequenceID(1)
 	deleteArticleMsg := &blog.DeleteArticleMsg{
 		Metadata:  &weave.Metadata{Schema: 1},
-		ArticleID: articleID,
+		ArticleKey: articleID,
 	}
 
 	return []commands.Example{

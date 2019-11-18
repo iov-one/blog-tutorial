@@ -17,11 +17,11 @@ func TestBlogUserIDIndexer(t *testing.T) {
 	userID := weavetest.SequenceID(1)
 
 	blog := &Blog{
-		Metadata:  &weave.Metadata{Schema: 1},
-		ID:        weavetest.SequenceID(1),
-		Owner:     userID,
-		Title:     "Best hacker's blog",
-		CreatedAt: now,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: weavetest.SequenceID(1),
+		Owner:      userID,
+		Title:      "Best hacker's blog",
+		CreatedAt:  now,
 	}
 
 	cases := map[string]struct {
@@ -64,13 +64,13 @@ func TestArticleBlogIDIndexer(t *testing.T) {
 	blogID := weavetest.SequenceID(1)
 
 	article := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           weavetest.SequenceID(1),
-		BlogID:       blogID,
-		Title:        "Best hacker's blog",
-		Content:      "Best description ever",
-		CreatedAt:    now,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: weavetest.SequenceID(1),
+		BlogKey:     blogID,
+		Title:      "Best hacker's blog",
+		Content:    "Best description ever",
+		CreatedAt:  now,
+		DeleteAt:   future,
 	}
 
 	cases := map[string]struct {
@@ -115,23 +115,23 @@ func TestBlogTimedIndexer(t *testing.T) {
 	blogID := weavetest.SequenceID(1)
 
 	article := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           weavetest.SequenceID(1),
-		BlogID:       blogID,
-		Title:        "Best hacker's blog",
-		Content:      "Best description ever",
-		CreatedAt:    now,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: weavetest.SequenceID(1),
+		BlogKey:     blogID,
+		Title:      "Best hacker's blog",
+		Content:    "Best description ever",
+		CreatedAt:  now,
+		DeleteAt:   future,
 	}
 
 	invalidArticle := &Article{
-		Metadata:     &weave.Metadata{Schema: 1},
-		ID:           weavetest.SequenceID(1),
-		BlogID:       blogID,
-		Title:        "Best hacker's blog",
-		Content:      "Best description ever",
-		CreatedAt:    invalidTime,
-		DeleteAt:     future,
+		Metadata:   &weave.Metadata{Schema: 1},
+		PrimaryKey: weavetest.SequenceID(1),
+		BlogKey:     blogID,
+		Title:      "Best hacker's blog",
+		Content:    "Best description ever",
+		CreatedAt:  invalidTime,
+		DeleteAt:   future,
 	}
 
 	// the index is by article and time, not by the blog

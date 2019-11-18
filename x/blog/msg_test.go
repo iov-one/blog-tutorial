@@ -108,12 +108,12 @@ func TestChangeBlogOwnerMsg(t *testing.T) {
 		"success": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 				NewOwner: weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"NewOwner": nil,
 			},
 		},
@@ -125,42 +125,42 @@ func TestChangeBlogOwnerMsg(t *testing.T) {
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrEmpty,
+				"BlogKey":  errors.ErrEmpty,
 				"NewOwner": nil,
 			},
 		},
 		"failure invalid blog id": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   []byte{0, 0},
+				BlogKey:  []byte{0, 0},
 				NewOwner: weavetest.NewCondition().Address(),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrInput,
+				"BlogKey":  errors.ErrInput,
 				"NewOwner": nil,
 			},
 		},
 		"failure missing owner": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"NewOwner": errors.ErrInput,
 			},
 		},
 		"failure invalid owner": {
 			msg: &ChangeBlogOwnerMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 				NewOwner: []byte{0, 0},
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"NewOwner": errors.ErrInput,
 			},
 		},
@@ -183,13 +183,13 @@ func TestValidateCreateArticleMsg(t *testing.T) {
 		"success": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 				Title:    "insanely good title",
 				Content:  "best content in the existence",
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"Title":    nil,
 				"Content":  nil,
 			},
@@ -203,7 +203,7 @@ func TestValidateCreateArticleMsg(t *testing.T) {
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   errors.ErrEmpty,
+				"BlogKey":  errors.ErrEmpty,
 				"Title":    nil,
 				"Content":  nil,
 			},
@@ -211,12 +211,12 @@ func TestValidateCreateArticleMsg(t *testing.T) {
 		"failure missing title": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 				Content:  "best content in the existence",
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"Title":    errors.ErrModel,
 				"Content":  nil,
 			},
@@ -224,12 +224,12 @@ func TestValidateCreateArticleMsg(t *testing.T) {
 		"failure missing content": {
 			msg: &CreateArticleMsg{
 				Metadata: &weave.Metadata{Schema: 1},
-				BlogID:   weavetest.SequenceID(1),
+				BlogKey:  weavetest.SequenceID(1),
 				Title:    "insanely good title",
 			},
 			wantErrs: map[string]*errors.Error{
 				"Metadata": nil,
-				"BlogID":   nil,
+				"BlogKey":  nil,
 				"Title":    nil,
 				"Content":  errors.ErrModel,
 			},
@@ -252,12 +252,12 @@ func TestValidateDeleteArticle(t *testing.T) {
 	}{
 		"success": {
 			msg: &DeleteArticleMsg{
-				Metadata:  &weave.Metadata{Schema: 1},
-				ArticleID: weavetest.SequenceID(1),
+				Metadata:   &weave.Metadata{Schema: 1},
+				ArticleKey: weavetest.SequenceID(1),
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": nil,
+				"Metadata":   nil,
+				"ArticleKey": nil,
 			},
 		},
 		// add missing metadata test
@@ -266,8 +266,8 @@ func TestValidateDeleteArticle(t *testing.T) {
 				Metadata: &weave.Metadata{Schema: 1},
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata":  nil,
-				"ArticleID": errors.ErrEmpty,
+				"Metadata":   nil,
+				"ArticleKey": errors.ErrEmpty,
 			},
 		},
 	}

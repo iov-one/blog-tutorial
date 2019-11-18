@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package bnsd;
 
+import "cmd/bnsd/x/blueaccount/codec.proto";
 import "cmd/bnsd/x/username/codec.proto";
 import "gogoproto/gogo.proto";
 import "migration/codec.proto";
@@ -11,6 +12,7 @@ import "x/currency/codec.proto";
 import "x/distribution/codec.proto";
 import "x/escrow/codec.proto";
 import "x/gov/codec.proto";
+import "x/msgfee/codec.proto";
 import "x/multisig/codec.proto";
 import "x/sigs/codec.proto";
 import "x/validators/codec.proto";
@@ -29,7 +31,9 @@ import "x/validators/codec.proto";
 message Tx {
   cash.FeeInfo fees = 1;
   repeated sigs.StdSignature signatures = 2;
-  // ID of a multisig contract.
+  // Multisig contains IDs of multisig contracts.
+  // empty array results in multisig being ignored, basically the same behaviour
+  // as if it never got supplied.
   repeated bytes multisig = 4;
   // msg is a sum type over all allowed messages on this chain.
   oneof sum {
@@ -46,6 +50,7 @@ message Tx {
     username.RegisterTokenMsg username_register_token_msg = 61;
     username.TransferTokenMsg username_transfer_token_msg = 62;
     username.ChangeTokenTargetsMsg username_change_token_targets_msg = 63;
+    username.UpdateConfigurationMsg username_update_configuration_msg = 64;
     distribution.CreateMsg distribution_create_msg = 66;
     distribution.DistributeMsg distribution_msg = 67;
     distribution.ResetMsg distribution_reset_msg = 68;
@@ -61,7 +66,16 @@ message Tx {
     gov.UpdateElectorateMsg gov_update_electorate_msg = 77;
     gov.UpdateElectionRuleMsg gov_update_election_rule_msg = 78;
     // 79 is reserved (see ProposalOptions: TextResolutionMsg)
-
+    msgfee.SetMsgFeeMsg msgfee_set_msg_fee_msg = 80;
+    blueaccount.RegisterDomainMsg blueaccount_register_domain_msg = 81;
+    blueaccount.TransferDomainMsg blueaccount_transfer_domain_msg = 82;
+    blueaccount.RenewDomainMsg blueaccount_renew_domain_msg = 83;
+    blueaccount.DeleteDomainMsg blueaccount_delete_domain_msg = 84;
+    blueaccount.RegisterAccountMsg blueaccount_register_account_msg = 85;
+    blueaccount.TransferAccountMsg blueaccount_transfer_account_msg = 86;
+    blueaccount.ReplaceAccountTargetsMsg blueaccount_replace_account_target_msg = 87;
+    blueaccount.DeleteAccountMsg blueaccount_delete_account_msg = 88;
+    blueaccount.UpdateConfigurationMsg blueaccount_update_configuration_msg = 89;
   }
 }
 
@@ -82,12 +96,22 @@ message ExecuteBatchMsg {
       username.RegisterTokenMsg username_register_token_msg = 61;
       username.TransferTokenMsg username_transfer_token_msg = 62;
       username.ChangeTokenTargetsMsg username_change_token_targets_msg = 63;
+      username.UpdateConfigurationMsg username_update_configuration_msg = 64;
       distribution.CreateMsg distribution_create_msg = 66;
       distribution.DistributeMsg distribution_msg = 67;
       distribution.ResetMsg distribution_reset_msg = 68;
       // upgrade schema is important enough, it should be a solo action
       // aswap and gov don't make much sense as part of a batch (no vote buying)
-
+      msgfee.SetMsgFeeMsg msgfee_set_msg_fee_msg = 80;
+      blueaccount.RegisterDomainMsg blueaccount_register_domain_msg = 81;
+      blueaccount.TransferDomainMsg blueaccount_transfer_domain_msg = 82;
+      blueaccount.RenewDomainMsg blueaccount_renew_domain_msg = 83;
+      blueaccount.DeleteDomainMsg blueaccount_delete_domain_msg = 84;
+      blueaccount.RegisterAccountMsg blueaccount_register_account_msg = 85;
+      blueaccount.TransferAccountMsg blueaccount_transfer_account_msg = 86;
+      blueaccount.ReplaceAccountTargetsMsg blueaccount_replace_account_target_msg = 87;
+      blueaccount.DeleteAccountMsg blueaccount_delete_account_msg = 88;
+      blueaccount.UpdateConfigurationMsg blueaccount_update_configuration_msg = 89;
     }
   }
   repeated Union messages = 1 [(gogoproto.nullable) = false];
@@ -107,6 +131,7 @@ message ProposalOptions {
     username.RegisterTokenMsg username_register_token_msg = 61;
     username.TransferTokenMsg username_transfer_token_msg = 62;
     username.ChangeTokenTargetsMsg username_change_token_targets_msg = 63;
+    username.UpdateConfigurationMsg username_update_configuration_msg = 64;
     distribution.CreateMsg distribution_create_msg = 66;
     distribution.DistributeMsg distribution_msg = 67;
     distribution.ResetMsg distribution_reset_msg = 68;
@@ -114,6 +139,16 @@ message ProposalOptions {
     gov.UpdateElectorateMsg gov_update_electorate_msg = 77;
     gov.UpdateElectionRuleMsg gov_update_election_rule_msg = 78;
     gov.CreateTextResolutionMsg gov_create_text_resolution_msg = 79;
+    msgfee.SetMsgFeeMsg msgfee_set_msg_fee_msg = 80;
+    blueaccount.RegisterDomainMsg blueaccount_register_domain_msg = 81;
+    blueaccount.TransferDomainMsg blueaccount_transfer_domain_msg = 82;
+    blueaccount.RenewDomainMsg blueaccount_renew_domain_msg = 83;
+    blueaccount.DeleteDomainMsg blueaccount_delete_domain_msg = 84;
+    blueaccount.RegisterAccountMsg blueaccount_register_account_msg = 85;
+    blueaccount.TransferAccountMsg blueaccount_transfer_account_msg = 86;
+    blueaccount.ReplaceAccountTargetsMsg blueaccount_replace_account_target_msg = 87;
+    blueaccount.DeleteAccountMsg blueaccount_delete_account_msg = 88;
+    blueaccount.UpdateConfigurationMsg blueaccount_update_configuration_msg = 89;
   }
 }
 
@@ -129,6 +164,7 @@ message ExecuteProposalBatchMsg {
       username.RegisterTokenMsg username_register_token_msg = 61;
       username.TransferTokenMsg username_transfer_token_msg = 62;
       username.ChangeTokenTargetsMsg username_change_token_targets_msg = 63;
+      username.UpdateConfigurationMsg username_update_configuration_msg = 64;
       distribution.CreateMsg distribution_create_msg = 66;
       distribution.DistributeMsg distribution_msg = 67;
       distribution.ResetMsg distribution_reset_msg = 68;
@@ -136,6 +172,16 @@ message ExecuteProposalBatchMsg {
       gov.UpdateElectorateMsg gov_update_electorate_msg = 77;
       gov.UpdateElectionRuleMsg gov_update_election_rule_msg = 78;
       gov.CreateTextResolutionMsg gov_create_text_resolution_msg = 79;
+      msgfee.SetMsgFeeMsg msgfee_set_msg_fee_msg = 80;
+      blueaccount.RegisterDomainMsg blueaccount_register_domain_msg = 81;
+      blueaccount.TransferDomainMsg blueaccount_transfer_domain_msg = 82;
+      blueaccount.RenewDomainMsg blueaccount_renew_domain_msg = 83;
+      blueaccount.DeleteDomainMsg blueaccount_delete_domain_msg = 84;
+      blueaccount.RegisterAccountMsg blueaccount_register_account_msg = 85;
+      blueaccount.TransferAccountMsg blueaccount_transfer_account_msg = 86;
+      blueaccount.ReplaceAccountTargetsMsg blueaccount_replace_account_target_msg = 87;
+      blueaccount.DeleteAccountMsg blueaccount_delete_account_msg = 88;
+      blueaccount.UpdateConfigurationMsg blueaccount_update_configuration_msg = 89;
     }
   }
   repeated Union messages = 1 [(gogoproto.nullable) = false];

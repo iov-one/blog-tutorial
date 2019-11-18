@@ -66,3 +66,7 @@ func (m mockAsserter) Skip(args ...interface{}) {
 	m.Log(args...)
 	os.Exit(0)
 }
+func (m mockAsserter) Skipf(format string, args ...interface{}) {
+	m.Logf(format, args...)
+	os.Exit(0)
+}

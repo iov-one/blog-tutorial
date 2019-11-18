@@ -3,31 +3,30 @@ package blog
 import (
 	"encoding/binary"
 
-	"github.com/iov-one/blog-tutorial/morm"
 	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/orm"
 )
 
 type UserBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewUserBucket returns a new user bucket
 func NewUserBucket() *UserBucket {
 	return &UserBucket{
-		morm.NewModelBucket("user", &User{}),
+		orm.NewSerialModelBucket("user", &User{}),
 	}
 }
 
 type BlogBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewBlogBucket returns a new blog bucket
 func NewBlogBucket() *BlogBucket {
 	return &BlogBucket{
-		morm.NewModelBucket("blog", &Blog{},
-			morm.WithIndex("user", blogUserIDIndexer, false)),
+		orm.NewSerialModelBucket("blog", &Blog{},
+			orm.WithIndexSerial("user", blogUserIDIndexer, false)),
 	}
 }
 
@@ -44,15 +43,15 @@ func blogUserIDIndexer(obj orm.Object) ([]byte, error) {
 }
 
 type ArticleBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewArticleBucket returns a new article bucket
 func NewArticleBucket() *ArticleBucket {
 	return &ArticleBucket{
-		morm.NewModelBucket("article", &Article{},
-			morm.WithIndex("blog", articleBlogIDIndexer, false),
-			morm.WithIndex("timedBlog", blogTimedIndexer, false)),
+		orm.NewSerialModelBucket("article", &Article{},
+			orm.WithIndexSerial("blog", articleBlogIDIndexer, false),
+			orm.WithIndexSerial("timedBlog", blogTimedIndexer, false)),
 	}
 }
 
@@ -65,7 +64,7 @@ func articleBlogIDIndexer(obj orm.Object) ([]byte, error) {
 	if !ok {
 		return nil, errors.Wrapf(errors.ErrState, "expected article, got %T", obj.Value())
 	}
-	return article.BlogID, nil
+	return article.BlogKey, nil
 
 }
 
@@ -86,12 +85,12 @@ func blogTimedIndexer(obj orm.Object) ([]byte, error) {
 	return BuildBlogTimedIndex(article)
 }
 
-// BuildBlogTimedIndex produces 8 bytes BlogID || big-endian createdAt
+// BuildBlogTimedIndex produces 8 bytes BlogKey || big-endian createdAt
 // This allows lexographical searches over the time ranges (or earliest or latest)
 // of all articles within one blog
 func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 	res := make([]byte, 16)
-	copy(res, article.BlogID)
+	copy(res, article.BlogKey)
 	// this would violate lexographical ordering as negatives would be highest
 	if article.CreatedAt < 0 {
 		return nil, errors.Wrap(errors.ErrState, "cannot index negative creation times")
@@ -101,12 +100,12 @@ func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 }
 
 type DeleteArticleTaskBucket struct {
-	morm.ModelBucket
+	orm.SerialModelBucket
 }
 
 // NewDeleteArticleTaskBucket returns a new delete article task bucket
 func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
 	return &DeleteArticleTaskBucket{
-		morm.NewModelBucket("deleteart", &DeleteArticleTask{}),
+		orm.NewSerialModelBucket("deleteart", &DeleteArticleTask{}),
 	}
 }
