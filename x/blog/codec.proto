@@ -37,8 +37,8 @@ message Article {
   weave.Metadata metadata = 1;
   // PrimaryKey is article's identifier
   bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
-  // BlogID identifies blog that article is posted to
-  bytes blog_id = 3 [(gogoproto.customname) = "BlogID"];
+  // BlogKey identifies blog that article is posted to
+  bytes blog_key = 3 [(gogoproto.customname) = "BlogKey"];
   // Owner is the owner address of the blog
   bytes owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
   // Title is title of the article
@@ -55,10 +55,10 @@ message Article {
 // DeleteArticleTask is used for representing scheduled task pk. Used when deleting the task
 message DeleteArticleTask {
   weave.Metadata metadata = 1;
-  // TaskID is the unique identifier of the task
+  // PrimaryKey is the unique identifier of the task
   bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
-  // ArticleID is the pk of the article that will be deleted
-  bytes article_id = 3 [(gogoproto.customname) = "ArticleID"];
+  // ArticleKey is the pk of the article that will be deleted
+  bytes article_key = 3 [(gogoproto.customname) = "ArticleKey"];
   // TaskOwner is the creator of the task
   bytes task_owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
 }
@@ -83,16 +83,16 @@ message CreateBlogMsg {
 
 message ChangeBlogOwnerMsg {
   weave.Metadata metadata = 1;
-  // PrimaryKey of the blog that is desired to change owner
-  bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
+  // BlogKey is the blog's primary key that is desired to change owner
+  bytes blog_key = 2 [(gogoproto.customname) = "BlogKey"];
   // Address of the new owner
   bytes new_owner = 3 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
 }
 
 message CreateArticleMsg {
   weave.Metadata metadata = 1;
-  // BlogID identifies blog that article is posted to
-  bytes blog_id = 2 [(gogoproto.customname) = "BlogID"];
+  // BlogKey identifies blog that article is posted to
+  bytes blog_key = 2 [(gogoproto.customname) = "BlogKey"];
   // Title is title of the article
   string title = 3;
   // Content is content of the blog
@@ -105,11 +105,11 @@ message CreateArticleMsg {
 // DeleteArticleMsg message deletes the the article instantly
 message DeleteArticleMsg {
   weave.Metadata metadata = 1;
-  // ArticleID is the identifier of the article that is desired to be deleted
-  bytes article_id = 2 [(gogoproto.customname) = "ArticleID"];
+  // ArticleKey is the identifier of the article that is desired to be deleted
+  bytes article_key = 2 [(gogoproto.customname) = "ArticleKey"];
 }
 
-// CancelDeleteArticleTaskMsg message cancelles scheduled article deletion
+// CancelDeleteArticleTaskMsg message cancels scheduled article deletion
 message CancelDeleteArticleTaskMsg {
   weave.Metadata metadata = 1;
   // TaskID is the identifier of the task
