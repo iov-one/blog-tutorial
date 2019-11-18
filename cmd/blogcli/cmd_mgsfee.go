@@ -2,12 +2,21 @@ package main
 
 import (
 	"github.com/iov-one/weave/coin"
+	"github.com/iov-one/weave/errors"
 	"github.com/iov-one/weave/x/msgfee"
 )
 
-// msgfeeConf returns message fee from blockchain
-func msgfeeConf(nodeURL string, msgPath string) (*coin.Coin, error) {
-	store := tendermintStore(nodeURL)
+func msgfeeConf(nodeUrl string, msgPath string) (*coin.Coin, error) {
+	store := tendermintStore(nodeUrl)
 	b := msgfee.NewMsgFeeBucket()
-	return b.MessageFee(store, msgPath)
+	var fee msgfee.MsgFee
+	switch err := b.One(store, []byte(msgPath), &fee); {
+	case err == nil:
+		return &fee.Fee, nil
+	case errors.ErrNotFound.Is(err):
+		return nil, nil
+	default:
+		return nil, errors.Wrap(err, "cannot get fee")
+	}
 }
+
