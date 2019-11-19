@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+blogcli create-blog -title 'test title' -desc 'test description' |
+	blogcli view

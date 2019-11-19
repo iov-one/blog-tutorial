@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+blogcli delete-article -article_key 123456 | blogcli view

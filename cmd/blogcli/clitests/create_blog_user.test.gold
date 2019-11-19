@@ -1,0 +1,10 @@
+{
+	"Sum": {
+		"BlogCreateUserMsg": {
+			"metadata": {
+				"schema": 1
+			},
+			"username": "hacker"
+		}
+	}
+}
