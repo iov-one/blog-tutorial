@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	blogapp "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/app"
 	"github.com/iov-one/weave/coin"
@@ -25,7 +25,7 @@ func TestCmdSendTokensHappyPath(t *testing.T) {
 	args := []string{
 		"-src", "b1ca7e78f74423ae01da3b51e676934d9105f282",
 		"-dst", "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0",
-		"-amount", "5 BLOG",
+		"-amount", "5 DOGE",
 		"-memo", "a memo",
 	}
 	if err := cmdSendTokens(nil, &output, args); err != nil {
@@ -46,7 +46,7 @@ func TestCmdSendTokensHappyPath(t *testing.T) {
 	assert.Equal(t, fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"), []byte(msg.Source))
 	assert.Equal(t, fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"), []byte(msg.Destination))
 	assert.Equal(t, "a memo", msg.Memo)
-	assert.Equal(t, coin.NewCoinp(5, 0, "BLOG"), msg.Amount)
+	assert.Equal(t, coin.NewCoinp(5, 0, "DOGE"), msg.Amount)
 }
 
 func TestCmdWithFeeHappyPath(t *testing.T) {
@@ -54,11 +54,11 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 		Metadata:    &weave.Metadata{Schema: 1},
 		Source:      fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"),
 		Destination: fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"),
-		Amount:      coin.NewCoinp(5, 0, "BLOG"),
+		Amount:      coin.NewCoinp(5, 0, "DOGE"),
 		Memo:        "a memo",
 	}
-	sendTx := &blog.Tx{
-		Sum: &blog.Tx_CashSendMsg{
+	sendTx := &blogapp.Tx{
+		Sum: &blogapp.Tx_CashSendMsg{
 			CashSendMsg: sendMsg,
 		},
 	}
@@ -70,7 +70,7 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 	var output bytes.Buffer
 	args := []string{
 		"-payer", "b1ca7e78f74423ae01da3b51e676934d9105f282",
-		"-amount", "5 BLOG",
+		"-amount", "5 DOGE",
 	}
 	if err := cmdWithFee(&input, &output, args); err != nil {
 		t.Fatalf("cannot attach a fee to transaction: %s", err)
@@ -81,7 +81,7 @@ func TestCmdWithFeeHappyPath(t *testing.T) {
 		t.Fatalf("cannot unmarshal created transaction: %s", err)
 	}
 	assert.Equal(t, fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"), []byte(tx.Fees.Payer))
-	assert.Equal(t, coin.NewCoinp(5, 0, "BLOG"), tx.Fees.Fees)
+	assert.Equal(t, coin.NewCoinp(5, 0, "DOGE"), tx.Fees.Fees)
 
 	txmsg, err := tx.GetMsg()
 	if err != nil {
@@ -96,11 +96,11 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 		Metadata:    &weave.Metadata{Schema: 1},
 		Source:      fromHex(t, "b1ca7e78f74423ae01da3b51e676934d9105f282"),
 		Destination: fromHex(t, "E28AE9A6EB94FC88B73EB7CBD6B87BF93EB9BEF0"),
-		Amount:      coin.NewCoinp(5, 0, "BLOG"),
+		Amount:      coin.NewCoinp(5, 0, "DOGE"),
 		Memo:        "a memo",
 	}
-	sendTx := &blog.Tx{
-		Sum: &blog.Tx_CashSendMsg{
+	sendTx := &blogapp.Tx{
+		Sum: &blogapp.Tx_CashSendMsg{
 			CashSendMsg: sendMsg,
 		},
 	}
@@ -113,10 +113,10 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 		"only minimal fee": {
 			Conf: cash.Configuration{
 				Metadata:   &weave.Metadata{Schema: 1},
-				MinimalFee: coin.NewCoin(4, 0, "BLOG"),
+				MinimalFee: coin.NewCoin(4, 0, "BTC"),
 			},
 			Fees:    nil,
-			WantFee: coin.NewCoinp(4, 0, "BLOG"),
+			WantFee: coin.NewCoinp(4, 0, "BTC"),
 		},
 		"only message fee": {
 			Conf: cash.Configuration{
@@ -124,19 +124,19 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 				MinimalFee: coin.NewCoin(0, 0, ""),
 			},
 			Fees: map[string]coin.Coin{
-				sendMsg.Path(): coin.NewCoin(17, 0, "BLOG"),
+				sendMsg.Path(): coin.NewCoin(17, 0, "IOV"),
 			},
-			WantFee: coin.NewCoinp(17, 0, "BLOG"),
+			WantFee: coin.NewCoinp(17, 0, "IOV"),
 		},
 		"custom message fee is more important than global setting": {
 			Conf: cash.Configuration{
 				Metadata:   &weave.Metadata{Schema: 1},
-				MinimalFee: coin.NewCoin(123, 0, "BLOG"),
+				MinimalFee: coin.NewCoin(123, 0, "IOV"),
 			},
 			Fees: map[string]coin.Coin{
-				sendMsg.Path(): coin.NewCoin(11, 0, "BLOG"),
+				sendMsg.Path(): coin.NewCoin(11, 0, "IOV"),
 			},
-			WantFee: coin.NewCoinp(11, 0, "BLOG"),
+			WantFee: coin.NewCoinp(11, 0, "IOV"),
 		},
 	}
 
@@ -170,6 +170,7 @@ func TestCmdWithFeeHappyPathDefaultAmount(t *testing.T) {
 }
 
 type abciQueryRequest struct {
+	ID     string `json:"id"`
 	Method string `json:"method"`
 	Params struct {
 		Data string `json:"data"` // hex-encoded
@@ -203,7 +204,7 @@ func newCashConfTendermintServer(
 		assert.Nil(t, err)
 
 		if bytes.Equal(raw, []byte("_c:cash")) {
-			io.WriteString(w, tmResponse(t, raw, &conf))
+			io.WriteString(w, tmResponse(t, raw, &conf, req.ID))
 			return
 		}
 
@@ -216,9 +217,9 @@ func newCashConfTendermintServer(
 					Pkg:      pkg,
 					Version:  1,
 				}
-				io.WriteString(w, tmResponse(t, raw, schema))
+				io.WriteString(w, tmResponse(t, raw, schema, req.ID))
 			} else {
-				io.WriteString(w, tmEmptyResponse(t))
+				io.WriteString(w, tmEmptyResponse(t, req.ID))
 			}
 			return
 		}
@@ -227,14 +228,14 @@ func newCashConfTendermintServer(
 			path := string(raw[len("msgfee:"):])
 			fee, ok := msgfees[path]
 			if !ok {
-				io.WriteString(w, tmEmptyResponse(t))
+				io.WriteString(w, tmEmptyResponse(t, req.ID))
 				return
 			}
 			io.WriteString(w, tmResponse(t, raw, &msgfee.MsgFee{
 				Metadata: &weave.Metadata{Schema: 1},
 				MsgPath:  path,
 				Fee:      fee,
-			}))
+			}, req.ID))
 			return
 		}
 
@@ -244,7 +245,7 @@ func newCashConfTendermintServer(
 
 // tmResponse returns a tenderming HTTP response for a configuration query.
 // Returned response does not contain "key" or "height" information.
-func tmResponse(t testing.TB, key []byte, payload interface{ Marshal() ([]byte, error) }) string {
+func tmResponse(t testing.TB, key []byte, payload interface{ Marshal() ([]byte, error) }, clientID string) string {
 	value, err := payload.Marshal()
 	assert.Nil(t, err)
 
@@ -260,7 +261,7 @@ func tmResponse(t testing.TB, key []byte, payload interface{ Marshal() ([]byte, 
 
 	return `{
 	  "jsonrpc": "2.0",
-	  "id": "",
+	  "id": "` + clientID + `",
 	  "result": {
 	    "response": {
 	      "key": "` + encKey + `",
@@ -270,14 +271,14 @@ func tmResponse(t testing.TB, key []byte, payload interface{ Marshal() ([]byte, 
 	}`
 }
 
-func tmEmptyResponse(t testing.TB) string {
+func tmEmptyResponse(t testing.TB, clientID string) string {
 	set, err := (&app.ResultSet{}).Marshal()
 	assert.Nil(t, err)
 	enc := base64.StdEncoding.EncodeToString(set)
 
 	return `{
 	  "jsonrpc": "2.0",
-	  "id": "",
+	  "id": "` + clientID + `",
 	  "result": {
 	    "response": {
 	      "key": "` + enc + `",
