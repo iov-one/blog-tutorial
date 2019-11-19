@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	blog "github.com/iov-one/blog-tutorial/cmd/blog/app"
+	app "github.com/iov-one/blog-tutorial/cmd/blog/app"
 	"github.com/iov-one/weave"
 	"github.com/iov-one/weave/coin"
 	"github.com/iov-one/weave/gconf"
@@ -24,13 +24,13 @@ destination account.
 	var (
 		srcFl    = flAddress(fl, "src", "", "A source account address that the founds are send from.")
 		dstFl    = flAddress(fl, "dst", "", "A destination account address that the founds are send to.")
-		amountFl = flCoin(fl, "amount", "1 BLOG", "An amount that is to be transferred between the source to the destination accounts.")
+		amountFl = flCoin(fl, "amount", "1 IOV", "An amount that is to be transferred between the source to the destination accounts.")
 		memoFl   = fl.String("memo", "", "A short message attached to the transfer operation.")
 	)
 	fl.Parse(args)
 
-	tx := &blog.Tx{
-		Sum: &blog.Tx_CashSendMsg{
+	tx := &app.Tx{
+		Sum: &app.Tx_CashSendMsg{
 			CashSendMsg: &cash.SendMsg{
 				Metadata:    &weave.Metadata{Schema: 1},
 				Source:      *srcFl,
@@ -57,8 +57,8 @@ already has a fee set, overwrite it with a new value.
 	var (
 		payerFl  = flHex(fl, "payer", "", "Optional address of a payer. If not provided the main signer will be used.")
 		amountFl = flCoin(fl, "amount", "", "Fee value that should be attached to the transaction. If not provided, default minimal fee is used.")
-		tmAddrFl = fl.String("tm", env("BLOGCLI_TM_ADDR", "https://blog.NETWORK.iov.one:443"),
-			"Tendermint node address. Use proper NETWORK name. You can use BLOGCLI_TM_ADDR environment variable to set it.")
+		tmAddrFl = fl.String("tm", env("BNSCLI_TM_ADDR", "https://bns.NETWORK.iov.one:443"),
+			"Tendermint node address. Use proper NETWORK name. You can use BNSCLI_TM_ADDR environment variable to set it.")
 	)
 	fl.Parse(args)
 

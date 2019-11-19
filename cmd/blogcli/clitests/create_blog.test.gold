@@ -1,0 +1,11 @@
+{
+	"Sum": {
+		"BlogCreateBlogMsg": {
+			"metadata": {
+				"schema": 1
+			},
+			"title": "test title",
+			"description": "test description"
+		}
+	}
+}

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+blogcli change-blog-owner -blog_key 1 -new_owner "seq:test/blog/1" | blogcli view

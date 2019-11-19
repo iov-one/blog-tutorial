@@ -1,0 +1,11 @@
+{
+	"Sum": {
+		"BlogChangeBlogOwnerMsg": {
+			"metadata": {
+				"schema": 1
+			},
+			"blog_key": "AAAAAAAAAAE=",
+			"new_owner": "F4AD917A21B58D2882ED39535716226123F92123"
+		}
+	}
+}

@@ -53,6 +53,12 @@ var commands = map[string]func(input io.Reader, output io.Writer, args []string)
 	"with-multisig-participant": cmdWithMultisigParticipant,
 	// add your custom commands here
 	//"create-custom-state:  	 cmdCreateCustomState,
+	"create-blog-user":           cmdCreateUser,
+	"create-blog":                cmdCreateBlog,
+	"change-blog-owner":          cmdChangeBlogOwner,
+	"create-article":             cmdCreateArticle,
+	"delete-article":             cmdDeleteArticle,
+	"cancel-delete-article-task": cmdCancelDeleteArticleTask,
 }
 
 func main() {

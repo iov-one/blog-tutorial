@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+blogcli create-article -blog_key 1 -title "test article" -content "test content" | blogcli view
