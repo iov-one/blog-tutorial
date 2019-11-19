@@ -83,14 +83,14 @@ Change owner of the blog.
 		fl.PrintDefaults()
 	}
 	var (
-		blogIDFl   = flSeq(fl, "blog_id", "", "Identifier of the blog")
+		blogKeyFl  = flSeq(fl, "blog_key", "", "Identifier of the blog")
 		newOwnerFl = flAddress(fl, "new_owner", "", "Address of the new owner")
 	)
 	fl.Parse(args)
 
 	msg := blog.ChangeBlogOwnerMsg{
 		Metadata: &weave.Metadata{Schema: 1},
-		BlogID:   *blogIDFl,
+		BlogKey:  *blogKeyFl,
 		NewOwner: *newOwnerFl,
 	}
 	if err := msg.Validate(); err != nil {
@@ -115,16 +115,16 @@ Post an article under a blog.
 		fl.PrintDefaults()
 	}
 	var (
-		blogIDFl   = flSeq(fl, "blog_id", "", "Identifier of the blog that article will be posted at")
+		blogKeyFl  = flSeq(fl, "blog_key", "", "Identifier of the blog that article will be posted at")
 		titleFl    = fl.String("title", "", "Title of the article")
 		contentFl  = fl.String("content", "", "Content of the article")
-		deleteAtFl = flTime(fl, "delete_at", nil, "Deletion time of the article")
+		deleteAtFl = flTime(fl, "delete_at", nil, "Deletion time of the article, format: 2006-01-02 15:04")
 	)
 	fl.Parse(args)
 
 	msg := blog.CreateArticleMsg{
 		Metadata: &weave.Metadata{Schema: 1},
-		BlogID:   *blogIDFl,
+		BlogKey:  *blogKeyFl,
 		Title:    *titleFl,
 		Content:  *contentFl,
 		DeleteAt: deleteAtFl.UnixTime(),
@@ -151,13 +151,13 @@ Delete an article.
 		fl.PrintDefaults()
 	}
 	var (
-		articleIDFl = flSeq(fl, "article_id", "", "Identifer of the article")
+		articleKeyFl = flSeq(fl, "article_key", "", "Identifer of the article")
 	)
 	fl.Parse(args)
 
 	msg := blog.DeleteArticleMsg{
-		Metadata: &weave.Metadata{Schema: 1},
-		ArticleID: *articleIDFl,
+		Metadata:   &weave.Metadata{Schema: 1},
+		ArticleKey: *articleKeyFl,
 	}
 	if err := msg.Validate(); err != nil {
 		return fmt.Errorf("given data produce an invalid message: %s", err)
@@ -166,6 +166,36 @@ Delete an article.
 	tx := &app.Tx{
 		Sum: &app.Tx_BlogDeleteArticleMsg{
 			BlogDeleteArticleMsg: &msg,
+		},
+	}
+	_, err := writeTx(output, tx)
+	return err
+}
+
+func cmdCancelDeleteArticleTask(input io.Reader, output io.Writer, args []string) error {
+	fl := flag.NewFlagSet("", flag.ExitOnError)
+	fl.Usage = func() {
+		fmt.Fprintln(flag.CommandLine.Output(), `
+Cancel a delete article task.
+		`)
+		fl.PrintDefaults()
+	}
+	var (
+		taskIDFl = flSeq(fl, "task_id", "", "Identifer of the delete task")
+	)
+	fl.Parse(args)
+
+	msg := blog.CancelDeleteArticleTaskMsg{
+		Metadata: &weave.Metadata{Schema: 1},
+		TaskID:   *taskIDFl,
+	}
+	if err := msg.Validate(); err != nil {
+		return fmt.Errorf("given data produce an invalid message: %s", err)
+	}
+
+	tx := &app.Tx{
+		Sum: &app.Tx_BlogCancelDeleteArticleTaskMsg{
+			BlogCancelDeleteArticleTaskMsg: &msg,
 		},
 	}
 	_, err := writeTx(output, tx)
