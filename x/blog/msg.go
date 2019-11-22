@@ -140,7 +140,7 @@ func (m CancelDeleteArticleTaskMsg) Validate() error {
 	var errs error
 
 	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "TaskID", orm.ValidateSequence(m.TaskID))
+	errs = errors.AppendField(errs, "ArticleKey", orm.ValidateSequence(m.ArticleKey))
 
 	return errs
 }
