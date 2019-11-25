@@ -288,12 +288,12 @@ func TestCancelDeleteArticleTask(t *testing.T) {
 	}{
 		"success": {
 			msg: &CancelDeleteArticleTaskMsg{
-				Metadata: &weave.Metadata{Schema: 1},
-				TaskID:   weavetest.SequenceID(1),
+				Metadata:   &weave.Metadata{Schema: 1},
+				ArticleKey: weavetest.SequenceID(1),
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata": nil,
-				"TaskID":   nil,
+				"Metadata":   nil,
+				"ArticleKey": nil,
 			},
 		},
 		// add missing metadata test
@@ -302,18 +302,18 @@ func TestCancelDeleteArticleTask(t *testing.T) {
 				Metadata: &weave.Metadata{Schema: 1},
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata": nil,
-				"TaskID":   errors.ErrEmpty,
+				"Metadata":   nil,
+				"ArticleKey": errors.ErrEmpty,
 			},
 		},
 		"failure invalid task id": {
 			msg: &CancelDeleteArticleTaskMsg{
-				Metadata: &weave.Metadata{Schema: 1},
-				TaskID:   []byte{0, 0},
+				Metadata:   &weave.Metadata{Schema: 1},
+				ArticleKey: []byte{0, 0},
 			},
 			wantErrs: map[string]*errors.Error{
-				"Metadata": nil,
-				"TaskID":   errors.ErrInput,
+				"Metadata":   nil,
+				"ArticleKey": errors.ErrInput,
 			},
 		},
 	}

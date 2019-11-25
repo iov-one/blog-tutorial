@@ -211,10 +211,6 @@
                 </li>
               
                 <li>
-                  <a href="#blog.DeleteArticleTask"><span class="badge">M</span>DeleteArticleTask</a>
-                </li>
-              
-                <li>
                   <a href="#blog.User"><span class="badge">M</span>User</a>
                 </li>
               
@@ -303,6 +299,14 @@
 Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
+                <tr>
+                  <td>delete_task_id</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>DeleteTaskID holds an ID of a tasks scheduled to delete this article.
+This value can be empty if no deletion task was scheduled. </p></td>
+                </tr>
+              
             </tbody>
           </table>
         
@@ -385,10 +389,10 @@ Could be nil if there is not a time of deletion </p></td>
                 </tr>
               
                 <tr>
-                  <td>task_id</td>
+                  <td>article_key</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>TaskID is the identifier of the task </p></td>
+                  <td><p>ArticleKey is the identifier of the article </p></td>
                 </tr>
               
             </tbody>
@@ -582,50 +586,6 @@ Could be nil if there is not a time of deletion, or in future </p></td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>ArticleKey is the identifier of the article that is desired to be deleted </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-        
-
-        
-      
-        <h3 id="blog.DeleteArticleTask">DeleteArticleTask</h3>
-        <p>DeleteArticleTask is used for representing scheduled task pk. Used when deleting the task</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#weave.Metadata">weave.Metadata</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>pk</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>PrimaryKey is the unique identifier of the task </p></td>
-                </tr>
-              
-                <tr>
-                  <td>article_key</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>ArticleKey is the pk of the article that will be deleted </p></td>
-                </tr>
-              
-                <tr>
-                  <td>task_owner</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>TaskOwner is the creator of the task </p></td>
                 </tr>
               
             </tbody>

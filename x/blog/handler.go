@@ -264,7 +264,6 @@ type CreateArticleHandler struct {
 	auth      x.Authenticator
 	ab        *ArticleBucket
 	bb        *BlogBucket
-	dtb       *DeleteArticleTaskBucket
 	scheduler weave.Scheduler
 }
 
@@ -276,7 +275,6 @@ func NewCreateArticleHandler(auth x.Authenticator, scheduler weave.Scheduler) we
 		auth:      auth,
 		ab:        NewArticleBucket(),
 		bb:        NewBlogBucket(),
-		dtb:       NewDeleteArticleTaskBucket(),
 		scheduler: scheduler,
 	}
 }
@@ -344,10 +342,6 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 		return nil, err
 	}
 
-	if err := h.ab.Save(store, article); err != nil {
-		return nil, errors.Wrap(err, "cannot store article")
-	}
-
 	// schedule delete task
 	if msg.DeleteAt != 0 {
 		deleteArticleMsg := &DeleteArticleMsg{
@@ -355,24 +349,17 @@ func (h CreateArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 			ArticleKey: article.PrimaryKey,
 		}
 
-		var taskID []byte
-		taskID, err = h.scheduler.Schedule(store, article.DeleteAt.Time(), nil, deleteArticleMsg)
+		taskID, err := h.scheduler.Schedule(store, article.DeleteAt.Time(), nil, deleteArticleMsg)
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot schedule deletion task")
 		}
 
-		// save delete article task so it could be cancelled later
-		deleteArticleTask := &DeleteArticleTask{
-			Metadata:   deleteArticleMsg.Metadata,
-			PrimaryKey: taskID,
-			ArticleKey: article.PrimaryKey,
-			TaskOwner:  x.MainSigner(ctx, h.auth).Address(),
-		}
-		if err := h.dtb.Save(store, deleteArticleTask); err != nil {
-			return nil, errors.Wrap(err, "cannot store delete article task")
-		}
+		article.DeleteTaskID = taskID
 	}
 
+	if err := h.ab.Save(store, article); err != nil {
+		return nil, errors.Wrap(err, "cannot store article")
+	}
 	// Returns generated article PrimaryKey as response
 	return &weave.DeliverResult{Data: article.PrimaryKey}, nil
 }
@@ -447,7 +434,7 @@ func (h DeleteArticleHandler) Deliver(ctx weave.Context, store weave.KVStore, tx
 // CancelDeleteArticleTaskHandler will handle CancelDeleteArticleTaskMsg
 type CancelDeleteArticleTaskHandler struct {
 	auth      x.Authenticator
-	b         *DeleteArticleTaskBucket
+	b         *ArticleBucket
 	scheduler weave.Scheduler
 }
 
@@ -457,36 +444,39 @@ var _ weave.Handler = CancelDeleteArticleTaskHandler{}
 func NewCancelDeleteArticleTaskHandler(auth x.Authenticator, scheduler weave.Scheduler) weave.Handler {
 	return CancelDeleteArticleTaskHandler{
 		auth:      auth,
-		b:         NewDeleteArticleTaskBucket(),
+		b:         NewArticleBucket(),
 		scheduler: scheduler,
 	}
 }
 
 // validate does all common pre-processing between Check and Deliver
-func (h CancelDeleteArticleTaskHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CancelDeleteArticleTaskMsg, error) {
+func (h CancelDeleteArticleTaskHandler) validate(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*CancelDeleteArticleTaskMsg, *Article, error) {
 	var msg CancelDeleteArticleTaskMsg
 
 	if err := weave.LoadMsg(tx, &msg); err != nil {
-		return nil, errors.Wrap(err, "load msg")
+		return nil, nil, errors.Wrap(err, "load msg")
 	}
 
-	var task DeleteArticleTask
-	if err := h.b.ByID(store, msg.TaskID, &task); err != nil {
-		return nil, errors.Wrapf(err, "delete task with id %s not found", msg.TaskID)
+	var article Article
+	if err := h.b.ByID(store, msg.ArticleKey, &article); err != nil {
+		return nil, nil, errors.Wrapf(err, "article with key %s not found", msg.ArticleKey)
 	}
 
-	signer := x.MainSigner(ctx, h.auth).Address()
-	if !task.TaskOwner.Equals(signer) {
-		return nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to cancel scheduled delete article task with id %s", signer, msg.TaskID)
+	if !h.auth.HasAddress(ctx, article.Owner) {
+		return nil, nil, errors.Wrap(errors.ErrUnauthorized, "not authorized to execute this tx")
 	}
 
-	return &msg, nil
+	if article.DeleteTaskID == nil {
+		return nil, nil, errors.Wrap(errors.ErrNotFound, "no scheduled delete task for article")
+	}
+
+	return &msg, &article, nil
 }
 
 // Check just verifies it is properly formed and returns
 // the cost of executing it.
 func (h CancelDeleteArticleTaskHandler) Check(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.CheckResult, error) {
-	_, err := h.validate(ctx, store, tx)
+	_, _, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -497,20 +487,21 @@ func (h CancelDeleteArticleTaskHandler) Check(ctx weave.Context, store weave.KVS
 
 // Deliver cancels delete task if conditions are met
 func (h CancelDeleteArticleTaskHandler) Deliver(ctx weave.Context, store weave.KVStore, tx weave.Tx) (*weave.DeliverResult, error) {
-	msg, err := h.validate(ctx, store, tx)
+	_, article, err := h.validate(ctx, store, tx)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := h.scheduler.Delete(store, msg.TaskID); err != nil {
-		return nil, errors.Wrapf(err, "cannot delete scheduled task with id %s", msg.TaskID)
+	if err := h.scheduler.Delete(store, article.DeleteTaskID); err != nil {
+		return nil, errors.Wrapf(err, "cannot deschedule with task id %s", article.DeleteTaskID)
 	}
 
-	if err := h.b.Delete(store, msg.TaskID); err != nil {
-		return nil, errors.Wrapf(err, "cannot cancel delete task with id %s", msg.TaskID)
+	article.DeleteTaskID = nil
+	if err := h.b.Save(store, article); err != nil {
+		return nil, errors.Wrapf(err, "cannot update article %s ", article.PrimaryKey)
 	}
 
-	return &weave.DeliverResult{Data: msg.TaskID}, nil
+	return &weave.DeliverResult{}, nil
 }
 
 // ------------------- CronDeleteArticleHandler -------------------

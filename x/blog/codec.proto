@@ -50,17 +50,9 @@ message Article {
   // DeleteAt defines deletion time of the article.
   // Could be nil if there is not a time of deletion
   int64 delete_at = 10 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
-}
-
-// DeleteArticleTask is used for representing scheduled task pk. Used when deleting the task
-message DeleteArticleTask {
-  weave.Metadata metadata = 1;
-  // PrimaryKey is the unique identifier of the task
-  bytes pk = 2 [(gogoproto.customname) = "PrimaryKey"];
-  // ArticleKey is the pk of the article that will be deleted
-  bytes article_key = 3 [(gogoproto.customname) = "ArticleKey"];
-  // TaskOwner is the creator of the task
-  bytes task_owner = 4 [(gogoproto.casttype) = "github.com/iov-one/weave.Address"];
+  // DeleteTaskID holds an ID of a tasks scheduled to delete this article.
+  // This value can be empty if no deletion task was scheduled.
+  bytes delete_task_id = 11 [(gogoproto.customname) = "DeleteTaskID"];
 }
 
 // ---------- MESSAGES -----------
@@ -112,6 +104,6 @@ message DeleteArticleMsg {
 // CancelDeleteArticleTaskMsg message cancels scheduled article deletion
 message CancelDeleteArticleTaskMsg {
   weave.Metadata metadata = 1;
-  // TaskID is the identifier of the task
-  bytes task_id = 2 [(gogoproto.customname) = "TaskID"];
+  // ArticleKey is the identifier of the article
+  bytes article_key = 2 [(gogoproto.customname) = "ArticleKey"];
 }

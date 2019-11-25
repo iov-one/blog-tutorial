@@ -124,22 +124,3 @@ func (m *Article) Validate() error {
 	return errs
 }
 
-var _ orm.SerialModel = (*DeleteArticleTask)(nil)
-
-// SetPrimaryKey is a minimal implementation, useful when the PrimaryKey is a separate protobuf field
-func (m *DeleteArticleTask) SetPrimaryKey(pk []byte) error {
-	m.PrimaryKey = pk
-	return nil
-}
-
-// Validate validates user's fields
-func (m *DeleteArticleTask) Validate() error {
-	var errs error
-
-	errs = errors.AppendField(errs, "Metadata", m.Metadata.Validate())
-	errs = errors.AppendField(errs, "PrimaryKey", orm.ValidateSequence(m.PrimaryKey))
-	errs = errors.AppendField(errs, "ArticleKey", orm.ValidateSequence(m.ArticleKey))
-	errs = errors.AppendField(errs, "TaskOwner", m.TaskOwner.Validate())
-
-	return errs
-}

@@ -181,13 +181,13 @@ Cancel a delete article task.
 		fl.PrintDefaults()
 	}
 	var (
-		taskIDFl = flSeq(fl, "task_id", "", "Identifer of the delete task")
+		articleKeyFl = flSeq(fl, "article_key", "", "Identifer of the article")
 	)
 	fl.Parse(args)
 
 	msg := blog.CancelDeleteArticleTaskMsg{
 		Metadata: &weave.Metadata{Schema: 1},
-		TaskID:   *taskIDFl,
+		ArticleKey:   *articleKeyFl,
 	}
 	if err := msg.Validate(); err != nil {
 		return fmt.Errorf("given data produce an invalid message: %s", err)
