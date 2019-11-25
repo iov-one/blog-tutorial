@@ -52,7 +52,7 @@ message Article {
   int64 delete_at = 10 [(gogoproto.casttype) = "github.com/iov-one/weave.UnixTime"];
   // Delete task ID holds the ID of the asynchronous task that is scheduled to
   // delete the task id at delete_at
-  int64 delete_task_id = 11 [(gogoproto.customname) = "DeleteTaskID"];
+  bytes task_id = 11 [(gogoproto.customname) = "DeleteTaskID"];
 }
 
 // ---------- MESSAGES -----------
