@@ -98,14 +98,3 @@ func BuildBlogTimedIndex(article *Article) ([]byte, error) {
 	binary.BigEndian.PutUint64(res[8:], uint64(article.CreatedAt))
 	return res, nil
 }
-
-type DeleteArticleTaskBucket struct {
-	orm.SerialModelBucket
-}
-
-// NewDeleteArticleTaskBucket returns a new delete article task bucket
-func NewDeleteArticleTaskBucket() *DeleteArticleTaskBucket {
-	return &DeleteArticleTaskBucket{
-		orm.NewSerialModelBucket("deleteart", &DeleteArticleTask{}),
-	}
-}

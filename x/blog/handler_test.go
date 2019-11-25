@@ -934,7 +934,13 @@ func TestCreateArticle(t *testing.T) {
 
 				// avoid registered at missing error
 				tc.expected.CreatedAt = createdAt
+				// avoid missing delete at error
+				if stored.DeleteTaskID != nil {
+					tc.expected.DeleteTaskID = stored.DeleteTaskID
+				}
+
 				assert.Equal(t, tc.expected, &stored)
+
 			}
 		})
 	}
