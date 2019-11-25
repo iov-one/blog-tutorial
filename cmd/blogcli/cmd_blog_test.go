@@ -145,7 +145,7 @@ func TestDeleteArticle(t *testing.T) {
 func TestCancelDeleteArticleTask(t *testing.T) {
 	var output bytes.Buffer
 	args := []string{
-		"-task_id", "122333",
+		"-article_key", "122333",
 	}
 	if err := cmdCancelDeleteArticleTask(nil, &output, args); err != nil {
 		t.Fatalf("cannot create a new cancel delete article task transaction: %s", err)
@@ -162,5 +162,5 @@ func TestCancelDeleteArticleTask(t *testing.T) {
 	}
 	msg := txmsg.(*blog.CancelDeleteArticleTaskMsg)
 
-	assert.Equal(t, weavetest.SequenceID(122333), msg.TaskID)
+	assert.Equal(t, weavetest.SequenceID(122333), msg.ArticleKey)
 }

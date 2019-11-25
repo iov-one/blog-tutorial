@@ -3,4 +3,4 @@
 set -e
 set -o pipefail
 
-blogcli cancel-delete-article-task -task_id 123 | blogcli view
+blogcli cancel-delete-article-task -article_key 123 | blogcli view
