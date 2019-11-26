@@ -214,9 +214,8 @@ func (h ChangeBlogOwnerHandler) validate(ctx weave.Context, store weave.KVStore,
 		return nil, nil, errors.Wrapf(err, "cannot retrieve blog with id %s from database", msg.BlogKey)
 	}
 
-	signer := x.MainSigner(ctx, h.auth).Address()
-	if !blog.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to change the owner of the blog with PrimaryKey %s", signer, blog.PrimaryKey)
+	if !h.auth.HasAddress(ctx, blog.Owner) {
+		return nil, nil, errors.Wrap(errors.ErrUnauthorized, "only the blog owner can blog owner")
 	}
 
 	newBlog := &Blog{
@@ -292,9 +291,8 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 		return nil, nil, errors.Wrapf(err, "blog id with %s does not exist", msg.BlogKey)
 	}
 
-	signer := x.MainSigner(ctx, h.auth).Address()
-	if !blog.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to post article to the blog with PrimaryKey %s", signer, blog.PrimaryKey)
+	if !h.auth.HasAddress(ctx, blog.Owner) {
+		return nil, nil, errors.Wrap(errors.ErrUnauthorized, "only the blog owner can post an article under a blog")
 	}
 
 	blockTime, err := weave.BlockTime(ctx)
@@ -311,7 +309,7 @@ func (h CreateArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 	article := &Article{
 		Metadata:  &weave.Metadata{Schema: 1},
 		BlogKey:   msg.BlogKey,
-		Owner:     signer,
+		Owner:     blog.Owner,
 		Title:     msg.Title,
 		Content:   msg.Content,
 		CreatedAt: now,
@@ -395,9 +393,8 @@ func (h DeleteArticleHandler) validate(ctx weave.Context, store weave.KVStore, t
 		return nil, nil, errors.Wrapf(err, "cannot retrieve article with PrimaryKey %s", msg.ArticleKey)
 	}
 
-	signer := x.MainSigner(ctx, h.auth).Address()
-	if !article.Owner.Equals(signer) {
-		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "signer %s is unauthorized to delete article with PrimaryKey %s", signer, article.PrimaryKey)
+	if !h.auth.HasAddress(ctx, article.Owner) {
+		return nil, nil, errors.Wrapf(errors.ErrUnauthorized, "only the article owner can delete the article")
 	}
 
 	return &msg, &article, nil
