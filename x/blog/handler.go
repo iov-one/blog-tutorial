@@ -147,7 +147,7 @@ func (h CreateBlogHandler) validate(ctx weave.Context, store weave.KVStore, tx w
 
 	blog := &Blog{
 		Metadata:    &weave.Metadata{Schema: 1},
-		Owner:       x.MainSigner(ctx, h.auth).Address(),
+		Owner:       x.AnySigner(ctx, h.auth).Address(),
 		Title:       msg.Title,
 		Description: msg.Description,
 		CreatedAt:   now,
