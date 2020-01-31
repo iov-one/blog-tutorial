@@ -70,6 +70,8 @@ github.com/iov-one/weave v0.21.4-0.20191117110411-c031965d20d7 h1:6bDDSkBYhb1JiS
 github.com/iov-one/weave v0.21.4-0.20191117110411-c031965d20d7/go.mod h1:PEj1qLq5ST1U2MfbevqS3QOW9zPXB6ZQtqQ2/ckBzxE=
 github.com/iov-one/weave v0.21.4-0.20191118105449-2094c880d195 h1:LqGGQlYbpwN9ASmwuBFJqPFNkf47QtNmWojaQ2Z8CUI=
 github.com/iov-one/weave v0.21.4-0.20191118105449-2094c880d195/go.mod h1:PEj1qLq5ST1U2MfbevqS3QOW9zPXB6ZQtqQ2/ckBzxE=
+github.com/iov-one/weave v0.25.1 h1:kPLy3w0YFeDg24oT2E6qC1wzlTQYPkxmGlwLx8ViB/8=
+github.com/iov-one/weave v0.25.1/go.mod h1:hBa1OFBigZDItflsqs1kJQPEF8d8j0ERr7CZaLtmlr8=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/jmhodges/levigo v1.0.0 h1:q5EC36kV79HWeTBWsod3mG11EgStG3qArTKcvlksN1U=
 github.com/jmhodges/levigo v1.0.0/go.mod h1:Q6Qx+uH3RAqyK4rFQroq9RL7mdkABMcfhEI+nNuzMJQ=
